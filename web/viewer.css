@@ -1960,3 +1960,132 @@ html[dir='rtl'] #documentPropertiesOverlay .row > * {
     display: none;
   }
 }
+
+/* guotq */
+.ep-title {
+  font-weight: bold;
+}
+
+.ep-title .ep-icon {
+  display: inline-block;
+  width: 48px;
+  height: 48px;
+  vertical-align: -18px;
+  margin-left: 5px;
+}
+
+.ep-title.success .ep-icon {
+  background-image: url("./images/sign-check-48.png");
+}
+
+.ep-title.error .ep-icon {
+  background-image: url("./images/sign-error-48.png");
+}
+
+.ep-content {
+  padding: 10px;
+  border-top: none;
+}
+
+.ep-tab .ep-nav {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  border-bottom: 1px solid #ddd;
+}
+
+.ep-nav > li {
+  float: left;
+  margin-bottom: -1px;
+  position: relative;
+  display: block;
+  list-style: none;
+}
+
+.ep-nav>li>a {
+  position: relative;
+  display: block;
+  padding: 8px 15px;
+  cursor: pointer;
+  color: #353535;
+  -webkit-transition: all .2s cubic-bezier(.175,.885,.32,1);
+  transition: all .2s cubic-bezier(.175,.885,.32,1);
+  margin-right: 2px;
+  text-decoration: none;
+  line-height: 1.53846154;
+  border: 1px solid transparent;
+  border-radius: 4px 4px 0 0;
+}
+
+.ep-nav>li.active>a, .ep-nav>li.active>a:focus, .ep-nav>li.active>a:hover {
+  color: grey;
+  cursor: pointer;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-bottom-color: transparent;
+}
+
+.ep-tab--content {
+  height: 200px;
+  min-width: 500px;
+  overflow: auto;
+  border: 1px #ddd solid;
+  border-top: none;
+}
+
+.ep-tab--content .ep-tab-pane {
+  display: none;
+}
+
+.ep-tab--content .ep-tab-pane.active {
+  display: block;
+}
+
+.ep-meta {
+  padding: 10px 10px 0px 10px;
+}
+
+.ep-item {
+  margin-top: 3px;
+}
+
+.ep-meta .ep-label {
+  width: 16%;
+  float: left;
+  display: inline-block;
+  text-align: right;
+  font-weight: bold;
+}
+
+.ep-meta .ep-value {
+  width: 84%;
+  float: left;
+  display: inline-block;
+  text-align: left;
+  word-break: break-all;
+  line-height: 1.428571429;
+}
+
+.ep-a-cert {
+  color: grey;
+  cursor: pointer;
+  height: 21px;
+  line-height: 21px;
+  margin-left: 5%;
+  padding: 5px 10px;
+  text-decoration: none;
+  background-color: #fff;
+  border: 1px solid #ddd;
+}
+
+.ui-popup-close:hover, .ui-popup-close:focus {
+  color: #000000;
+  text-decoration: none;
+  cursor: pointer;
+  outline: 0;
+  opacity: 0.5;
+}
+
+section[data-annotation-id]:hover {
+  border: 2px dashed rgba(173, 173, 173, 173);
+}

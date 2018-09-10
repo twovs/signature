@@ -14,11 +14,19 @@
  */
 
 import {
-  addLinkAttributes, CustomStyle, DOMSVGFactory, getDefaultSetting,
-  getFilenameFromUrl, LinkTarget
+  addLinkAttributes,
+  CustomStyle,
+  DOMSVGFactory,
+  getDefaultSetting,
+  getFilenameFromUrl,
+  LinkTarget
 } from './dom_utils';
 import {
-  AnnotationBorderStyleType, AnnotationType, stringToPDFString, Util, warn
+  AnnotationBorderStyleType,
+  AnnotationType,
+  stringToPDFString,
+  Util,
+  warn
 } from '../shared/util';
 
 /**
@@ -125,6 +133,8 @@ class AnnotationElement {
 
     if (isRenderable) {
       this.container = this._createContainer(ignoreBorder);
+    } else {
+      this.container = this._createSignContainer();
     }
   }
 
@@ -137,7 +147,9 @@ class AnnotationElement {
    * @returns {HTMLSectionElement}
    */
   _createContainer(ignoreBorder = false) {
-    let data = this.data, page = this.page, viewport = this.viewport;
+    let data = this.data,
+      page = this.page,
+      viewport = this.viewport;
     let container = document.createElement('section');
     let width = data.rect[2] - data.rect[0];
     let height = data.rect[3] - data.rect[1];
@@ -154,9 +166,9 @@ class AnnotationElement {
     ]);
 
     CustomStyle.setProp('transform', container,
-                        'matrix(' + viewport.transform.join(',') + ')');
+      'matrix(' + viewport.transform.join(',') + ')');
     CustomStyle.setProp('transformOrigin', container,
-                        -rect[0] + 'px ' + -rect[1] + 'px');
+      -rect[0] + 'px ' + -rect[1] + 'px');
 
     if (!ignoreBorder && data.borderStyle.width > 0) {
       container.style.borderWidth = data.borderStyle.width + 'px';
@@ -202,8 +214,8 @@ class AnnotationElement {
 
       if (data.color) {
         container.style.borderColor = Util.makeCssRgb(data.color[0] | 0,
-                                                      data.color[1] | 0,
-                                                      data.color[2] | 0);
+          data.color[1] | 0,
+          data.color[2] | 0);
       } else {
         // Transparent (invisible) border, so do not draw it at all.
         container.style.borderWidth = 0;
@@ -215,6 +227,107 @@ class AnnotationElement {
 
     container.style.width = width + 'px';
     container.style.height = height + 'px';
+
+    return container;
+  }
+
+  /**
+   * Create an empty container for the annotation's HTML element.
+   *
+   * @private
+   * @memberof AnnotationElement
+   * @returns {HTMLSectionElement}
+   */
+  _createSignContainer() {
+    let data = this.data,
+      page = this.page,
+      viewport = this.viewport;
+    let container = document.createElement('section');
+    let width = data.rect[2] - data.rect[0];
+    let height = data.rect[3] - data.rect[1];
+
+    container.setAttribute('data-annotation-id', data.id);
+
+    // Do *not* modify `data.rect`, since that will corrupt the annotation
+    // position on subsequent calls to `_createContainer` (see issue 6804).
+    let rect = Util.normalizeRect([
+      data.rect[0],
+      page.view[3] - data.rect[1] + page.view[1],
+      data.rect[2],
+      page.view[3] - data.rect[3] + page.view[1]
+    ]);
+
+    CustomStyle.setProp('transform', container,
+      'matrix(' + viewport.transform.join(',') + ')');
+    CustomStyle.setProp('transformOrigin', container,
+      -rect[0] + 'px ' + -rect[1] + 'px');
+
+    if (data.borderStyle.width > 0) {
+      container.style.borderWidth = data.borderStyle.width + 'px';
+      if (data.borderStyle.style !== AnnotationBorderStyleType.UNDERLINE) {
+        // Underline styles only have a bottom border, so we do not need
+        // to adjust for all borders. This yields a similar result as
+        // Adobe Acrobat/Reader.
+        width = width - 2 * data.borderStyle.width;
+        height = height - 2 * data.borderStyle.width;
+      }
+
+      let horizontalRadius = data.borderStyle.horizontalCornerRadius;
+      let verticalRadius = data.borderStyle.verticalCornerRadius;
+      if (horizontalRadius > 0 || verticalRadius > 0) {
+        let radius = horizontalRadius + 'px / ' + verticalRadius + 'px';
+        CustomStyle.setProp('borderRadius', container, radius);
+      }
+
+      switch (data.borderStyle.style) {
+        case AnnotationBorderStyleType.SOLID:
+          container.style.borderStyle = 'solid';
+          break;
+
+        case AnnotationBorderStyleType.DASHED:
+          container.style.borderStyle = 'dashed';
+          break;
+
+        case AnnotationBorderStyleType.BEVELED:
+          warn('Unimplemented border style: beveled');
+          break;
+
+        case AnnotationBorderStyleType.INSET:
+          warn('Unimplemented border style: inset');
+          break;
+
+        case AnnotationBorderStyleType.UNDERLINE:
+          container.style.borderBottomStyle = 'solid';
+          break;
+
+        default:
+          break;
+      }
+
+      if (data.color) {
+        container.style.borderColor = Util.makeCssRgb(data.color[0] | 0,
+          data.color[1] | 0,
+          data.color[2] | 0);
+      } else {
+        // Transparent (invisible) border, so do not draw it at all.
+        container.style.borderWidth = 0;
+      }
+    }
+
+    container.style.left = rect[0] + 'px';
+    container.style.top = rect[1] + 'px';
+
+    container.style.width = width + 'px';
+    container.style.height = height + 'px';
+
+    var div = document.createElement('div');
+
+    div.style.width = width + 'px';
+    div.style.height = height + 'px';
+    div.style.cursor = 'pointer';
+
+    container.appendChild(div);
+    this.layer.appendChild(container);
 
     return container;
   }
@@ -269,7 +382,7 @@ class AnnotationElement {
 class LinkAnnotationElement extends AnnotationElement {
   constructor(parameters) {
     let isRenderable = !!(parameters.data.url || parameters.data.dest ||
-                          parameters.data.action);
+      parameters.data.action);
     super(parameters, isRenderable);
   }
 
@@ -343,7 +456,7 @@ class LinkAnnotationElement extends AnnotationElement {
 class TextAnnotationElement extends AnnotationElement {
   constructor(parameters) {
     let isRenderable = !!(parameters.data.hasPopup ||
-                          parameters.data.title || parameters.data.contents);
+      parameters.data.title || parameters.data.contents);
     super(parameters, isRenderable);
   }
 
@@ -364,7 +477,9 @@ class TextAnnotationElement extends AnnotationElement {
       this.data.name.toLowerCase() + '.svg';
     image.alt = '[{{type}} Annotation]';
     image.dataset.l10nId = 'text_annotation_type';
-    image.dataset.l10nArgs = JSON.stringify({ type: this.data.name, });
+    image.dataset.l10nArgs = JSON.stringify({
+      type: this.data.name,
+    });
 
     if (!this.data.hasPopup) {
       this._createPopup(this.container, image, this.data);
@@ -634,8 +749,8 @@ class PopupAnnotationElement extends AnnotationElement {
     let parentLeft = parseFloat(parentElement.style.left);
     let parentWidth = parseFloat(parentElement.style.width);
     CustomStyle.setProp('transformOrigin', this.container,
-                        -(parentLeft + parentWidth) + 'px -' +
-                        parentElement.style.top);
+      -(parentLeft + parentWidth) + 'px -' +
+      parentElement.style.top);
     this.container.style.left = (parentLeft + parentWidth) + 'px';
 
     this.container.appendChild(popup.render());
@@ -776,7 +891,7 @@ class PopupElement {
 class LineAnnotationElement extends AnnotationElement {
   constructor(parameters) {
     let isRenderable = !!(parameters.data.hasPopup ||
-                          parameters.data.title || parameters.data.contents);
+      parameters.data.title || parameters.data.contents);
     super(parameters, isRenderable, /* ignoreBorder = */ true);
   }
 
@@ -822,7 +937,7 @@ class LineAnnotationElement extends AnnotationElement {
 class SquareAnnotationElement extends AnnotationElement {
   constructor(parameters) {
     let isRenderable = !!(parameters.data.hasPopup ||
-                          parameters.data.title || parameters.data.contents);
+      parameters.data.title || parameters.data.contents);
     super(parameters, isRenderable, /* ignoreBorder = */ true);
   }
 
@@ -871,7 +986,7 @@ class SquareAnnotationElement extends AnnotationElement {
 class CircleAnnotationElement extends AnnotationElement {
   constructor(parameters) {
     let isRenderable = !!(parameters.data.hasPopup ||
-                          parameters.data.title || parameters.data.contents);
+      parameters.data.title || parameters.data.contents);
     super(parameters, isRenderable, /* ignoreBorder = */ true);
   }
 
@@ -920,7 +1035,7 @@ class CircleAnnotationElement extends AnnotationElement {
 class PolylineAnnotationElement extends AnnotationElement {
   constructor(parameters) {
     let isRenderable = !!(parameters.data.hasPopup ||
-                          parameters.data.title || parameters.data.contents);
+      parameters.data.title || parameters.data.contents);
     super(parameters, isRenderable, /* ignoreBorder = */ true);
 
     this.containerClassName = 'polylineAnnotation';
@@ -989,7 +1104,7 @@ class PolygonAnnotationElement extends PolylineAnnotationElement {
 class HighlightAnnotationElement extends AnnotationElement {
   constructor(parameters) {
     let isRenderable = !!(parameters.data.hasPopup ||
-                          parameters.data.title || parameters.data.contents);
+      parameters.data.title || parameters.data.contents);
     super(parameters, isRenderable, /* ignoreBorder = */ true);
   }
 
@@ -1013,7 +1128,7 @@ class HighlightAnnotationElement extends AnnotationElement {
 class UnderlineAnnotationElement extends AnnotationElement {
   constructor(parameters) {
     let isRenderable = !!(parameters.data.hasPopup ||
-                          parameters.data.title || parameters.data.contents);
+      parameters.data.title || parameters.data.contents);
     super(parameters, isRenderable, /* ignoreBorder = */ true);
   }
 
@@ -1037,7 +1152,7 @@ class UnderlineAnnotationElement extends AnnotationElement {
 class SquigglyAnnotationElement extends AnnotationElement {
   constructor(parameters) {
     let isRenderable = !!(parameters.data.hasPopup ||
-                          parameters.data.title || parameters.data.contents);
+      parameters.data.title || parameters.data.contents);
     super(parameters, isRenderable, /* ignoreBorder = */ true);
   }
 
@@ -1061,7 +1176,7 @@ class SquigglyAnnotationElement extends AnnotationElement {
 class StrikeOutAnnotationElement extends AnnotationElement {
   constructor(parameters) {
     let isRenderable = !!(parameters.data.hasPopup ||
-                          parameters.data.title || parameters.data.contents);
+      parameters.data.title || parameters.data.contents);
     super(parameters, isRenderable, /* ignoreBorder = */ true);
   }
 
@@ -1085,7 +1200,7 @@ class StrikeOutAnnotationElement extends AnnotationElement {
 class StampAnnotationElement extends AnnotationElement {
   constructor(parameters) {
     let isRenderable = !!(parameters.data.hasPopup ||
-                          parameters.data.title || parameters.data.contents);
+      parameters.data.title || parameters.data.contents);
     super(parameters, isRenderable, /* ignoreBorder = */ true);
   }
 
@@ -1193,8 +1308,9 @@ class AnnotationLayer {
         linkService: parameters.linkService,
         downloadManager: parameters.downloadManager,
         imageResourcesPath: parameters.imageResourcesPath ||
-                            getDefaultSetting('imageResourcesPath'),
-        renderInteractiveForms: parameters.renderInteractiveForms || false,
+          getDefaultSetting('imageResourcesPath'),
+        renderInteractiveForms: parameters.renderInteractiveForms ||
+          false,
         svgFactory: new DOMSVGFactory(),
       });
       if (element.isRenderable) {
