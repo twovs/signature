@@ -191,6 +191,7 @@ class PDFFindBar {
     if (this.opened) {
       this.close();
     } else {
+      this.bar.style.left = (event.clientX - 10) + 'px';
       this.open();
     }
   }
