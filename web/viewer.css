@@ -1606,6 +1606,14 @@ html[dir='rtl'] #documentPropertiesOverlay .row > * {
     top: -4px;
   }
 
+  .toolbarButton.firstPage::before {
+    content: url(images/secondaryToolbarButton-firstPage@2x.png);
+  }
+
+  .toolbarButton.lastPage::before {
+    content: url(images/secondaryToolbarButton-lastPage@2x.png);
+  }
+
   html[dir='ltr'] .toolbarButton::before,
   html[dir='rtl'] .toolbarButton::before {
     left: -1px;

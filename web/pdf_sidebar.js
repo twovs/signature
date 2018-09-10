@@ -76,7 +76,6 @@ class PDFSidebar {
     this.mainContainer = options.mainContainer;
     this.outerContainer = options.outerContainer;
     this.eventBus = options.eventBus;
-    this.toggleButton = options.toggleButton;
 
     this.thumbnailButton = options.thumbnailButton;
     this.outlineButton = options.outlineButton;
@@ -164,9 +163,15 @@ class PDFSidebar {
 
     switch (view) {
       case SidebarView.THUMBS:
-        this.thumbnailButton.classList.add('toggled');
         this.outlineButton.classList.remove('toggled');
         this.attachmentsButton.classList.remove('toggled');
+
+        if (this.thumbnailButton.classList.contains('toggled')) {
+          this.thumbnailButton.classList.add('toggled');
+        }
+        else {
+          this.thumbnailButton.classList.remove('toggled');
+        }
 
         this.thumbnailView.classList.remove('hidden');
         this.outlineView.classList.add('hidden');
@@ -182,8 +187,14 @@ class PDFSidebar {
           return;
         }
         this.thumbnailButton.classList.remove('toggled');
-        this.outlineButton.classList.add('toggled');
         this.attachmentsButton.classList.remove('toggled');
+
+        if (this.outlineButton.classList.contains('toggled')) {
+          this.outlineButton.classList.remove('toggled');
+        }
+        else {
+          this.outlineButton.classList.add('toggled');
+        }
 
         this.thumbnailView.classList.add('hidden');
         this.outlineView.classList.remove('hidden');
@@ -195,7 +206,13 @@ class PDFSidebar {
         }
         this.thumbnailButton.classList.remove('toggled');
         this.outlineButton.classList.remove('toggled');
-        this.attachmentsButton.classList.add('toggled');
+
+        if (this.attachmentsButton.classList.contains('toggled')) {
+          this.attachmentsButton.classList.remove('toggled');
+        }
+        else {
+          this.attachmentsButton.classList.add('toggled');
+        }
 
         this.thumbnailView.classList.add('hidden');
         this.outlineView.classList.add('hidden');
@@ -228,7 +245,6 @@ class PDFSidebar {
       return;
     }
     this.isOpen = true;
-    this.toggleButton.classList.add('toggled');
 
     this.outerContainer.classList.add('sidebarMoving');
     this.outerContainer.classList.add('sidebarOpen');
@@ -247,7 +263,6 @@ class PDFSidebar {
       return;
     }
     this.isOpen = false;
-    this.toggleButton.classList.remove('toggled');
 
     this.outerContainer.classList.add('sidebarMoving');
     this.outerContainer.classList.remove('sidebarOpen');
@@ -315,13 +330,11 @@ class PDFSidebar {
     this.l10n.get('toggle_sidebar_notification.title', null,
                   'Toggle Sidebar (document contains outline/attachments)').
         then((msg) => {
-      this.toggleButton.title = msg;
     });
 
     if (!this.isOpen) {
       // Only show the notification on the `toggleButton` if the sidebar is
       // currently closed, to avoid unnecessarily bothering the user.
-      this.toggleButton.classList.add(UI_NOTIFICATION_CLASS);
     } else if (view === this.active) {
       // If the sidebar is currently open *and* the `view` is visible, do not
       // bother the user with a notification on the corresponding button.
@@ -362,7 +375,6 @@ class PDFSidebar {
       // or when it is being reset (i.e. `view === null`).
       return;
     }
-    this.toggleButton.classList.remove(UI_NOTIFICATION_CLASS);
 
     if (view !== null) {
       removeNotification(view);
@@ -374,7 +386,6 @@ class PDFSidebar {
 
     this.l10n.get('toggle_sidebar.title', null, 'Toggle Sidebar').
         then((msg) => {
-      this.toggleButton.title = msg;
     });
   }
 
@@ -382,6 +393,8 @@ class PDFSidebar {
    * @private
    */
   _addEventListeners() {
+    var _this = this;
+
     this.mainContainer.addEventListener('transitionend', (evt) => {
       if (evt.target === this.mainContainer) {
         this.outerContainer.classList.remove('sidebarMoving');
@@ -390,10 +403,12 @@ class PDFSidebar {
 
     // Buttons for switching views.
     this.thumbnailButton.addEventListener('click', () => {
+      _this.toggle();
       this.switchView(SidebarView.THUMBS);
     });
 
     this.outlineButton.addEventListener('click', () => {
+      _this.toggle();
       this.switchView(SidebarView.OUTLINE);
     });
     this.outlineButton.addEventListener('dblclick', () => {

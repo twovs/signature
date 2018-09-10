@@ -1417,6 +1417,7 @@ let PDFViewerApplication = {
     eventBus.on('presentationmodechanged', webViewerPresentationModeChanged);
     eventBus.on('presentationmode', webViewerPresentationMode);
     eventBus.on('openfile', webViewerOpenFile);
+    eventBus.on('closefile', webViewerCloseFile);
     eventBus.on('print', webViewerPrint);
     eventBus.on('download', webViewerDownload);
     eventBus.on('firstpage', webViewerFirstPage);
@@ -1489,6 +1490,7 @@ let PDFViewerApplication = {
     eventBus.off('presentationmodechanged', webViewerPresentationModeChanged);
     eventBus.off('presentationmode', webViewerPresentationMode);
     eventBus.off('openfile', webViewerOpenFile);
+    eventBus.off('closefile', webViewerCloseFile);
     eventBus.off('print', webViewerPrint);
     eventBus.off('download', webViewerDownload);
     eventBus.off('firstpage', webViewerFirstPage);
@@ -1729,10 +1731,6 @@ function webViewerInitialized() {
         PDFViewerApplication.eventBus.dispatch('resize');
       }
     }, true);
-
-  appConfig.sidebar.toggleButton.addEventListener('click', function () {
-    PDFViewerApplication.pdfSidebar.toggle();
-  });
 
   Promise.all(waitForBeforeOpening).then(function () {
     webViewerOpenFileViaURL(file);
@@ -2041,6 +2039,10 @@ function webViewerOpenFile() {
     let openFileInputName = PDFViewerApplication.appConfig.openFileInputName;
     document.getElementById(openFileInputName).click();
   }
+}
+
+function webViewerCloseFile(){
+  PDFViewerApplication.close();
 }
 
 function webViewerPrint() {
