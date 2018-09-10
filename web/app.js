@@ -2017,6 +2017,8 @@ if (typeof PDFJSDev === 'undefined' || PDFJSDev.test('GENERIC')) {
 
     PDFViewerApplication.setTitleUsingUrl(file.name);
 
+    PDFViewerApplication.localUrl = evt.fileInput.value;
+
     // URL does not reflect proper document location - hiding some icons.
     let appConfig = PDFViewerApplication.appConfig;
     appConfig.toolbar.viewBookmark.setAttribute('hidden', 'true');
