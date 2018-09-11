@@ -1962,6 +1962,109 @@ html[dir='rtl'] #documentPropertiesOverlay .row > * {
 }
 
 /* guotq */
+.l {
+  float: left;
+}
+
+.r {
+  float: right;
+}
+
+.clearfix:after {
+  content: ".";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden
+}
+
+.clearfix {
+  *+height: 1%;
+}
+
+.hidden {
+  display: none;
+}
+
+.signpad-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -160px;
+  margin-top: -100px;
+  display: none;
+  z-index: 10001
+}
+
+.ui-popup {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 100;
+  margin-top: -185px;
+  margin-left: -285px;
+  width: 570px;
+  height: 370px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  border: 1px solid #999;
+  border-radius: 6px;
+  outline: 0;
+  font-size: 14px;
+  font-family: Helvetica, arial, sans-serif;
+}
+
+.ui-popup-header {
+  white-space: nowrap;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.ui-popup-title {
+  margin: 0;
+  line-height: 1.428571429;
+  min-height: 16.428571429px;
+  padding: 10px 10px 10px 15px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-weight: bold;
+  cursor: default;
+}
+
+.ui-popup-close {
+  position: relative;
+  _position: absolute;
+  float: right;
+  top: 9px;
+  right: 13px;
+  _height: 26px;
+  padding: 0 4px;
+  font-size: 21px;
+  font-weight: bold;
+  line-height: 1;
+  color: #000;
+  text-shadow: 0 1px 0 #FFF;
+  opacity: .2;
+  filter: alpha(opacity=20);
+  cursor: pointer;
+  background: transparent;
+  _background: #FFF;
+  border: 0;
+  -webkit-appearance: none;
+}
+
+.ui-popup-body {
+  padding: 10px;
+  text-align: center;
+}
+
+.ui-popup-content {
+  display: inline-block;
+  position: relative;
+  vertical-align: middle;
+  text-align: left;
+}
+
 .ep-title {
   font-weight: bold;
 }
@@ -2088,4 +2191,48 @@ html[dir='rtl'] #documentPropertiesOverlay .row > * {
 
 section[data-annotation-id]:hover {
   border: 2px dashed rgba(173, 173, 173, 173);
+}
+
+.signpad-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-left: -160px;
+  margin-top: -100px;
+  display: none;
+  z-index: 10001
+}
+
+#delsigndiv {
+  width: 80px;
+  background: rgba(78, 78, 78, 1);
+  position: absolute;
+  display: none;
+  box-shadow: 2px 2px 7px #888888;
+  border-radius: 5px;
+}
+
+#delsigndiv ul {
+  list-style: none;
+  border: 2px solid #666;
+  border-bottom: 0px;
+  border-radius: 4px;
+}
+
+#delsigndiv ul li {
+  height: 30px;
+  color: rgba(255, 255, 255, 1);
+  line-height: 30px;
+  text-align: center;
+  border-bottom: 2px solid #666;
+  cursor: default;
+}
+
+.slade {
+  position: absolute;
+  top: 0px;
+  width: 100%;
+  height: 100%;
+  z-index: 10000;
+  background-color: hsla(0, 0%, 0%, .2);
 }
