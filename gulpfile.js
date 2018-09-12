@@ -621,8 +621,7 @@ gulp.task('generic', ['buildnumber', 'locale'], function () {
         .pipe(gulp.dest(GENERIC_DIR + 'web')),
     preprocessCSS('web/viewer.css', 'generic', defines, true)
         .pipe(gulp.dest(GENERIC_DIR + 'web')),
-
-    gulp.src('web/compressed.tracemonkey-pldi-09.pdf')
+    gulp.src('web/viewer.extend.js')
         .pipe(gulp.dest(GENERIC_DIR + 'web')),
   ]);
 });
