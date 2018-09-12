@@ -97,7 +97,8 @@
           imgWidth: sign_img.width,
           imgHeight: sign_img.height,
           top: top,
-          left: left
+          left: left,
+          pageRotation: PDFViewerApplication.pageRotation
         });
 
         $(div).css({

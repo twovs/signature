@@ -370,6 +370,10 @@ class PDFPageView {
       div.appendChild(canvasWrapper);
     }
 
+    $.each(window.signElArray, function(i, e) {
+      console.log(e);
+    });
+
     let textLayer = null;
     if (this.textLayerFactory) {
       let textLayerDiv = document.createElement('div');
