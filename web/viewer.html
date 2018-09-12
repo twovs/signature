@@ -435,6 +435,36 @@
   </div>
   <div id="printContainer"></div>
 
+  <!-- 签章信息展示区域 -->
+  <div class="ui-popup hidden" id="ui-popup">
+    <div class="ui-popup-header">
+      <button class="ui-popup-close">x</button>
+      <div class="ui-popup-title">数字签名</div>
+    </div>
+
+    <div class="ui-popup-body">
+      <div class="ui-popup-content" id="ui-popup-content"></div>
+    </div>
+  </div>
+
+  <!--平板签字区域-->
+  <div id="multisignpad" class="signpad-container">
+    <div style="background-color:#474747;background-image: url(images/texture.png),
+                          linear-gradient(hsla(0,0%,32%,.99), hsla(0,0%,27%,.95));">
+      <input type="button" value="开始签章" class="toolbarButton" style="width: 70px; margin-left: 3px; " />
+      <input type="button" value="清除重签" class="toolbarButton" style="width: 70px; margin-left: -5px; " />
+      <input type="button" value="关闭" class="toolbarButton" style="width: 40px; margin-left: 133px;" />
+    </div>
+    <div id="multisignpadshow" style="width: 320px; height: 200px; border: 3px solid #474747; background-color: #e7e7e7; text-align: center;"></div>
+  </div>
+  <div id="delsigndiv">
+    <ul>
+      <li id="delsign">删除</li>
+    </ul>
+  </div>
+  <div class="slade" id="slade" style="display:none">
+  </div>
+
 <!-- template -->
 <script type="text/template" id="tpl-uipopup">
   <div>

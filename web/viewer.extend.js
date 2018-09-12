@@ -13,6 +13,7 @@
     $viewerContainer = $('#viewerContainer'),
     $slade = $('#slade'),
     $multiSignPad = $('#multisignpad'),
+    $mainContainer = $('#mainContainer'),
     $contextmenu = $('#delsigndiv'),
     $multiSignPadShow = $('#multisignpadshow');
 
@@ -21,11 +22,19 @@
   var isOpenSig = false, // 是否满足签章条件，并且点击了开始签章
     signSerial = 0;
 
+  var sign_div,
+      sign_img;
+
+  var toolbarHeight = $('#toolbarContainer').height();
+
   function init() {
     initListener();
   }
 
   function initListener() {
+    var offsetLeft,
+      offsetTop;
+
     $viewerContainer.on('click', 'section[data-annotation-id]', function () {
       var id = $(this).attr('data-annotation-id'),
         signData = window.responseSignData || [];
@@ -65,8 +74,8 @@
 
       // 如果开启了签章，并且已有pdf展示
       if (isOpenSig) {
-        var left = parseInt($(_div).css('left')),
-          top = parseInt($(_div).css('top'));
+        var left = parseInt($(sign_div).css('left')),
+          top = parseInt($(sign_div).css('top'));
 
         var $curPageEl = $viewerContainer.find('[data-page-number="' +
             pageNumber + '"]'),
@@ -76,10 +85,65 @@
         div.id = '_signSerial' + signSerial;
         div.className = '_addSign';
         div.setAttribute('data-index', signSerial);
-        img.src = _img.src;
-        img.width = _img.width;
-        img.height = _img.height;
+        img.src = sign_img.src;
+        img.width = sign_img.width;
+        img.height = sign_img.height;
+
+        $(div).css({
+          position: 'absolute',
+          left: left + 'px',
+          top: top + 'px'
+        });
+
+        $(div).append(img);
+        $curPageEl.append(div);
+
+        signSerial++;
       }
+    }).on('mouseenter', '.page', function (e) {
+      var $this = $(this);
+      var pageX = e.pageX,
+          pageY = e.pageY;
+
+      offsetLeft = this.offsetLeft + $mainContainer.get(0).offsetLeft;
+      offsetTop = this.offsetTop + $mainContainer.get(0).offsetTop;
+
+      if (isOpenSig) {
+        var top = pageY - offsetTop - sign_img.height / 2 + $viewerContainer.get(0).scrollTop - toolbarHeight,
+          left = pageX - offsetLeft - sign_img.width / 2;
+
+        $(sign_div).css({
+          top: top + 'px',
+          left: left + 'px'
+        });
+
+        $this.append(sign_div);
+      }
+    }).on('mousemove', '.page', function(e) {
+      var pageX = e.pageX,
+        pageY = e.pageY;
+
+      offsetLeft = this.offsetLeft + $mainContainer.get(0).offsetLeft;
+      offsetTop = this.offsetTop + $mainContainer.get(0).offsetTop;
+
+      if (isOpenSig) {
+        var top = pageY - offsetTop - sign_img.height / 2 + $viewerContainer.get(0).scrollTop - toolbarHeight,
+          left = pageX - offsetLeft - sign_img.width / 2;
+
+        $(sign_div).css({
+          top: top + 'px',
+          left: left + 'px'
+        });
+      }
+    }).on('mouseleave', function (e) {
+      var movesign = $(this).find('.movesign');
+
+      $.each(movesign, function (i, e) {
+        e.remove();
+      });
+
+      sign_div = null;
+      sign_img = null;
     });
 
     // 关闭签章区域
@@ -94,31 +158,36 @@
 
       switch (val) {
         case '开始签章':
-          var img = document.createElement('img'),
-            div = document.createElement('div'),
-            pageScale = PDFViewerApplication.toolbar.pageScale;
+          if (PDFViewerApplication.pdfViewer.viewer.childNodes.length == 0) {
+            isOpenSig = false;
 
-          img.src = $multiSignPadShow.find('img').prop('src');
-          img.onload = function () {
-            $(img).css({
-              width: img.width * pageScale,
-              height: img.height * pageScale
-            });
-          };
-
-          div.appendChild(img);
-          $(div).addClass('movesign');
-          $(div).css({
-            position: 'absolute',
-            textAlign: 'center'
-          });
-
-          if (PDFViewerApplication.pdfViewer.viewer.childNodes.length ==
-            0) {
-            isOpenSig = true;
-
-            closeSignPad();
+            alert('请先打开需要签章的pdf文件');
           }
+          else {
+            var pageScale = PDFViewerApplication.toolbar.pageScale;
+
+            sign_img = document.createElement('img');
+            sign_div = document.createElement('div');
+
+            sign_img.src = $multiSignPadShow.find('img').prop('src');
+            sign_img.onload = function () {
+              $(sign_img).css({
+                width: sign_img.width * pageScale,
+                height: sign_img.height * pageScale
+              });
+            };
+
+            sign_div.appendChild(sign_img);
+            $(sign_div).addClass('movesign');
+            $(sign_div).css({
+              position: 'absolute',
+              textAlign: 'center'
+            });
+
+            isOpenSig = true;
+          }
+
+          closeSignPad();
           break;
 
         case '清除重签':
