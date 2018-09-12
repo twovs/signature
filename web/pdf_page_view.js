@@ -383,9 +383,28 @@ class PDFPageView {
       div.appendChild(canvasWrapper);
     }
 
-    var curScale = PDFViewerApplication.toolbar.pageScale,
-      $viewerContainer = $(PDFViewerApplication.appConfig.viewerContainer),
-      rotation = PDFViewerApplication.toolbar.pageRotation;
+    let textLayer = null;
+    if (this.textLayerFactory) {
+      let textLayerDiv = document.createElement('div');
+      textLayerDiv.className = 'textLayer';
+      textLayerDiv.style.width = canvasWrapper.style.width;
+      textLayerDiv.style.height = canvasWrapper.style.height;
+      if (this.annotationLayer && this.annotationLayer.div) {
+        // The annotation layer needs to stay on top.
+        div.insertBefore(textLayerDiv, this.annotationLayer.div);
+      } else {
+        div.appendChild(textLayerDiv);
+      }
+
+      textLayer = this.textLayerFactory.
+      createTextLayerBuilder(textLayerDiv, this.id - 1, this.viewport,
+        this.enhanceTextSelection);
+    }
+    this.textLayer = textLayer;
+
+    var scale = PDFViewerApplication.toolbar.pageScale,
+      $viewerContainer = $('#viewerContainer'),
+      rotation = PDFViewerApplication.pageRotation;
 
     $.each(window.signElArray, function (i, e) {
       if (e) {
@@ -461,25 +480,6 @@ class PDFPageView {
         $el.append(e.signEl);
       }
     });
-
-    let textLayer = null;
-    if (this.textLayerFactory) {
-      let textLayerDiv = document.createElement('div');
-      textLayerDiv.className = 'textLayer';
-      textLayerDiv.style.width = canvasWrapper.style.width;
-      textLayerDiv.style.height = canvasWrapper.style.height;
-      if (this.annotationLayer && this.annotationLayer.div) {
-        // The annotation layer needs to stay on top.
-        div.insertBefore(textLayerDiv, this.annotationLayer.div);
-      } else {
-        div.appendChild(textLayerDiv);
-      }
-
-      textLayer = this.textLayerFactory.
-      createTextLayerBuilder(textLayerDiv, this.id - 1, this.viewport,
-        this.enhanceTextSelection);
-    }
-    this.textLayer = textLayer;
 
     let renderContinueCallback = null;
     if (this.renderingQueue) {

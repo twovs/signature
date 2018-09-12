@@ -92,10 +92,10 @@
 
         window.signElArray.push({
           pageNumber: pageNumber,
-          signEl: sign_div,
+          signEl: div,
           scale: PDFViewerApplication.toolbar.pageScale,
-          imgWidth: sign_img.width,
-          imgHeight: sign_img.height,
+          imgWidth: img.width,
+          imgHeight: img.height,
           top: top,
           left: left,
           pageRotation: PDFViewerApplication.pageRotation
