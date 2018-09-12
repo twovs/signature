@@ -4,6 +4,12 @@
 
 ## 运行
 
+git到本地：
+
+```
+git https://github.com/Saberization/signature.git
+```
+
 安装依赖：
 
 ```
