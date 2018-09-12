@@ -20,7 +20,8 @@
   var $tplPopup = $('#tpl-uipopup').html();
 
   var isOpenSig = false, // 是否满足签章条件，并且点击了开始签章
-    signSerial = 0;
+    signSerial = 0,
+    signElArray = [];
 
   var sign_div,
       sign_img;
@@ -89,6 +90,16 @@
         img.width = sign_img.width;
         img.height = sign_img.height;
 
+        window.signElArray.push({
+          pageNumber: pageNumber,
+          signEl: sign_div,
+          scale: PDFViewerApplication.toolbar.pageScale,
+          imgWidth: sign_img.width,
+          imgHeight: sign_img.height,
+          top: top,
+          left: left
+        });
+
         $(div).css({
           position: 'absolute',
           left: left + 'px',
@@ -106,6 +117,7 @@
 
         sign_div = null;
         sign_img = null;
+        isOpenSig = false;
 
         signSerial++;
       }
@@ -153,6 +165,17 @@
 
       sign_div = null;
       sign_img = null;
+      isOpenSig = false;
+    }).on('contextmenu', '._addSign', function (e) {
+      e.preventDefault();
+
+      delSerial = $(this).data('index');
+
+      $contextmenu.show();
+      $contextmenu.css({
+        top: e.pageY,
+        left: e.pageX
+      });
     });
 
     // 关闭签章区域
@@ -263,4 +286,8 @@
   }
 
   init();
+
+  return {
+    signElArray
+  };
 }));
