@@ -98,6 +98,15 @@
         $(div).append(img);
         $curPageEl.append(div);
 
+        var movesign = $(this).find('.movesign');
+
+        $.each(movesign, function (i, e) {
+          e.remove();
+        });
+
+        sign_div = null;
+        sign_img = null;
+
         signSerial++;
       }
     }).on('mouseenter', '.page', function (e) {
