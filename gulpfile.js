@@ -1189,8 +1189,6 @@ gulp.task('server', function (done) {
   console.log();
   console.log('### Starting local server');
 
-  process.env['ISDEV'] = true;
-
   var WebServer = require('./test/webserver.js').WebServer;
   var server = new WebServer();
   server.port = 8888;

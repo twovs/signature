@@ -14,8 +14,12 @@
  */
 /* eslint-disable no-multi-str */
 
-import { getDefaultSetting } from './dom_utils';
-import { shadow } from '../shared/util';
+import {
+  getDefaultSetting
+} from './dom_utils';
+import {
+  shadow
+} from '../shared/util';
 
 var WebGLUtils = (function WebGLUtilsClosure() {
   function loadShader(gl, code, shaderType) {
@@ -29,12 +33,15 @@ var WebGLUtils = (function WebGLUtilsClosure() {
     }
     return shader;
   }
+
   function createVertexShader(gl, code) {
     return loadShader(gl, code, gl.VERTEX_SHADER);
   }
+
   function createFragmentShader(gl, code) {
     return loadShader(gl, code, gl.FRAGMENT_SHADER);
   }
+
   function createProgram(gl, shaders) {
     var program = gl.createProgram();
     for (var i = 0, ii = shaders.length; i < ii; ++i) {
@@ -48,6 +55,7 @@ var WebGLUtils = (function WebGLUtilsClosure() {
     }
     return program;
   }
+
   function createTexture(gl, image, textureId) {
     gl.activeTexture(textureId);
     var texture = gl.createTexture();
@@ -60,23 +68,26 @@ var WebGLUtils = (function WebGLUtilsClosure() {
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
 
     // Upload the image into the texture.
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE,
+      image);
     return texture;
   }
 
   var currentGL, currentCanvas;
+
   function generateGL() {
     if (currentGL) {
       return;
     }
 
     // The temporary canvas is used in the WebGL context.
+    var options = { premultipliedalpha: false };
     currentCanvas = document.createElement('canvas');
-    currentGL = currentCanvas.getContext('webgl',
-      { premultipliedalpha: false, });
+    currentGL = currentCanvas.getContext('webgl', options) || currentCanvas.getContext('experimental-webgl', options);
   }
 
-  var smaskVertexShaderCode = '\
+  var smaskVertexShaderCode =
+    '\
   attribute vec2 a_position;                                    \
   attribute vec2 a_texCoord;                                    \
                                                                 \
@@ -91,7 +102,8 @@ var WebGLUtils = (function WebGLUtilsClosure() {
     v_texCoord = a_texCoord;                                    \
   }                                                             ';
 
-  var smaskFragmentShaderCode = '\
+  var smaskFragmentShaderCode =
+    '\
   precision mediump float;                                      \
                                                                 \
   uniform vec4 u_backdrop;                                      \
@@ -140,7 +152,8 @@ var WebGLUtils = (function WebGLUtilsClosure() {
     var cache = {};
     cache.gl = gl;
     cache.canvas = canvas;
-    cache.resolutionLocation = gl.getUniformLocation(program, 'u_resolution');
+    cache.resolutionLocation = gl.getUniformLocation(program,
+      'u_resolution');
     cache.positionLocation = gl.getAttribLocation(program, 'a_position');
     cache.backdropLocation = gl.getUniformLocation(program, 'u_backdrop');
     cache.subtypeLocation = gl.getUniformLocation(program, 'u_subtype');
@@ -158,7 +171,8 @@ var WebGLUtils = (function WebGLUtilsClosure() {
       0.0, 1.0,
       0.0, 1.0,
       1.0, 0.0,
-      1.0, 1.0]), gl.STATIC_DRAW);
+      1.0, 1.0
+    ]), gl.STATIC_DRAW);
     gl.enableVertexAttribArray(texCoordLocation);
     gl.vertexAttribPointer(texCoordLocation, 2, gl.FLOAT, false, 0, 0);
 
@@ -169,12 +183,15 @@ var WebGLUtils = (function WebGLUtilsClosure() {
   }
 
   function composeSMask(layer, mask, properties) {
-    var width = layer.width, height = layer.height;
+    var width = layer.width,
+      height = layer.height;
 
     if (!smaskCache) {
       initSmaskGL();
     }
-    var cache = smaskCache, canvas = cache.canvas, gl = cache.gl;
+    var cache = smaskCache,
+      canvas = cache.canvas,
+      gl = cache.gl;
     canvas.width = width;
     canvas.height = height;
     gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
@@ -182,12 +199,12 @@ var WebGLUtils = (function WebGLUtilsClosure() {
 
     if (properties.backdrop) {
       gl.uniform4f(cache.resolutionLocation, properties.backdrop[0],
-                   properties.backdrop[1], properties.backdrop[2], 1);
+        properties.backdrop[1], properties.backdrop[2], 1);
     } else {
       gl.uniform4f(cache.resolutionLocation, 0, 0, 0, 0);
     }
     gl.uniform1i(cache.subtypeLocation,
-                 properties.subtype === 'Luminosity' ? 1 : 0);
+      properties.subtype === 'Luminosity' ? 1 : 0);
 
     // Create a textures
     var texture = createTexture(gl, layer, gl.TEXTURE0);
@@ -204,7 +221,8 @@ var WebGLUtils = (function WebGLUtilsClosure() {
       0, height,
       0, height,
       width, 0,
-      width, height]), gl.STATIC_DRAW);
+      width, height
+    ]), gl.STATIC_DRAW);
     gl.enableVertexAttribArray(cache.positionLocation);
     gl.vertexAttribPointer(cache.positionLocation, 2, gl.FLOAT, false, 0, 0);
 
@@ -225,7 +243,8 @@ var WebGLUtils = (function WebGLUtilsClosure() {
     return canvas;
   }
 
-  var figuresVertexShaderCode = '\
+  var figuresVertexShaderCode =
+    '\
   attribute vec2 a_position;                                    \
   attribute vec3 a_color;                                       \
                                                                 \
@@ -243,7 +262,8 @@ var WebGLUtils = (function WebGLUtilsClosure() {
     v_color = vec4(a_color / 255.0, 1.0);                       \
   }                                                             ';
 
-  var figuresFragmentShaderCode = '\
+  var figuresFragmentShaderCode =
+    '\
   precision mediump float;                                      \
                                                                 \
   varying vec4 v_color;                                         \
@@ -272,7 +292,8 @@ var WebGLUtils = (function WebGLUtilsClosure() {
     var cache = {};
     cache.gl = gl;
     cache.canvas = canvas;
-    cache.resolutionLocation = gl.getUniformLocation(program, 'u_resolution');
+    cache.resolutionLocation = gl.getUniformLocation(program,
+      'u_resolution');
     cache.scaleLocation = gl.getUniformLocation(program, 'u_scale');
     cache.offsetLocation = gl.getUniformLocation(program, 'u_offset');
     cache.positionLocation = gl.getAttribLocation(program, 'a_position');
@@ -285,7 +306,9 @@ var WebGLUtils = (function WebGLUtilsClosure() {
     if (!figuresCache) {
       initFiguresGL();
     }
-    var cache = figuresCache, canvas = cache.canvas, gl = cache.gl;
+    var cache = figuresCache,
+      canvas = cache.canvas,
+      gl = cache.gl;
 
     canvas.width = width;
     canvas.height = height;
@@ -309,10 +332,14 @@ var WebGLUtils = (function WebGLUtilsClosure() {
     // transfer data
     var coords = new Float32Array(count * 2);
     var colors = new Uint8Array(count * 3);
-    var coordsMap = context.coords, colorsMap = context.colors;
-    var pIndex = 0, cIndex = 0;
+    var coordsMap = context.coords,
+      colorsMap = context.colors;
+    var pIndex = 0,
+      cIndex = 0;
     for (i = 0, ii = figures.length; i < ii; i++) {
-      var figure = figures[i], ps = figure.coords, cs = figure.colors;
+      var figure = figures[i],
+        ps = figure.coords,
+        cs = figure.colors;
       switch (figure.type) {
         case 'lattice':
           var cols = figure.verticesPerRow;
@@ -373,7 +400,7 @@ var WebGLUtils = (function WebGLUtilsClosure() {
     // draw
     if (backgroundColor) {
       gl.clearColor(backgroundColor[0] / 255, backgroundColor[1] / 255,
-                    backgroundColor[2] / 255, 1.0);
+        backgroundColor[2] / 255, 1.0);
     } else {
       gl.clearColor(0, 0, 0, 0);
     }
@@ -390,7 +417,7 @@ var WebGLUtils = (function WebGLUtilsClosure() {
     gl.bufferData(gl.ARRAY_BUFFER, colors, gl.STATIC_DRAW);
     gl.enableVertexAttribArray(cache.colorLocation);
     gl.vertexAttribPointer(cache.colorLocation, 3, gl.UNSIGNED_BYTE, false,
-                           0, 0);
+      0, 0);
 
     gl.uniform2f(cache.scaleLocation, context.scaleX, context.scaleY);
     gl.uniform2f(cache.offsetLocation, context.offsetX, context.offsetY);
@@ -427,7 +454,7 @@ var WebGLUtils = (function WebGLUtilsClosure() {
       try {
         generateGL();
         enabled = !!currentGL;
-      } catch (e) { }
+      } catch (e) {}
       return shadow(this, 'isEnabled', enabled);
     },
     composeSMask,

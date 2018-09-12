@@ -13,9 +13,13 @@
     $viewerContainer = $('#viewerContainer'),
     $slade = $('#slade'),
     $multiSignPad = $('#multisignpad'),
+    $contextmenu = $('#delsigndiv'),
     $multiSignPadShow = $('#multisignpadshow');
 
   var $tplPopup = $('#tpl-uipopup').html();
+
+  var isOpenSig = false, // 是否满足签章条件，并且点击了开始签章
+    signSerial = 0;
 
   function init() {
     initListener();
@@ -56,12 +60,92 @@
           window.URL.revokeObjectURL(blob);
         }
       });
+    }).on('click', '.page', function () {
+      var pageNumber = $(this).attr('data-page-number');
+
+      // 如果开启了签章，并且已有pdf展示
+      if (isOpenSig) {
+        var left = parseInt($(_div).css('left')),
+          top = parseInt($(_div).css('top'));
+
+        var $curPageEl = $viewerContainer.find('[data-page-number="' +
+            pageNumber + '"]'),
+          div = document.createElement('div'),
+          img = document.createElement('img');
+
+        div.id = '_signSerial' + signSerial;
+        div.className = '_addSign';
+        div.setAttribute('data-index', signSerial);
+        img.src = _img.src;
+        img.width = _img.width;
+        img.height = _img.height;
+      }
     });
 
-    $('#multi-sign').on('click', function() {
-        $slade.show();
-        $multiSignPad.css("display", "block");
-        $multiSignPadShow.append("<img src='company.png' />");
+    // 关闭签章区域
+    var closeSignPad = function () {
+      $multiSignPadShow.find('img').remove();
+      $multiSignPad.hide();
+      $slade.hide();
+    };
+
+    $multiSignPad.on('click', 'input[type=button]', function () {
+      var val = this.value;
+
+      switch (val) {
+        case '开始签章':
+          var img = document.createElement('img'),
+            div = document.createElement('div'),
+            pageScale = PDFViewerApplication.toolbar.pageScale;
+
+          img.src = $multiSignPadShow.find('img').prop('src');
+          img.onload = function () {
+            $(img).css({
+              width: img.width * pageScale,
+              height: img.height * pageScale
+            });
+          };
+
+          div.appendChild(img);
+          $(div).addClass('movesign');
+          $(div).css({
+            position: 'absolute',
+            textAlign: 'center'
+          });
+
+          if (PDFViewerApplication.pdfViewer.viewer.childNodes.length ==
+            0) {
+            isOpenSig = true;
+
+            closeSignPad();
+          }
+          break;
+
+        case '清除重签':
+          $viewerContainer.find('img').remove();
+          break;
+
+        case '关闭':
+          closeSignPad();
+          break;
+      }
+    });
+
+    $('#multi-sign').on('click', function () {
+      $slade.show();
+      $multiSignPad.css("display", "block");
+      $multiSignPadShow.append("<img src='./images/company.png' />");
+    });
+
+    $uiPopup.on('click', '.ui-popup-close', function () {
+      $uiPopup.removeClass('zoomIn animated faster');
+      $uiPopup.addClass('hidden');
+    });
+
+    $contextmenu.on('click', 'li', function () {
+      $viewerContainer.find('[data-index="' + delSerial + '"]').remove();
+      window.signElArray.splice(delSerial, 1, undefined);
+      $contextmenu.hide();
     });
   }
 
