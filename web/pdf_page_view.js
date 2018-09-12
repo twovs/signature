@@ -370,6 +370,10 @@ class PDFPageView {
       div.appendChild(canvasWrapper);
     }
 
+    var curScale = PDFViewerApplication.toolbar.pageScale,
+      $viewerContainer = $(PDFViewerApplication.appConfig.viewerContainer),
+      rotation = PDFViewerApplication.toolbar.pageRotation;
+
     $.each(window.signElArray, function(i, e) {
       console.log(e);
     });

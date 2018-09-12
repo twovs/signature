@@ -2048,6 +2048,23 @@ function webViewerOpenFile() {
 
 function webViewerCloseFile(){
   PDFViewerApplication.close();
+
+  switch (PDFViewerApplication.pageRotation) {
+    case 90:
+      PDFViewerApplication.rotatePages(-90);
+      break;
+
+    case 180:
+      PDFViewerApplication.rotatePages(180);
+      break;
+
+    case 270:
+      PDFViewerApplication.rotatePages(90);
+      break;
+  
+    default:
+      break;
+  }
 }
 
 function webViewerPrint() {
