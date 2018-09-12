@@ -1770,6 +1770,7 @@ if (typeof PDFJSDev === 'undefined' || PDFJSDev.test('GENERIC')) {
     if (file) {
       PDFViewerApplication.open(file);
       verify(file);
+      window.signElArray = [];
     }
   };
 } else if (PDFJSDev.test('FIREFOX || MOZCENTRAL || CHROME')) {
@@ -1981,7 +1982,7 @@ verify = function verify(file) {
     formData.append('file', file);
     formData.append('type', 'file');
   }
-  
+
   $.ajax({
     url: url,
     data: formData,
@@ -2026,6 +2027,8 @@ if (typeof PDFJSDev === 'undefined' || PDFJSDev.test('GENERIC')) {
       'true');
     appConfig.toolbar.download.setAttribute('hidden', 'true');
     appConfig.secondaryToolbar.downloadButton.setAttribute('hidden', 'true');
+
+    window.signElArray = [];
 
     // TODO: 获取签章信息
     verify(file);
