@@ -289,6 +289,6 @@
   init();
 
   return {
-    signElArray
+    signElArray: signElArray
   };
 }));
