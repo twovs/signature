@@ -251,6 +251,13 @@
     });
   }
 
+  /**
+   * 渲染 pdf
+   */
+  function sendSignPdf(params) {
+    console.log(params);
+  }
+
   function getDate(millisecond) {
     var date = new Date(millisecond);
 
