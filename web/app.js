@@ -1972,8 +1972,29 @@ function webViewerHashchange(evt) {
 }
 
 let verify;
+let processVal = 0;
 verify = function verify(file) {
+  var $progressBar = $('#progress_bar'),
+    $progressBarInner = $('#progress_bar .progress-bar-inner');
+
   $('#progress_bar').removeClass('hidden');
+  setTimeout(function polling() {
+
+    if (processVal < 100) {
+      processVal += 2;
+
+      $progressBarInner.css({
+        width: processVal + '%'
+      });
+
+      setTimeout(function() {
+        polling();
+      }, 200);
+    }
+    else {
+      processVal = 0;
+    }
+  }, 200);
 
   var url = verifyUrl;
   var formData = new FormData();
