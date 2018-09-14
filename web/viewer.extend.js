@@ -90,8 +90,6 @@
         img.width = sign_img.width;
         img.height = sign_img.height;
 
-        epTools && epTools.AfterSignPDF.call(epTools);
-
         window.signElArray.push({
           pageNumber: pageNumber,
           signEl: div,

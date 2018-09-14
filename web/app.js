@@ -2005,10 +2005,16 @@ verify = function verify(file) {
   if (typeof file == 'string') {
     formData.append('type', 'url');
     formData.append('msg', file);
+
+    epTools.type = 'url';
   } else {
     formData.append('file', file);
     formData.append('type', 'file');
+
+    epTools.type = 'file';
   }
+
+  epTools.msg = file;
 
   $.ajax({
     url: url,
