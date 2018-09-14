@@ -223,7 +223,7 @@ function createApi(config) {
     getPageCount: function () {
       return PDFViewerApplication.pagesCount;
     },
-    openPath: function (path) {
+    OpenFile: function (path) {
       PDFViewerApplication.localUrl = '';
       PDFViewerApplication.open(path);
     },
@@ -263,8 +263,11 @@ function createApi(config) {
         alert('无书签页');
       }
     },
-    getPath: function() {
+    GetFilePath: function() {
       return PDFViewerApplication.localUrl || PDFViewerApplication.url;
+    },
+    CloseFile: function() {
+      PDFViewerApplication.close();
     }
   };
 
@@ -284,10 +287,16 @@ function createApi(config) {
     'getPageCount': {
       writable: false
     },
-    'openPath': {
+    'OpenFile': {
       writable: false
     },
     'linkTo': {
+      writable: false
+    },
+    'GetFilePath': {
+      writable: false
+    },
+    'CloseFile': {
       writable: false
     }
   });

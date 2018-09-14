@@ -1975,24 +1975,28 @@ let verify;
 let processVal = 0;
 verify = function verify(file) {
   var $progressBar = $('#progress_bar'),
-    $progressBarInner = $('#progress_bar .progress-bar-inner');
+    $progressBarInner = $('#progress_bar .progress-bar-inner'),
+    clearTime = null;
 
-  $('#progress_bar').removeClass('hidden');
-  setTimeout(function polling() {
+  $progressBar.removeClass('hidden');
+  clearTime = setTimeout(function polling() {
 
     if (processVal < 100) {
-      processVal += 2;
+      processVal += 1;
 
       $progressBarInner.css({
         width: processVal + '%'
       });
+      $progressBarInner.data('value', processVal);
+      $progressBarInner.data('percentage-value', processVal);
 
-      setTimeout(function() {
+      clearTime = setTimeout(function() {
         polling();
       }, 200);
     }
     else {
       processVal = 0;
+      clearTimeout(clearTime);
     }
   }, 200);
 
