@@ -268,13 +268,14 @@ function createApi(config) {
     },
     CloseFile: function() {
       PDFViewerApplication.close();
-    }
+    },
+    AfterSignPDF: function() {}
   };
 
-  window.epSignTools = window.epSignTools || {};
-  extend(window.epSignTools, defaultSettings);
+  window.epTools = window.epTools || {};
+  extend(window.epTools, defaultSettings);
 
-  Object.defineProperties(window.epSignTools, {
+  Object.defineProperties(window.epTools, {
     'tools': {
       writable: false
     },
@@ -298,10 +299,13 @@ function createApi(config) {
     },
     'CloseFile': {
       writable: false
+    },
+    'AfterSignPDF': {
+      writable: false
     }
   });
 
-  handleBarIconToggle(config, epSignTools.tools);
+  handleBarIconToggle(config, epTools.tools);
 }
 
 function handleBarIconToggle(config, tools) {
@@ -530,7 +534,7 @@ function handleBarIconToggle(config, tools) {
   }
 
   // 监听按钮变化
-  Object.defineProperties(epSignTools.tools, {
+  Object.defineProperties(epTools.tools, {
     'viewOutline': {
       set: function (newVal) {
         toggleViewOutline(newVal);

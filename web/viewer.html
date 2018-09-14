@@ -543,6 +543,13 @@
       var verifyUrl = 'http://218.4.136.115:9999/H5PDF/pdf/verify';
   </script>
   <script src="./viewer.extend.js"></script>
+  <script>
+    var epTools = {
+      AfterSignPDF: function() {
+        console.log('sign');
+      }
+    };
+  </script>
 </body>
 
 </html>
