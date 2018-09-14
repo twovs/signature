@@ -767,7 +767,7 @@ let PDFViewerApplication = {
     loadingTask.onProgress = ({
       loaded,
       total,
-    }) => {
+    }) => {;
       this.progress(loaded / total);
     };
 
@@ -1973,6 +1973,8 @@ function webViewerHashchange(evt) {
 
 let verify;
 verify = function verify(file) {
+  $('#progress_bar').removeClass('hidden');
+
   var url = verifyUrl;
   var formData = new FormData();
   if (typeof file == 'string') {

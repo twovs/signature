@@ -454,6 +454,7 @@ var ChunkedStreamManager = (function ChunkedStreamManagerClosure() {
     onProgress: function ChunkedStreamManager_onProgress(args) {
       var bytesLoaded = (this.stream.numChunksLoaded * this.chunkSize +
                          args.loaded);
+
       this.msgHandler.send('DocProgress', {
         loaded: bytesLoaded,
         total: this.length,
