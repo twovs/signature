@@ -23,6 +23,7 @@
 
   var isOpenSig = false, // 是否满足签章条件，并且点击了开始签章
     signSerial = 0,
+    type = null, // 选择签章类型，0：签章(只能签一次，签一次这个按钮就消失了)，1：多页签章(可以签多个)
     signElArray = [];
 
   var sign_div,
@@ -256,8 +257,19 @@
       $signPadShow.append("<img src='./images/company.png' />");
     };
 
-    $singleSign.on('click', signEvtCallback);
-    $multiSign.on('click', signEvtCallback);
+    // 单个签章
+    $singleSign.on('click', function() {
+      type = 0;
+
+      signEvtCallback();
+    });
+
+    // 多页签章
+    $multiSign.on('click', function() {
+      type = 1;
+
+      signEvtCallback();
+    });
 
     $uiPopup.on('click', '.ui-popup-close', function () {
       $uiPopup.removeClass('zoomIn animated faster');
@@ -310,7 +322,12 @@
         if (res.status == 'ok') {
           console.log('上传签章成功');
           console.log(res.msg);
-          $singleSign.hide();
+
+          if (type == 0) {
+            $singleSign.hide();
+          }
+
+          type = null;
         }
         else {
           console.error('上传签章失败');
