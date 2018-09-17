@@ -269,41 +269,24 @@ function createApi(config) {
     CloseFile: function() {
       PDFViewerApplication.close();
     },
-    AfterSignPDF: function() {}
+    AfterSignPDF: function() {},
+    AfterDelSignature: function() {}
   };
 
   window.epTools = window.epTools || {};
   extend(window.epTools, defaultSettings);
 
-  Object.defineProperties(window.epTools, {
-    'tools': {
-      writable: false
-    },
-    'pageNumberNavitorTo': {
-      writable: false
-    },
-    'getCurrentPage': {
-      writable: false
-    },
-    'getPageCount': {
-      writable: false
-    },
-    'OpenFile': {
-      writable: false
-    },
-    'linkTo': {
-      writable: false
-    },
-    'GetFilePath': {
-      writable: false
-    },
-    'CloseFile': {
-      writable: false
-    },
-    'AfterSignPDF': {
-      writable: false
+  Object.defineProperties(window.epTools, function() {
+    var result = {};
+
+    for (var k in window.epTools) {
+      result[k] = {
+        writable: false
+      }
     }
-  });
+
+    return result;
+  }());
 
   handleBarIconToggle(config, epTools.tools);
 }

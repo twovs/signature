@@ -2291,3 +2291,13 @@ section[data-annotation-id]:hover {
 @keyframes animate-positive{
   0% { width: 0%; }
 }
+
+._addSign {
+  position: relative;
+}
+
+._addSign ._signstatus {
+  position: absolute;
+  right: 0;
+  top: 0;
+}

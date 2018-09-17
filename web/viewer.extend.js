@@ -87,11 +87,13 @@
           div = document.createElement('div'),
           img = document.createElement('img'),
           $canvasWrapper = $(this).find('.canvasWrapper').height(),
-          scale = PDFViewerApplication.toolbar.pageScale;
+          scale = PDFViewerApplication.toolbar.pageScale,
+          signName = 'sign' + parseInt((Math.random() * (Math.random() * 100000).toFixed(0)).toFixed(0), 10);
 
         div.id = '_signSerial' + signSerial;
         div.className = '_addSign';
         div.setAttribute('data-index', signSerial);
+        div.setAttribute('data-signname', signName);
         img.src = sign_img.src;
         img.width = sign_img.width;
         img.height = sign_img.height;
@@ -108,14 +110,14 @@
         // 进行签章合并
         sendSignPdf({
           "sign": [{
-            "name": 'sign' + parseInt((Math.random() * (Math.random() * 100000).toFixed(0)).toFixed(0), 10),
+            "name": signName,
             "page": pageNumber,
             "llx": left / scale * 0.75,
             "lly": ($canvasWrapper - top - div.offsetHeight) / scale * 0.75,
             "urx": (left + div.offsetWidth) / scale * 0.75,
             "ury": ($canvasWrapper - top) / scale * 0.75
           }]
-        });
+        }, signName);
 
         window.signElArray.push({
           pageNumber: pageNumber,
@@ -286,8 +288,9 @@
   /**
    * 上传签章
    * @param {Object} params 请求参数
+   * @param {Object} signName 签章名字
    */
-  function sendSignPdf(params) {
+  function sendSignPdf(params, signName) {
     var type = epTools.type,
       msg = epTools.msg;
 
@@ -318,24 +321,37 @@
       processData: false,
       contentType: false,
       dataType: 'json',
+      timeout: 10000,
       success: function(res) {
         if (res.status == 'ok') {
-          console.log('上传签章成功');
           console.log(res.msg);
 
           if (type == 0) {
             $singleSign.hide();
           }
 
-          type = null;
+          typeof epTools.AfterSignPDF === 'function' && epTools.AfterSignPDF();
         }
         else {
           console.error('上传签章失败');
-          console.log(JSON.stringify(res));
         }
       },
       error: function() {
         console.error('上传签章失败');
+
+        var $signDiv = $viewerContainer.find('div[data-signname="'+ signName +'"]');
+        var img = document.createElement('img');
+
+        img.src = './images/sign-error-48.png';
+        img.className = '_signstatus';
+
+        $signDiv.append(img);
+        img = null;
+
+        
+      },
+      complete: function() {
+        type = null;
       }
     });
   }
