@@ -23,11 +23,13 @@
 
   var isOpenSig = false, // 是否满足签章条件，并且点击了开始签章
     signSerial = 0,
-    type = null, // 选择签章类型，0：签章(只能签一次，签一次这个按钮就消失了)，1：多页签章(可以签多个)
-    signElArray = [];
+    signStatus = null, // 选择签章类型，0：签章(只能签一次，签一次这个按钮就消失了)，1：多页签章(可以签多个)
+    signElArray = [],
+    initSignImgWidth = 0,
+    initSignImgHeight = 0;
 
   var sign_div,
-      sign_img;
+    sign_img;
 
   var toolbarHeight = $('#toolbarContainer').height();
 
@@ -75,7 +77,6 @@
       });
     }).on('click', '.page', function () {
       var pageNumber = $(this).attr('data-page-number');
-        
 
       // 如果开启了签章，并且已有pdf展示
       if (isOpenSig) {
@@ -88,13 +89,15 @@
           img = document.createElement('img'),
           $canvasWrapper = $(this).find('.canvasWrapper').height(),
           scale = PDFViewerApplication.toolbar.pageScale,
-          signName = 'sign' + parseInt((Math.random() * (Math.random() * 100000).toFixed(0)).toFixed(0), 10);
+          signName = 'sign' + parseInt((Math.random() * (Math.random() *
+            100000).toFixed(0)).toFixed(0), 10);
 
         div.id = '_signSerial' + signSerial;
         div.className = '_addSign';
         div.setAttribute('data-index', signSerial);
         div.setAttribute('data-signname', signName);
         img.src = sign_img.src;
+        img.className = '_signimg';
         img.width = sign_img.width;
         img.height = sign_img.height;
 
@@ -113,13 +116,14 @@
             "name": signName,
             "page": pageNumber,
             "llx": left / scale * 0.75,
-            "lly": ($canvasWrapper - top - div.offsetHeight) / scale * 0.75,
+            "lly": ($canvasWrapper - top - div.offsetHeight) /
+              scale * 0.75,
             "urx": (left + div.offsetWidth) / scale * 0.75,
             "ury": ($canvasWrapper - top) / scale * 0.75
           }]
         }, signName);
 
-        window.signElArray.push({
+        signElArray.push({
           pageNumber: pageNumber,
           signEl: div,
           scale: PDFViewerApplication.toolbar.pageScale,
@@ -145,13 +149,14 @@
     }).on('mouseenter', '.page', function (e) {
       var $this = $(this);
       var pageX = e.pageX,
-          pageY = e.pageY;
+        pageY = e.pageY;
 
       offsetLeft = this.offsetLeft + $mainContainer.get(0).offsetLeft;
       offsetTop = this.offsetTop + $mainContainer.get(0).offsetTop;
 
       if (isOpenSig) {
-        var top = pageY - offsetTop - sign_img.height / 2 + $viewerContainer.get(0).scrollTop - toolbarHeight,
+        var top = pageY - offsetTop - sign_img.height / 2 +
+          $viewerContainer.get(0).scrollTop - toolbarHeight,
           left = pageX - offsetLeft - sign_img.width / 2;
 
         $(sign_div).css({
@@ -161,7 +166,7 @@
 
         $this.append(sign_div);
       }
-    }).on('mousemove', '.page', function(e) {
+    }).on('mousemove', '.page', function (e) {
       var pageX = e.pageX,
         pageY = e.pageY;
 
@@ -169,7 +174,8 @@
       offsetTop = this.offsetTop + $mainContainer.get(0).offsetTop;
 
       if (isOpenSig) {
-        var top = pageY - offsetTop - sign_img.height / 2 + $viewerContainer.get(0).scrollTop - toolbarHeight,
+        var top = pageY - offsetTop - sign_img.height / 2 +
+          $viewerContainer.get(0).scrollTop - toolbarHeight,
           left = pageX - offsetLeft - sign_img.width / 2;
 
         $(sign_div).css({
@@ -211,12 +217,12 @@
 
       switch (val) {
         case '开始签章':
-          if (PDFViewerApplication.pdfViewer.viewer.childNodes.length == 0) {
+          if (PDFViewerApplication.pdfViewer.viewer.childNodes.length ==
+            0) {
             isOpenSig = false;
 
             alert('请先打开需要签章的pdf文件');
-          }
-          else {
+          } else {
             var pageScale = PDFViewerApplication.toolbar.pageScale;
 
             sign_img = document.createElement('img');
@@ -253,22 +259,22 @@
       }
     });
 
-    var signEvtCallback = function() {
+    var signEvtCallback = function () {
       $slade.show();
       $signPad.css("display", "block");
       $signPadShow.append("<img src='./images/company.png' />");
     };
 
     // 单个签章
-    $singleSign.on('click', function() {
-      type = 0;
+    $singleSign.on('click', function () {
+      signStatus = 0;
 
       signEvtCallback();
     });
 
     // 多页签章
-    $multiSign.on('click', function() {
-      type = 1;
+    $multiSign.on('click', function () {
+      signStatus = 1;
 
       signEvtCallback();
     });
@@ -280,7 +286,7 @@
 
     $contextmenu.on('click', 'li', function () {
       $viewerContainer.find('[data-index="' + delSerial + '"]').remove();
-      window.signElArray.splice(delSerial, 1, undefined);
+      signElArray.splice(delSerial, 1, undefined);
       $contextmenu.hide();
     });
   }
@@ -303,8 +309,7 @@
       };
 
       formData.append('signReq', JSON.stringify(params));
-    }
-    else if (type == 'file') {
+    } else if (type == 'file') {
       params.pdf = {
         type: type,
         msg: ''
@@ -321,39 +326,58 @@
       processData: false,
       contentType: false,
       dataType: 'json',
-      timeout: 10000,
-      success: function(res) {
+      timeout: 5000,
+      success: function (res) {
         if (res.status == 'ok') {
-          console.log(res.msg);
-
-          if (type == 0) {
+          if (signStatus == 0) {
             $singleSign.hide();
           }
 
-          typeof epTools.AfterSignPDF === 'function' && epTools.AfterSignPDF();
-        }
-        else {
-          console.error('上传签章失败');
+          // 创建签章状态标识
+          createSignStatusImg('success', signName, epTools.AfterSignPDF);
+        } else {
+          // 创建签章状态标识
+          createSignStatusImg('error', signName, epTools.AfterDelSignature);
         }
       },
-      error: function() {
-        console.error('上传签章失败');
-
-        var $signDiv = $viewerContainer.find('div[data-signname="'+ signName +'"]');
-        var img = document.createElement('img');
-
-        img.src = './images/sign-error-48.png';
-        img.className = '_signstatus';
-
-        $signDiv.append(img);
-        img = null;
-
-        
+      error: function () {
+        // 创建签章状态标识
+        createSignStatusImg('error', signName, epTools.AfterDelSignature);
       },
-      complete: function() {
-        type = null;
+      complete: function () {
+        signStatus = null;
       }
     });
+  }
+
+  /**
+   * 创建签章状态标识
+   * @param {String} status 签章是否成功 success or error
+   * @param {String} signName 签章标识
+   * @param {Function} callback 执行回调函数
+   */
+  function createSignStatusImg(status, signName, callback) {
+    var $signDiv = $viewerContainer.find('div[data-signname="' + signName +
+      '"]');
+    var img = document.createElement('img');
+    var pageScale = PDFViewerApplication.toolbar.pageScale;
+
+    img.src = status === 'success' ? './images/sign-check-48.png' : './images/sign-error-48.png';
+    img.className = '_signstatus';
+
+    img.onload = function () {
+      initSignImgWidth = this.width * pageScale,
+        initSignImgHeight = this.height * pageScale;
+
+      $(this).css({
+        width: initSignImgWidth,
+        height: initSignImgHeight
+      });
+    };
+
+    typeof callback === 'function' && callback();
+    $signDiv.append(img);
+    img = null;
   }
 
   function getDate(millisecond) {
@@ -391,9 +415,102 @@
     });
   }
 
+  // 渲染页面触发该事件
+  var pageDrawCallback = function () {
+    var scale = PDFViewerApplication.toolbar.pageScale,
+      rotation = PDFViewerApplication.pageRotation;
+
+    $.each(signElArray, function (i, e) {
+      if (e) {
+        var $el = $viewerContainer.find('[data-page-number="' + e.pageNumber +
+            '"]'),
+          signEl = e.signEl,
+          initTop = e.top,
+          initLeft = e.left,
+          initImgWidth = e.imgWidth,
+          initImgHeight = e.imgHeight,
+          $signEl = $(signEl),
+          $img = $signEl.find('._signimg'),
+          $signimgStatus = $signEl.find('._signstatus'),
+          width = initImgWidth,
+          height = initImgHeight,
+          top = initTop,
+          left = initLeft;
+
+        var canvasWidth = $el.find('.canvasWrapper').width(),
+          canvasHeight = $el.find('.canvasWrapper').height();
+
+        top = initTop / e.scale * scale;
+        left = initLeft / e.scale * scale;
+        width = initImgWidth / e.scale * scale;
+        height = initImgHeight / e.scale * scale;
+
+        $img.css({
+          width: width,
+          height: height
+        });
+
+        $signimgStatus.css({
+          width: initSignImgWidth / e.scale * scale,
+          height: initSignImgHeight / e.scale * scale
+        });
+
+        switch (rotation) {
+          case 0:
+            $signEl.css({
+              top: top,
+              left: left,
+              bottom: 'auto',
+              right: 'auto'
+            });
+            break;
+
+          case 90:
+            $signEl.css({
+              top: left,
+              left: 'auto',
+              right: top,
+              bottom: 'auto'
+            });
+            break;
+
+          case 180:
+            $signEl.css({
+              top: 'auto',
+              left: 'auto',
+              bottom: top,
+              right: left
+            });
+            break;
+
+          case 270:
+            $signEl.css({
+              top: 'auto',
+              left: top,
+              bottom: left,
+              right: 'auto'
+            });
+            break;
+        }
+
+        $signEl.css({
+          transform: 'rotate(' + rotation + 'deg)'
+        });
+
+        $el.append(e.signEl);
+      }
+    });
+  };
+
+  // 每次打开文件触发该回调函数
+  var openFileCallback = function () {
+    signElArray = [];
+  };
+
   init();
 
   return {
-    signElArray: signElArray
+    openFileCallback: openFileCallback,
+    pageDrawCallback: pageDrawCallback
   };
 }));

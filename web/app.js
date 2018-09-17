@@ -1770,7 +1770,9 @@ if (typeof PDFJSDev === 'undefined' || PDFJSDev.test('GENERIC')) {
     if (file) {
       PDFViewerApplication.open(file);
       verify(file);
-      window.signElArray = [];
+      
+      var openFileCallback = window.openFileCallback;
+      openFileCallback && typeof openFileCallback == 'function' && openFileCallback.call(this);
     }
   };
 } else if (PDFJSDev.test('FIREFOX || MOZCENTRAL || CHROME')) {
@@ -2055,13 +2057,13 @@ if (typeof PDFJSDev === 'undefined' || PDFJSDev.test('GENERIC')) {
 
     // URL does not reflect proper document location - hiding some icons.
     let appConfig = PDFViewerApplication.appConfig;
+    let openFileCallback = window.openFileCallback;
     appConfig.toolbar.viewBookmark.setAttribute('hidden', 'true');
     appConfig.secondaryToolbar.viewBookmarkButton.setAttribute('hidden',
       'true');
     appConfig.toolbar.download.setAttribute('hidden', 'true');
     appConfig.secondaryToolbar.downloadButton.setAttribute('hidden', 'true');
-
-    window.signElArray = [];
+    openFileCallback && typeof openFileCallback == 'function' && openFileCallback.call(this);
 
     // TODO: 获取签章信息
     verify(file);

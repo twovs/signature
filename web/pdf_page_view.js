@@ -402,84 +402,8 @@ class PDFPageView {
     }
     this.textLayer = textLayer;
 
-    var scale = PDFViewerApplication.toolbar.pageScale,
-      $viewerContainer = $('#viewerContainer'),
-      rotation = PDFViewerApplication.pageRotation;
-
-    $.each(window.signElArray, function (i, e) {
-      if (e) {
-        var $el = $viewerContainer.find('[data-page-number="' + e.pageNumber +
-            '"]'),
-          signEl = e.signEl,
-          initTop = e.top,
-          initLeft = e.left,
-          initImgWidth = e.imgWidth,
-          initImgHeight = e.imgHeight,
-          $signEl = $(signEl),
-          $img = $signEl.find('img'),
-          width = initImgWidth,
-          height = initImgHeight,
-          top = initTop,
-          left = initLeft;
-
-        var canvasWidth = $el.find('.canvasWrapper').width(),
-          canvasHeight = $el.find('.canvasWrapper').height();
-
-        top = initTop / e.scale * scale;
-        left = initLeft / e.scale * scale;
-        width = initImgWidth / e.scale * scale;
-        height = initImgHeight / e.scale * scale;
-
-        $img.css({
-          width: width,
-          height: height
-        });
-
-        switch (rotation) {
-          case 0:
-            $signEl.css({
-              top: top,
-              left: left,
-              bottom: 'auto',
-              right: 'auto'
-            });
-            break;
-
-          case 90:
-            $signEl.css({
-              top: left,
-              left: 'auto',
-              right: top,
-              bottom: 'auto'
-            });
-            break;
-
-          case 180:
-            $signEl.css({
-              top: 'auto',
-              left: 'auto',
-              bottom: top,
-              right: left
-            });
-            break;
-
-          case 270:
-            $signEl.css({
-              top: 'auto',
-              left: top,
-              bottom: left,
-              right: 'auto'
-            });
-            break;
-        }
-
-        $signEl.css({
-          transform: 'rotate(' + rotation + 'deg)'
-        });
-
-        $el.append(e.signEl);
-      }
-    });
+    var pageDrawCallback = window.pageDrawCallback;
+    pageDrawCallback && typeof pageDrawCallback == 'function' && pageDrawCallback.call(this);
 
     let renderContinueCallback = null;
     if (this.renderingQueue) {
