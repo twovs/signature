@@ -12,10 +12,12 @@
     $uiPopupContent = $('#ui-popup-content'),
     $viewerContainer = $('#viewerContainer'),
     $slade = $('#slade'),
-    $multiSignPad = $('#multisignpad'),
+    $signPad = $('#signpad'),
+    $singleSign = $('#single-sign'),
+    $multiSign = $('#multi-sign'),
     $mainContainer = $('#mainContainer'),
     $contextmenu = $('#delsigndiv'),
-    $multiSignPadShow = $('#multisignpadshow');
+    $signPadShow = $('#signpadshow');
 
   var $tplPopup = $('#tpl-uipopup').html();
 
@@ -72,6 +74,7 @@
       });
     }).on('click', '.page', function () {
       var pageNumber = $(this).attr('data-page-number');
+        
 
       // 如果开启了签章，并且已有pdf展示
       if (isOpenSig) {
@@ -81,7 +84,9 @@
         var $curPageEl = $viewerContainer.find('[data-page-number="' +
             pageNumber + '"]'),
           div = document.createElement('div'),
-          img = document.createElement('img');
+          img = document.createElement('img'),
+          $canvasWrapper = $(this).find('.canvasWrapper').height(),
+          scale = PDFViewerApplication.toolbar.pageScale;
 
         div.id = '_signSerial' + signSerial;
         div.className = '_addSign';
@@ -89,6 +94,27 @@
         img.src = sign_img.src;
         img.width = sign_img.width;
         img.height = sign_img.height;
+
+        $(div).css({
+          position: 'absolute',
+          left: left + 'px',
+          top: top + 'px'
+        });
+
+        $(div).append(img);
+        $curPageEl.append(div);
+
+        // 进行签章合并
+        sendSignPdf({
+          "sign": [{
+            "name": 'sign' + parseInt((Math.random() * (Math.random() * 100000).toFixed(0)).toFixed(0), 10),
+            "page": pageNumber,
+            "llx": left / scale * 0.75,
+            "lly": ($canvasWrapper - top - div.offsetHeight) / scale * 0.75,
+            "urx": (left + div.offsetWidth) / scale * 0.75,
+            "ury": ($canvasWrapper - top) / scale * 0.75
+          }]
+        });
 
         window.signElArray.push({
           pageNumber: pageNumber,
@@ -100,15 +126,6 @@
           left: left,
           pageRotation: PDFViewerApplication.pageRotation
         });
-
-        $(div).css({
-          position: 'absolute',
-          left: left + 'px',
-          top: top + 'px'
-        });
-
-        $(div).append(img);
-        $curPageEl.append(div);
 
         var movesign = $(this).find('.movesign');
 
@@ -181,12 +198,12 @@
 
     // 关闭签章区域
     var closeSignPad = function () {
-      $multiSignPadShow.find('img').remove();
-      $multiSignPad.hide();
+      $signPadShow.find('img').remove();
+      $signPad.hide();
       $slade.hide();
     };
 
-    $multiSignPad.on('click', 'input[type=button]', function () {
+    $signPad.on('click', 'input[type=button]', function () {
       var val = this.value;
 
       switch (val) {
@@ -202,7 +219,7 @@
             sign_img = document.createElement('img');
             sign_div = document.createElement('div');
 
-            sign_img.src = $multiSignPadShow.find('img').prop('src');
+            sign_img.src = $signPadShow.find('img').prop('src');
             sign_img.onload = function () {
               $(sign_img).css({
                 width: sign_img.width * pageScale,
@@ -233,11 +250,14 @@
       }
     });
 
-    $('#multi-sign').on('click', function () {
+    var signEvtCallback = function() {
       $slade.show();
-      $multiSignPad.css("display", "block");
-      $multiSignPadShow.append("<img src='./images/company.png' />");
-    });
+      $signPad.css("display", "block");
+      $signPadShow.append("<img src='./images/company.png' />");
+    };
+
+    $singleSign.on('click', signEvtCallback);
+    $multiSign.on('click', signEvtCallback);
 
     $uiPopup.on('click', '.ui-popup-close', function () {
       $uiPopup.removeClass('zoomIn animated faster');
@@ -252,10 +272,55 @@
   }
 
   /**
-   * 渲染 pdf
+   * 上传签章
+   * @param {Object} params 请求参数
    */
   function sendSignPdf(params) {
-    console.log(params);
+    var type = epTools.type,
+      msg = epTools.msg;
+
+    var formData = new FormData();
+
+    if (type == 'url') {
+      params.pdf = {
+        type: type,
+        msg: msg
+      };
+
+      formData.append('signReq', JSON.stringify(params));
+    }
+    else if (type == 'file') {
+      params.pdf = {
+        type: type,
+        msg: ''
+      };
+
+      formData.append('signReq', JSON.stringify(params));
+      formData.append('file', msg);
+    }
+
+    $.ajax({
+      url: signPdfUrl,
+      data: formData,
+      type: 'post',
+      processData: false,
+      contentType: false,
+      dataType: 'json',
+      success: function(res) {
+        if (res.status == 'ok') {
+          console.log('上传签章成功');
+          console.log(res.msg);
+          $singleSign.hide();
+        }
+        else {
+          console.error('上传签章失败');
+          console.log(JSON.stringify(res));
+        }
+      },
+      error: function() {
+        console.error('上传签章失败');
+      }
+    });
   }
 
   function getDate(millisecond) {

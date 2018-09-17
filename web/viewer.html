@@ -161,9 +161,13 @@
               tabindex="83" onclick="commitsign()">
               完成提交
             </button>
-            <button id="multi-sign" class="toolbarButton" style="width: 75px"
+            <button id="single-sign" class="toolbarButton" style="width: 75px"
               tabindex="81">
               签章
+            </button>
+            <button id="multi-sign" class="toolbarButton" style="width: 75px"
+              tabindex="81">
+              多页签章
             </button>
 
             <div class="toolbarButtonSpacer"></div>
@@ -454,14 +458,14 @@
   </div>
 
   <!--平板签字区域-->
-  <div id="multisignpad" class="signpad-container">
+  <div id="signpad" class="signpad-container">
     <div style="background-color:#474747;background-image: url(images/texture.png),
                           linear-gradient(hsla(0,0%,32%,.99), hsla(0,0%,27%,.95));">
       <input type="button" value="开始签章" class="toolbarButton" style="width: 70px; margin-left: 3px; " />
       <input type="button" value="清除重签" class="toolbarButton" style="width: 70px; margin-left: -5px; " />
       <input type="button" value="关闭" class="toolbarButton" style="width: 40px; margin-left: 133px;" />
     </div>
-    <div id="multisignpadshow" style="width: 320px; height: 200px; border: 3px solid #474747; background-color: #e7e7e7; text-align: center;"></div>
+    <div id="signpadshow" style="width: 320px; height: 200px; border: 3px solid #474747; background-color: #e7e7e7; text-align: center;"></div>
   </div>
   <div id="delsigndiv">
     <ul>
@@ -540,7 +544,10 @@
   </div>
   </script>
   <script>
+      // 获取签章信息接口
       var verifyUrl = 'http://218.4.136.115:9999/H5PDF/pdf/verify';
+      // 上传签章信息接口
+      var signPdfUrl = 'http://192.168.108.217:8099/H5PDF/sign/comSign';
   </script>
   <script src="./viewer.extend.js"></script>
   <script>
