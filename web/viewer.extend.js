@@ -89,8 +89,7 @@
           img = document.createElement('img'),
           $canvasWrapper = $(this).find('.canvasWrapper').height(),
           scale = PDFViewerApplication.toolbar.pageScale,
-          signName = 'sign' + parseInt((Math.random() * (Math.random() *
-            100000).toFixed(0)).toFixed(0), 10);
+          signName = 'Sign-' + uuidv4();
 
         div.id = '_signSerial' + signSerial;
         div.className = '_addSign';
@@ -125,6 +124,7 @@
 
         signElArray.push({
           pageNumber: pageNumber,
+          signName: signName,
           signEl: div,
           scale: PDFViewerApplication.toolbar.pageScale,
           imgWidth: img.width,
@@ -292,6 +292,16 @@
   }
 
   /**
+   * 创建uuid
+   * @returns {String} uuid 唯一标识
+   */
+  function uuidv4() {
+    return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+      (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+    )
+  }
+
+  /**
    * 上传签章
    * @param {Object} params 请求参数
    * @param {Object} signName 签章名字
@@ -337,12 +347,12 @@
           createSignStatusImg('success', signName, epTools.AfterSignPDF);
         } else {
           // 创建签章状态标识
-          createSignStatusImg('error', signName, epTools.AfterDelSignature);
+          createSignStatusImg('error', signName, epTools.AfterSignPDF);
         }
       },
       error: function () {
         // 创建签章状态标识
-        createSignStatusImg('error', signName, epTools.AfterDelSignature);
+        delSignStatus(signName, epTools.AfterDelSignature);
       },
       complete: function () {
         signStatus = null;
@@ -366,8 +376,8 @@
     img.className = '_signstatus';
 
     img.onload = function () {
-      initSignImgWidth = this.width * pageScale,
-        initSignImgHeight = this.height * pageScale;
+      initSignImgWidth = this.width * pageScale;
+      initSignImgHeight = this.height * pageScale;
 
       $(this).css({
         width: initSignImgWidth,
@@ -375,9 +385,26 @@
       });
     };
 
-    typeof callback === 'function' && callback();
+    typeof callback === 'function' && callback.call(epTools);
     $signDiv.append(img);
     img = null;
+  }
+
+  /**
+   * 签章请求接口超时失败的时候删除签章
+   * @param {String} signName 签章标识名字
+   * @param {Function} callback  签章失败删除签章回调函数
+   */
+  function delSignStatus(signName, callback) {
+    $viewerContainer.find('div[data-signname="'+ signName +'"]').remove();
+    
+    $.each(signElArray, function(i, e) {
+      if (e && e.signName == signName) {
+        signElArray.splice(i, 1);
+      }
+    });
+
+    typeof callback == 'function' && callback.call(epTools);
   }
 
   function getDate(millisecond) {

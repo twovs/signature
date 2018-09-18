@@ -503,16 +503,19 @@ html[dir='ltr'] .doorHangerRight:before {
 }
 
 html[dir='ltr'] #toolbarViewerLeft,
-html[dir='rtl'] #toolbarViewerRight {
+html[dir='rtl'] #toolbarViewerRight,
+html[dir='rtl'] .toolbarViewerRight {
   float: left;
 }
 html[dir='ltr'] #toolbarViewerRight,
-html[dir='rtl'] #toolbarViewerLeft {
+html[dir='rtl'] #toolbarViewerLeft,
+html[dir='ltr'] .toolbarViewerRight {
   float: right;
 }
 html[dir='ltr'] #toolbarViewerLeft > *,
 html[dir='ltr'] #toolbarViewerMiddle > *,
 html[dir='ltr'] #toolbarViewerRight > *,
+html[dir='ltr'] .toolbarViewerRight > *,
 html[dir='ltr'] .findbar * {
   position: relative;
   float: left;
@@ -520,6 +523,7 @@ html[dir='ltr'] .findbar * {
 html[dir='rtl'] #toolbarViewerLeft > *,
 html[dir='rtl'] #toolbarViewerMiddle > *,
 html[dir='rtl'] #toolbarViewerRight > *,
+html[dir='rtl'] .toolbarViewerRight > *,
 html[dir='rtl'] .findbar * {
   position: relative;
   float: right;
