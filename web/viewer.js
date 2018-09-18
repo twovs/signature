@@ -108,7 +108,6 @@ function getViewerConfiguration() {
       // Divs (and sidebar button)
       mainContainer: document.getElementById('mainContainer'),
       outerContainer: document.getElementById('outerContainer'),
-      toggleButton: document.getElementById('sidebarToggle'),
       // Buttons
       thumbnailButton: document.getElementById('viewThumbnail'),
       outlineButton: document.getElementById('viewOutline'),
@@ -212,7 +211,8 @@ function createApi(config) {
       download: true,
       secondaryToolbar: true,
       pageRotateCw: true,
-      pageRotateCcw: true
+      pageRotateCcw: true,
+      sidebarToggle: false
     },
     pageNumberNavitorTo: function (pageNumber) {
       PDFViewerApplication.pdfViewer.currentPageLabel = pageNumber;
@@ -450,10 +450,6 @@ function handleBarIconToggle(config, tools) {
         toggleViewAttachments(itemVal);
         break;
 
-      case 'sidebarToggle':
-        toggleSidebar(itemVal);
-        break;
-
       case 'viewFind':
         toggleViewFind(itemVal)
         break;
@@ -548,16 +544,6 @@ function handleBarIconToggle(config, tools) {
         return val;
       }
     },
-    'sidebarToggle': {
-      set: function (newVal) {
-        toggleSidebar(newVal);
-
-        val = newVal;
-      },
-      get: function () {
-        return val;
-      }
-    },
     'viewFind': {
       set: function (newVal) {
         toggleViewFind(newVal);
@@ -600,7 +586,7 @@ function handleBarIconToggle(config, tools) {
     },
     'zoom': {
       set: function (newVal) {
-        toggleSidebar(newVal);
+        toggleZoom(newVal);
 
         val = newVal;
       },

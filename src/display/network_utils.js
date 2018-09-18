@@ -41,6 +41,7 @@ function validateRangeRequestCapabilities({ getResponseHeader, isHttp,
     return returnValues;
   }
 
+  returnValues.suggestedLength = length;
   if (length <= 2 * rangeChunkSize) {
     // The file size is smaller than the size of two chunks, so it does not
     // make any sense to abort the request and retry with a range request.

@@ -337,10 +337,10 @@ class BaseViewer {
     let onePageRenderedCapability = createPromiseCapability();
     this.onePageRendered = onePageRenderedCapability.promise;
 
-    $('#progress_bar').addClass('hidden');
-    $('#progress_bar .progress-bar-inner').css({
-      width: 0
-    });
+    // $('#progress_bar').addClass('hidden');
+    // $('#progress_bar .progress-bar-inner').css({
+    //   width: 0
+    // });
 
     let bindOnAfterAndBeforeDraw = (pageView) => {
       pageView.onBeforeDraw = () => {

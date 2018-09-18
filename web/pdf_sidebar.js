@@ -13,8 +13,12 @@
  * limitations under the License.
  */
 
-import { NullL10n } from './ui_utils';
-import { RenderingStates } from './pdf_rendering_queue';
+import {
+  NullL10n
+} from './ui_utils';
+import {
+  RenderingStates
+} from './pdf_rendering_queue';
 
 const UI_NOTIFICATION_CLASS = 'pdfSidebarNotification';
 
@@ -35,7 +39,6 @@ const SidebarView = {
  * @property {HTMLDivElement} outerContainer - The outer container
  *   (encasing both the viewer and sidebar elements).
  * @property {EventBus} eventBus - The application event bus.
- * @property {HTMLButtonElement} toggleButton - The button used for
  *   opening/closing the sidebar.
  * @property {HTMLButtonElement} thumbnailButton - The button used to show
  *   the thumbnail view.
@@ -163,16 +166,20 @@ class PDFSidebar {
 
     switch (view) {
       case SidebarView.THUMBS:
+        if (!PDFViewerApplication.pdfSidebar.isOpen) {
+          PDFViewerApplication.pdfSidebar.toggle();
+          this.thumbnailButton.classList.add('toggled');
+        } else {
+          if (PDFViewerApplication.pdfSidebar.isThumbnailViewVisible) {
+            PDFViewerApplication.pdfSidebar.toggle();
+            this.thumbnailButton.classList.remove('toggled');
+          } else {
+            this.thumbnailButton.classList.add('toggled');
+          }
+        }
+
         this.outlineButton.classList.remove('toggled');
         this.attachmentsButton.classList.remove('toggled');
-
-        if (this.thumbnailButton.classList.contains('toggled')) {
-          this.thumbnailButton.classList.add('toggled');
-        }
-        else {
-          this.thumbnailButton.classList.remove('toggled');
-        }
-
         this.thumbnailView.classList.remove('hidden');
         this.outlineView.classList.add('hidden');
         this.attachmentsView.classList.add('hidden');
@@ -186,16 +193,21 @@ class PDFSidebar {
         if (this.outlineButton.disabled) {
           return;
         }
+
+        if (!PDFViewerApplication.pdfSidebar.isOpen) {
+          PDFViewerApplication.pdfSidebar.toggle();
+          this.outlineButton.classList.add('toggled');
+        } else {
+          if (PDFViewerApplication.pdfSidebar.isOutlineViewVisible) {
+            PDFViewerApplication.pdfSidebar.toggle();
+            this.outlineButton.classList.remove('toggled');
+          } else {
+            this.outlineButton.classList.add('toggled');
+          }
+        }
+
         this.thumbnailButton.classList.remove('toggled');
         this.attachmentsButton.classList.remove('toggled');
-
-        if (this.outlineButton.classList.contains('toggled')) {
-          this.outlineButton.classList.remove('toggled');
-        }
-        else {
-          this.outlineButton.classList.add('toggled');
-        }
-
         this.thumbnailView.classList.add('hidden');
         this.outlineView.classList.remove('hidden');
         this.attachmentsView.classList.add('hidden');
@@ -204,23 +216,28 @@ class PDFSidebar {
         if (this.attachmentsButton.disabled) {
           return;
         }
+
+        if (!PDFViewerApplication.pdfSidebar.isOpen) {
+          PDFViewerApplication.pdfSidebar.toggle();
+          this.attachmentsButton.classList.add('toggled');
+        } else {
+          if (PDFViewerApplication.pdfSidebar.isAttachmentsViewVisible) {
+            PDFViewerApplication.pdfSidebar.toggle();
+            this.attachmentsButton.classList.remove('toggled');
+          } else {
+            this.attachmentsButton.classList.add('toggled');
+          }
+        }
+
         this.thumbnailButton.classList.remove('toggled');
         this.outlineButton.classList.remove('toggled');
-
-        if (this.attachmentsButton.classList.contains('toggled')) {
-          this.attachmentsButton.classList.remove('toggled');
-        }
-        else {
-          this.attachmentsButton.classList.add('toggled');
-        }
-
         this.thumbnailView.classList.add('hidden');
         this.outlineView.classList.add('hidden');
         this.attachmentsView.classList.remove('hidden');
         break;
       default:
         console.error('PDFSidebar_switchView: "' + view +
-                      '" is an unsupported value.');
+          '" is an unsupported value.');
         return;
     }
     // Update the active view *after* it has been validated above,
@@ -305,7 +322,10 @@ class PDFSidebar {
    * @private
    */
   _updateThumbnailViewer() {
-    let { pdfViewer, pdfThumbnailViewer, } = this;
+    let {
+      pdfViewer,
+      pdfThumbnailViewer,
+    } = this;
 
     // Use the rendered pages to set the corresponding thumbnail images.
     let pagesCount = pdfViewer.pagesCount;
@@ -328,12 +348,11 @@ class PDFSidebar {
     }
 
     this.l10n.get('toggle_sidebar_notification.title', null,
-                  'Toggle Sidebar (document contains outline/attachments)').
-        then((msg) => {
+      'Toggle Sidebar (document contains outline/attachments)').
+    then((msg) => {
     });
 
     if (!this.isOpen) {
-      // Only show the notification on the `toggleButton` if the sidebar is
       // currently closed, to avoid unnecessarily bothering the user.
     } else if (view === this.active) {
       // If the sidebar is currently open *and* the `view` is visible, do not
@@ -385,7 +404,7 @@ class PDFSidebar {
     }
 
     this.l10n.get('toggle_sidebar.title', null, 'Toggle Sidebar').
-        then((msg) => {
+    then((msg) => {
     });
   }
 
@@ -393,8 +412,6 @@ class PDFSidebar {
    * @private
    */
   _addEventListeners() {
-    var _this = this;
-
     this.mainContainer.addEventListener('transitionend', (evt) => {
       if (evt.target === this.mainContainer) {
         this.outerContainer.classList.remove('sidebarMoving');
@@ -403,12 +420,10 @@ class PDFSidebar {
 
     // Buttons for switching views.
     this.thumbnailButton.addEventListener('click', () => {
-      _this.toggle();
       this.switchView(SidebarView.THUMBS);
     });
 
     this.outlineButton.addEventListener('click', () => {
-      _this.toggle();
       this.switchView(SidebarView.OUTLINE);
     });
     this.outlineButton.addEventListener('dblclick', () => {

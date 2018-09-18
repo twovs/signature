@@ -767,7 +767,7 @@ let PDFViewerApplication = {
     loadingTask.onProgress = ({
       loaded,
       total,
-    }) => {;
+    }) => {
       this.progress(loaded / total);
     };
 
@@ -775,6 +775,7 @@ let PDFViewerApplication = {
     loadingTask.onUnsupportedFeature = this.fallback.bind(this);
 
     return loadingTask.promise.then((pdfDocument) => {
+      console.log(pdfDocument);
       this.load(pdfDocument);
     }, (exception) => {
       let message = exception && exception.message;
@@ -1746,6 +1747,7 @@ let webViewerOpenFileViaURL;
 if (typeof PDFJSDev === 'undefined' || PDFJSDev.test('GENERIC')) {
   webViewerOpenFileViaURL = function webViewerOpenFileViaURL(file) {
     if (file && file.lastIndexOf('file:', 0) === 0) {
+      console.log('xhrxhr');
       // file:-scheme. Load the contents in the main thread because QtWebKit
       // cannot load file:-URLs in a Web Worker. file:-URLs are usually loaded
       // very quickly, so there is no need to set up progress event listeners.
@@ -1976,31 +1978,31 @@ function webViewerHashchange(evt) {
 let verify;
 let processVal = 0;
 verify = function verify(file) {
-  var $progressBar = $('#progress_bar'),
-    $progressBarInner = $('#progress_bar .progress-bar-inner'),
-    clearTime = null;
+  // var $progressBar = $('#progress_bar'),
+  //   $progressBarInner = $('#progress_bar .progress-bar-inner'),
+  //   clearTime = null;
 
-  $progressBar.removeClass('hidden');
-  clearTime = setTimeout(function polling() {
+  // $progressBar.removeClass('hidden');
+  // clearTime = setTimeout(function polling() {
 
-    if (processVal < 100) {
-      processVal += 1;
+  //   if (processVal < 100) {
+  //     processVal += 1;
 
-      $progressBarInner.css({
-        width: processVal + '%'
-      });
-      $progressBarInner.data('value', processVal);
-      $progressBarInner.data('percentage-value', processVal);
+  //     $progressBarInner.css({
+  //       width: processVal + '%'
+  //     });
+  //     $progressBarInner.data('value', processVal);
+  //     $progressBarInner.data('percentage-value', processVal);
 
-      clearTime = setTimeout(function() {
-        polling();
-      }, 200);
-    }
-    else {
-      processVal = 0;
-      clearTimeout(clearTime);
-    }
-  }, 200);
+  //     clearTime = setTimeout(function() {
+  //       polling();
+  //     }, 200);
+  //   }
+  //   else {
+  //     processVal = 0;
+  //     clearTimeout(clearTime);
+  //   }
+  // }, 200);
 
   var url = verifyUrl;
   var formData = new FormData();
