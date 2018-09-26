@@ -30,8 +30,7 @@ html {
 body {
   height: 100%;
   width: 100%;
-  background-color: #404040;
-  background-image: url(images/texture.png);
+  background-color: #c0c2cc;
 }
 
 body,
@@ -267,10 +266,8 @@ html[dir='rtl'] #toolbarSidebar {
 
 #toolbarContainer, .findbar, .secondaryToolbar {
   position: relative;
-  height: 32px;
-  background-color: #474747; /* fallback */
-  background-image: url(images/texture.png),
-                    linear-gradient(hsla(0,0%,32%,.99), hsla(0,0%,27%,.95));
+  height: 58px;
+  background-color: #fff; /* fallback */;
 }
 html[dir='ltr'] #toolbarContainer, .findbar, .secondaryToolbar {
   box-shadow: inset 1px 0 0 hsla(0,0%,100%,.08),
@@ -288,7 +285,7 @@ html[dir='rtl'] #toolbarContainer, .findbar, .secondaryToolbar {
 }
 
 #toolbarViewer {
-  height: 32px;
+  height: 58px;
 }
 
 #loadingBar {
@@ -2318,4 +2315,22 @@ section[data-annotation-id]:hover {
   bottom: 0;
   left: 0;
   right: 0;
+  background-color: #dedee0;
+}
+
+#toolbarViewer .toolbar-item {
+    padding-left: 20px;
+    padding-right: 20px;
+    height: 58px;
+    text-align: center;
+    color: #666;
+    cursor: pointer;
+}
+
+#toolbarViewer .toolbar-item:hover {
+    background-color: #f1f1f1;
+}
+
+#toolbarViewer .toolbar-item img {
+    margin-top: 10px;
 }
