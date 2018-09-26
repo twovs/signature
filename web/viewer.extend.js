@@ -13,7 +13,7 @@
     $viewerContainer = $('#viewerContainer'),
     $slade = $('#slade'),
     $signPad = $('#signpad'),
-    $singleSign = $('#single-sign'),
+    $sign = $('#sign'),
     $multiSign = $('#multi-sign'),
     $mainContainer = $('#mainContainer'),
     $contextmenu = $('#delsigndiv'),
@@ -266,7 +266,7 @@
     };
 
     // 单个签章
-    $singleSign.on('click', function () {
+    $sign.on('click', function () {
       signStatus = 0;
 
       signEvtCallback();
@@ -340,7 +340,7 @@
       success: function (res) {
         if (res.status == 'ok') {
           if (signStatus == 0) {
-            $singleSign.hide();
+            $sign.hide();
           }
 
           // 创建签章状态标识

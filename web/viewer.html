@@ -96,10 +96,6 @@
     
         <div id="secondaryToolbar" class="secondaryToolbar hidden doorHangerRight">
           <div id="secondaryToolbarButtonContainer">
-            <button id="secondaryPresentationMode" class="secondaryToolbarButton presentationMode visibleLargeView"
-              title="Switch to Presentation Mode" tabindex="51" data-l10n-id="presentation_mode">
-              <span data-l10n-id="presentation_mode_label">Presentation Mode</span>
-            </button>
     
             <button id="secondaryOpenFile" class="secondaryToolbarButton openFile visibleLargeView"
               title="Open File" tabindex="52" data-l10n-id="open_file">
@@ -168,26 +164,74 @@
                     <img src="./images/icon/closefile.png" alt="" />
                     <p>关闭</p>
                 </div>
-                <!--<button id="commitsign" style="width: 70px" class="toolbarButton"
-                  tabindex="83" onclick="commitsign()">
-                  完成提交
-                </button>
-                <button id="single-sign" class="toolbarButton" style="width: 60px"
-                  tabindex="81">
-                  签章
-                </button>
-                <button id="multi-sign" class="toolbarButton" style="width: 70px"
-                  tabindex="81">
-                  多页签章
-                </button>-->
-                <div class="toolbarButtonSpacer"></div>
+                <div class="toolbar-item" id="download">
+                    <img src="./images/icon/download.png" alt="" />
+                    <p>另存</p>
+                </div>
+                <div class="toolbar-item" id="print">
+                    <img src="./images/icon/print.png" alt="" />
+                    <p>打印</p>
+                </div>
+                
+                <div class="spacer"></div>
+                
+                <div class="toolbar-item" id="sign">
+                    <img src="./images/icon/sign.png" alt="" />
+                    <p>签章</p>
+                </div>
+                <div class="toolbar-item" id="multi-sign">
+                    <img src="./images/icon/sign.png" alt="" />
+                    <p>多页</p>
+                </div>
+                <div class="toolbar-item" id="write">
+                    <img src="./images/icon/write.png" alt="" />
+                    <p>手写</p>
+                </div>
+                
+                <div class="spacer"></div>
+                
+                <div class="toolbar-item" id="verification">
+                    <img src="./images/icon/verification.png" alt="" />
+                    <p>验证</p>
+                </div>
+                
+                <div class="toolbar-item" id="presentationMode">
+                    <img src="./images/icon/fullscreen.png" alt="" />
+                    <p>全屏</p>
+                </div>
+                
+                <div class="toolbar-item">
+                    <img src="./images/icon/comment.png" alt="" />
+                    <p>注释</p>
+                </div>
+                
+                <div class="toolbar-item">
+                    <img src="./images/icon/about.png" alt="" />
+                    <p>关于</p>
+                </div>
+                
+                <div class="toolbar-item">
+                    <img src="./images/icon/left.png" alt="" />
+                    <p>左旋</p>
+                </div>
+                
+                <div class="toolbar-item">
+                    <img src="./images/icon/right.png" alt="" />
+                    <p>右旋</p>
+                </div>
+                
+                <div class="toolbar-item" id="viewOutline">
+                    <img src="./images/icon/viewoutline.png" alt="" />
+                    <p>书签</p>
+                </div>
+                
+                <div class="toolbar-item">
+                    <img src="./images/icon/right.png" alt="" />
+                    <p>检索</p>
+                </div>
               </div>
     
               <div id="toolbarViewerRight">
-                <button id="viewOutline" class="toolbarButton" title="书签""
-                  tabindex="3" data-l10n-id="document_outline">
-                  <span data-l10n-id="document_outline_label">书签</span>
-                </button>
                 <button id="viewThumbnail" class="toolbarButton" title="缩略图"
                   tabindex="2" data-l10n-id="thumbs">
                   <span data-l10n-id="thumbs_label">缩略图</span>
@@ -200,28 +244,7 @@
                   data-l10n-id="findbar">
                   <span data-l10n-id="findbar_label">检索</span>
                 </button>
-                <button id="presentationMode" class="toolbarButton presentationMode hiddenLargeView"
-                  title="Switch to Presentation Mode" tabindex="31" data-l10n-id="presentation_mode">
-                  <span data-l10n-id="presentation_mode_label">Presentation Mode</span>
-                </button>
-    
-                <!--<button id="openFile" class="toolbarButton openFile hiddenLargeView"
-                  title="Open File" tabindex="32" data-l10n-id="open_file">
-                  <span data-l10n-id="open_file_label">Open</span>
-                </button>-->
-    
-                <!--<button id="closeFile" class="toolbarButton closeFile hiddenLargeView"
-                  title="Close File" tabindex="32" data-l10n-id="open_file">X</button>-->
-    
-                <button id="print" class="toolbarButton print hiddenMediumView"
-                  title="Print" tabindex="33" data-l10n-id="print">
-                  <span data-l10n-id="print_label">Print</span>
-                </button>
-    
-                <button id="download" class="toolbarButton download hiddenMediumView"
-                  title="Download" tabindex="34" data-l10n-id="download">
-                  <span data-l10n-id="download_label">Download</span>
-                </button>
+                
                 <a href="#" id="viewBookmark" class="toolbarButton bookmark hiddenSmallView"
                   title="Current view (copy or open in new window)" tabindex="35"
                   data-l10n-id="bookmark">

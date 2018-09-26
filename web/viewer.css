@@ -219,7 +219,7 @@ html[dir='rtl'] #sidebarContent {
   overflow: auto;
   -webkit-overflow-scrolling: touch;
   position: absolute;
-  top: 32px;
+  top: 58px;
   right: 0;
   bottom: 0;
   left: 0;
@@ -2333,4 +2333,14 @@ section[data-annotation-id]:hover {
 
 #toolbarViewer .toolbar-item img {
     margin-top: 10px;
+}
+
+.spacer {
+    float: left;
+    width: 1px;
+    height: 32px;
+    margin-left: 5px;
+    margin-right: 5px;
+    margin-top: 13px;
+    background-color: #e6e6e6;
 }
