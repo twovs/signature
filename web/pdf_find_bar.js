@@ -138,7 +138,7 @@ class PDFFindBar {
       this.findField.classList.remove('notFound');
     }
 
-    this.findField.setAttribute('data-status', status);
+//  this.findField.setAttribute('data-status', status);
     Promise.resolve(findMsg).then((msg) => {
       this.findMsg.textContent = msg;
       this._adjustWidth();

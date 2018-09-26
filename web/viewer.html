@@ -63,37 +63,6 @@
     </div>
 
     <div id="mainContainer">
-        <div class="findbar hidden doorHanger" id="findbar">
-          <div id="findbarInputContainer">
-            <input id="findInput" class="toolbarField" title="Find" placeholder="请输入..."
-              tabindex="91" data-l10n-id="find_input">
-            <div class="splitToolbarButton">
-              <button id="findPrevious" class="toolbarButton findPrevious" title="上一个"
-                tabindex="92" data-l10n-id="find_previous">
-                <span data-l10n-id="find_previous_label">上一个</span>
-              </button>
-              <div class="splitToolbarButtonSeparator"></div>
-              <button id="findNext" class="toolbarButton findNext" title="下一个"
-                tabindex="93" data-l10n-id="find_next">
-                <span data-l10n-id="find_next_label">下一个</span>
-              </button>
-            </div>
-          </div>
-    
-          <div id="findbarOptionsContainer">
-            <input type="checkbox" id="findHighlightAll" class="toolbarField"
-              tabindex="94">
-            <label for="findHighlightAll" class="toolbarLabel" data-l10n-id="find_highlight">高亮所有</label>
-            <input type="checkbox" id="findMatchCase" class="toolbarField" tabindex="95">
-            <label for="findMatchCase" class="toolbarLabel" data-l10n-id="find_match_case_label">区分大小写</label>
-            <span id="findResultsCount" class="toolbarLabel hidden"></span>
-          </div>
-    
-          <div id="findbarMessageContainer">
-            <span id="findMsg" class="toolbarLabel"></span>
-          </div>
-        </div>
-    
         <div id="secondaryToolbar" class="secondaryToolbar hidden doorHangerRight">
           <div id="secondaryToolbarButtonContainer">
     
@@ -224,6 +193,53 @@
                     <img src="./images/icon/viewoutline.png" alt="" />
                     <p>书签</p>
                 </div>
+                
+                <div id="findbar">
+                    <div id="findbarInputContainer">
+                      <input id="findInput" class="searchField" placeholder="请输入...">
+                      <button class="searchBtn">搜索</button>
+                    </div>
+                    <div class="splitToolbarButton">
+                      <button id="findPrevious" class="toolbarButton findPrevious" title="上一个"
+                        tabindex="92" data-l10n-id="find_previous">
+                        <span data-l10n-id="find_previous_label">上一个</span>
+                      </button>
+                      <div class="splitToolbarButtonSeparator"></div>
+                        <button id="findNext" class="toolbarButton findNext" title="下一个"
+                          tabindex="93" data-l10n-id="find_next">
+                          <span data-l10n-id="find_next_label">下一个</span>
+                        </button>
+                      </div>
+                </div>
+                
+                <div class="findbar hidden doorHanger" id="findbar">
+                  <div id="findbarInputContainer">
+                    <div class="splitToolbarButton">
+                      <button id="findPrevious" class="toolbarButton findPrevious" title="上一个"
+                        tabindex="92" data-l10n-id="find_previous">
+                        <span data-l10n-id="find_previous_label">上一个</span>
+                      </button>
+                      <div class="splitToolbarButtonSeparator"></div>
+                      <button id="findNext" class="toolbarButton findNext" title="下一个"
+                        tabindex="93" data-l10n-id="find_next">
+                        <span data-l10n-id="find_next_label">下一个</span>
+                      </button>
+                    </div>
+                  </div>
+    
+                  <div id="findbarOptionsContainer">
+                    <input type="checkbox" id="findHighlightAll" class="toolbarField"
+                      tabindex="94">
+                    <label for="findHighlightAll" class="toolbarLabel" data-l10n-id="find_highlight">高亮所有</label>
+                    <input type="checkbox" id="findMatchCase" class="toolbarField" tabindex="95">
+                    <label for="findMatchCase" class="toolbarLabel" data-l10n-id="find_match_case_label">区分大小写</label>
+                    <span id="findResultsCount" class="toolbarLabel hidden"></span>
+                  </div>
+    
+                  <div id="findbarMessageContainer">
+                    <span id="findMsg" class="toolbarLabel"></span>
+                  </div>
+                </div>
               </div>
     
               <div id="toolbarViewerRight" class="hidden">
@@ -231,10 +247,10 @@
                   tabindex="2" data-l10n-id="thumbs">
                   <span data-l10n-id="thumbs_label">缩略图</span>
                 </button>
-                <!--<button id="viewAttachments" class="toolbarButton hidden" title="附件"
+                <button id="viewAttachments" class="toolbarButton hidden" title="附件"
                   tabindex="4" data-l10n-id="attachments">
                   <span data-l10n-id="attachments_label">附件</span>
-                </button>-->
+                </button>
                 <button id="viewFind" class="toolbarButton" title="检索" tabindex="12"
                   data-l10n-id="findbar">
                   <span data-l10n-id="findbar_label">检索</span>

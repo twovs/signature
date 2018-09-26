@@ -2319,8 +2319,8 @@ section[data-annotation-id]:hover {
 }
 
 #toolbarViewer .toolbar-item {
-    padding-left: 20px;
-    padding-right: 20px;
+    padding-left: 15px;
+    padding-right: 15px;
     height: 58px;
     text-align: center;
     color: #666;
@@ -2343,4 +2343,43 @@ section[data-annotation-id]:hover {
     margin-right: 5px;
     margin-top: 13px;
     background-color: #e6e6e6;
+}
+
+#findbar {
+    height: 58px;
+    line-height: 58px;
+    margin-left: 15px;
+}
+
+#findbar #findbarInputContainer {
+    position: relative;
+    float: left;
+    width: 177px;
+}
+
+#findbar .splitToolbarButton {
+    margin-top: 15px;
+}
+
+#findbar .searchField {
+    width: 119px;
+    height: 24px;
+    border: 1px solid #e6e6e6;
+    border-radius: 15px;
+    padding-left: 10px;
+    padding-right: 46px;
+}
+
+#findbar .searchBtn {
+    position: absolute;
+    top: 18px;
+    right: 2px;
+    width: 42px;
+    height: 22px;
+    background-color: #64a9ed;
+    font-size: 12px;
+    color: #fff;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
 }
