@@ -803,7 +803,7 @@ html[dir='rtl'] .toolbarButton:first-child {
 }
 
 html[dir='ltr'] #findPrevious {
-  margin-left: 3px;
+  margin-left: 9px;
 }
 html[dir='ltr'] #findNext {
   margin-right: 3px;
@@ -1108,7 +1108,7 @@ html[dir='rtl'] .verticalToolbarSeparator {
   margin: 4px 2px 4px 0;
   border: 1px solid transparent;
   border-radius: 2px;
-  color: hsl(0,0%,85%);
+  color: #666;
   font-size: 12px;
   line-height: 14px;
   text-align: left;
@@ -2319,8 +2319,8 @@ section[data-annotation-id]:hover {
 }
 
 #toolbarViewer .toolbar-item {
-    padding-left: 15px;
-    padding-right: 15px;
+    padding-left: 10px;
+    padding-right: 10px;
     height: 58px;
     text-align: center;
     color: #666;
@@ -2382,4 +2382,34 @@ section[data-annotation-id]:hover {
     border: none;
     border-radius: 15px;
     cursor: pointer;
+}
+
+.findToolbarButton {
+    position: relative;
+    float: left;
+    width: 70px;
+    height: 100%;
+}
+
+.findToolbarButton .findPrevious,
+.findToolbarButton .findNext {
+    position: absolute;
+    top: 17px;
+    width: 23px;
+    height: 23px;
+    cursor: pointer;
+}
+
+.findToolbarButton .findPrevious {
+    left: 0;
+    background: url(./images/icon/pre.png) no-repeat;
+}
+
+.findToolbarButton .findNext {
+    left: 38px;
+    background: url(./images/icon/next.png) no-repeat;
+}
+
+#findbarOptionsContainer {
+    float: left;
 }

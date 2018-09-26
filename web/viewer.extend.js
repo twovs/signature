@@ -204,6 +204,11 @@
         left: e.pageX
       });
     });
+    
+    // 点击查找按钮
+    $('#findBtn').on('click', function() {
+      PDFViewerApplication.findBar.dispatchEvent('');
+    });
 
     // 关闭签章区域
     var closeSignPad = function () {

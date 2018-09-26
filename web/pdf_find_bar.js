@@ -15,7 +15,6 @@
 
 import { FindState } from './pdf_find_controller';
 import { NullL10n } from './ui_utils';
-import { PDFViewerApplication } from './app';
 
 /**
  * Creates a "search bar" given a set of DOM elements that act as controls
@@ -52,6 +51,7 @@ class PDFFindBar {
     });
 
     this.findField.addEventListener('input', () => {
+      console.log(this);
       this.dispatchEvent('');
     });
 
@@ -172,10 +172,6 @@ class PDFFindBar {
       this.toggleButton.classList.add('toggled');
       this.bar.classList.remove('hidden');
     }
-    
-    var cutWidth = window.screen.width - PDFViewerApplication.appConfig.mainContainer.offsetWidth;
-    
-    this.bar.style.left = (event.clientX - cutWidth - 10) + 'px';
     this.findField.select();
     this.findField.focus();
 
