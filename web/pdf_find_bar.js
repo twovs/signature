@@ -51,7 +51,6 @@ class PDFFindBar {
     });
 
     this.findField.addEventListener('input', () => {
-      console.log(this);
       this.dispatchEvent('');
     });
 
