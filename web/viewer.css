@@ -1108,7 +1108,7 @@ html[dir='rtl'] .verticalToolbarSeparator {
   margin: 4px 2px 4px 0;
   border: 1px solid transparent;
   border-radius: 2px;
-  color: #666;
+  color: #333;
   font-size: 12px;
   line-height: 14px;
   text-align: left;
@@ -2412,4 +2412,54 @@ section[data-annotation-id]:hover {
 
 #findbarOptionsContainer {
     float: left;
+}
+
+.toolbarViewerLeft {
+    float: left;
+    height: 33px;
+    padding-left: 15px;
+}
+
+.toolbarField.pageNumber {
+    width: 18px;
+    height: 18px;
+    border: 1px solid #c5c5c7;
+    background-color: #fff;
+    color: #333;
+}
+
+.toolbarViewerMiddle {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    height: 33px;
+}
+
+.toolbarViewerMiddle div {
+    display: inline-block;
+    width: 23px;
+    height: 23px;
+    margin-top: 6px;
+    margin-right: 15px;
+    cursor: pointer;
+}
+
+.toolbarViewerMiddle div:last-child {
+    margin-right: 0;
+}
+
+.toolbarViewerMiddle .btn-firstPage {
+    background: url(./images/icon/firstpage.png) no-repeat;
+}
+
+.toolbarViewerMiddle .btn-previous {
+    background: url(./images/icon/prepage.png) no-repeat;
+}
+
+.toolbarViewerMiddle .btn-next {
+    background: url(./images/icon/nextpage.png) no-repeat;
+}
+
+.toolbarViewerMiddle .btn-lastPage {
+    background: url(./images/icon/lastpage.png) no-repeat;
 }

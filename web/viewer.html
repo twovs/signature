@@ -391,28 +391,21 @@
 
     <!-- bottomContainer -->
     <div id="bottomContainer">
-      <div class="toolbarViewerRight">
-        <button id="firstPage" class="toolbarButton firstPage" title="跳转至第一页"
-          tabindex="56" data-l10n-id="first_page">
-        </button>
-        <div class="splitToolbarButton hiddenSmallView">
-          <button class="toolbarButton pageUp" title="上一页" id="previous" tabindex="13"
-            data-l10n-id="previous">
-            <span data-l10n-id="previous_label">上一页</span>
-          </button>
-          <div class="splitToolbarButtonSeparator"></div>
-          <button class="toolbarButton pageDown" title="下一页" id="next" tabindex="14"
-            data-l10n-id="next">
-            <span data-l10n-id="next_label">下一页</span>
-          </button>
-        </div>
-        <button id="lastPage" class="toolbarButton lastPage" title="跳转至最后一页" tabindex="57"
-          data-l10n-id="last_page">
-        </button>
+      <div class="toolbarViewerLeft">
+          页码：
         <input type="number" id="pageNumber" class="toolbarField pageNumber" title="Page"
           value="1" size="4" min="1" tabindex="15" data-l10n-id="page">
         <span id="numPages" class="toolbarLabel"></span>
-
+      </div> 
+      
+      <div class="toolbarViewerMiddle">
+        <div id="firstPage" class="btn-firstPage"></div>
+        <div id="previous" class="btn-previous"></div>
+        <div id="next" class="btn-next"></div>
+        <div id="lastPage" class="btn-lastPage"></div>
+      </div>
+        
+      <div class="toolbarViewerRight">
         <div class="splitToolbarButton">
           <button id="zoomOut" class="toolbarButton zoomOut" title="Zoom Out"
             tabindex="21" data-l10n-id="zoom_out">
