@@ -294,6 +294,10 @@
       signElArray.splice(delSerial, 1, undefined);
       $contextmenu.hide();
     });
+    
+    $('img').on('mousedown', function(e) {
+      e.preventDefault();
+    });
   }
 
   /**

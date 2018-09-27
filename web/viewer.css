@@ -2325,6 +2325,8 @@ section[data-annotation-id]:hover {
     text-align: center;
     color: #666;
     cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 #toolbarViewer .toolbar-item:hover {
@@ -2462,4 +2464,31 @@ section[data-annotation-id]:hover {
 
 .toolbarViewerMiddle .btn-lastPage {
     background: url(./images/icon/lastpage.png) no-repeat;
+}
+
+.toolbarViewerRight .btn-pageActualOption,
+.toolbarViewerRight .btn-pageFitOption,
+.toolbarViewerRight .btn-pageWidthOption {
+    display: inline-block;
+    width: 12px;
+    height: 16px;
+    margin-right: 18px;
+    margin-top: 9px;
+    cursor: pointer;
+}
+
+.toolbarViewerRight .btn-pageActualOption {
+    background: url(./images/icon/pageActualOption.png) no-repeat;
+}
+
+.toolbarViewerRight .btn-pageFitOption {
+    background: url(./images/icon/pageFitOption.png) no-repeat;
+}
+
+.toolbarViewerRight .btn-pageWidthOption {
+    background: url(./images/icon/pageWidthOption.png) no-repeat;
+}
+
+#scaleSelectContainer {
+    float: left;
 }
