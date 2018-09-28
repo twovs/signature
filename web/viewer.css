@@ -241,7 +241,8 @@ html[dir='rtl'] #viewerContainer {
 }
 
 #toolbarContainer {
-  width: 100%;
+    width: 100%;
+    min-width: 1280px;
 }
 
 #toolbarSidebar {
