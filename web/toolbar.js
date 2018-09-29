@@ -130,9 +130,31 @@ class Toolbar {
       if (this.value === 'custom') {
         return;
       }
+
       eventBus.dispatch('scalechanged', {
         source: self,
-        value: this.value,
+        value: this.value
+      });
+    });
+
+    items.scaleSelectPageActualOption.addEventListener('click', function() {
+      eventBus.dispatch('scalechanged', {
+        source: self,
+        value: this.dataset.value
+      });
+    });
+
+    items.scaleSelectPageFitOption.addEventListener('click', function() {
+      eventBus.dispatch('scalechanged', {
+        source: self,
+        value: this.dataset.value
+      });
+    });
+
+    items.scaleSelectPageWidthOption.addEventListener('click', function() {
+      eventBus.dispatch('scalechanged', {
+        source: self,
+        value: this.dataset.value
       });
     });
 
