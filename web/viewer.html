@@ -62,6 +62,147 @@
       </div>
     </div>
 
+    <div class="toolbar">
+      <div id="toolbarContainer">
+        <div id="toolbarViewer">
+          <div id="toolbarViewerLeft">
+            <img src="./images/icon/logo.jpg" alt="" />
+            <div class="toolbar-item" id="openFile">
+                <img src="./images/icon/openfile.png" alt="" />
+                <p>打开</p>
+            </div>
+            <div class="toolbar-item" id="closeFile">
+                <img src="./images/icon/closefile.png" alt="" />
+                <p>关闭</p>
+            </div>
+            <div class="toolbar-item" id="download">
+                <img src="./images/icon/download.png" alt="" />
+                <p>另存</p>
+            </div>
+            <div class="toolbar-item" id="print">
+                <img src="./images/icon/print.png" alt="" />
+                <p>打印</p>
+            </div>
+            
+            <div class="spacer"></div>
+            
+            <div class="toolbar-item" id="sign">
+                <img src="./images/icon/sign.png" alt="" />
+                <p>签章</p>
+            </div>
+            <div class="toolbar-item" id="multi-sign">
+                <img src="./images/icon/sign.png" alt="" />
+                <p>多页</p>
+            </div>
+            <div class="toolbar-item" id="write">
+                <img src="./images/icon/write.png" alt="" />
+                <p>手写</p>
+            </div>
+            
+            <div class="spacer"></div>
+            
+            <div class="toolbar-item" id="verification">
+                <img src="./images/icon/verification.png" alt="" />
+                <p>验证</p>
+            </div>
+            
+            <div class="toolbar-item" id="presentationMode">
+                <img src="./images/icon/fullscreen.png" alt="" />
+                <p>全屏</p>
+            </div>
+            
+            <div class="toolbar-item">
+                <img src="./images/icon/comment.png" alt="" />
+                <p>注释</p>
+            </div>
+            
+            <div class="toolbar-item">
+                <img src="./images/icon/about.png" alt="" />
+                <p>关于</p>
+            </div>
+            
+            <div class="toolbar-item" id="pageRotateCcw">
+                <img src="./images/icon/left.png" alt="" />
+                <p>左旋</p>
+            </div>
+            
+            <div class="toolbar-item" id="pageRotateCw">
+                <img src="./images/icon/right.png" alt="" />
+                <p>右旋</p>
+            </div>
+            
+            <div class="toolbar-item" id="viewOutline">
+                <img src="./images/icon/viewoutline.png" alt="" />
+                <p>书签</p>
+            </div>
+            
+            <div id="findbar">
+                <div id="findbarInputContainer">
+                  <input id="findInput" class="searchField" placeholder="请输入...">
+                  <button class="searchBtn" id="findBtn">搜索</button>
+                </div>
+                <div class="findToolbarButton">
+                  <em class="findPrevious" id="findPrevious"></em>
+                  <em class="findNext" id="findNext"></em>
+                </div>
+                <div id="findbarOptionsContainer">
+                  <input type="checkbox" id="findHighlightAll" class="toolbarField"
+                    tabindex="94">
+                  <label for="findHighlightAll" class="toolbarLabel" data-l10n-id="find_highlight">高亮所有</label>
+                  <input type="checkbox" id="findMatchCase" class="toolbarField" tabindex="95">
+                  <label for="findMatchCase" class="toolbarLabel" data-l10n-id="find_match_case_label">区分大小写</label>
+                  <span id="findResultsCount" class="toolbarLabel hidden"></span>
+                </div>
+                <div id="findbarMessageContainer" class="hidden">
+                  <span id="findMsg" class="toolbarLabel"></span>
+                </div>
+            </div>
+          </div>
+
+          <div id="toolbarViewerRight" class="hidden">
+            <button id="viewThumbnail" class="toolbarButton" title="缩略图"
+              tabindex="2" data-l10n-id="thumbs">
+              <span data-l10n-id="thumbs_label">缩略图</span>
+            </button>
+            <button id="viewAttachments" class="toolbarButton hidden" title="附件"
+              tabindex="4" data-l10n-id="attachments">
+              <span data-l10n-id="attachments_label">附件</span>
+            </button>
+            <button id="viewFind" class="toolbarButton" title="检索" tabindex="12"
+              data-l10n-id="findbar">
+              <span data-l10n-id="findbar_label">检索</span>
+            </button>
+            
+            <a href="#" id="viewBookmark" class="toolbarButton bookmark hiddenSmallView"
+              title="Current view (copy or open in new window)" tabindex="35"
+              data-l10n-id="bookmark">
+              <span data-l10n-id="bookmark_label">Current View</span>
+            </a>
+
+            <div class="verticalToolbarSeparator hiddenSmallView"></div>
+
+            <button id="secondaryToolbarToggle" class="toolbarButton" title="Tools"
+              tabindex="36" data-l10n-id="tools">
+              <span data-l10n-id="tools_label">Tools</span>
+            </button>
+          </div>
+          <div id="toolbarViewerMiddle"></div>
+        </div>
+        <div id="loadingBar" class="hidden">
+          <div class="progress">
+            <div class="glimmer">
+            </div>
+          </div>
+        </div>
+        <div class="progress_bar hidden" id="progress_bar">
+            <div class="pro-bar">
+              <span class="progress-bar-inner" style="background-color: #1abc9c;"
+                data-value="100" data-percentage-value="100"></span>
+            </div>
+        </div>
+      </div>
+    </div>
+
     <div id="mainContainer">
         <div id="secondaryToolbar" class="secondaryToolbar hidden doorHangerRight">
           <div id="secondaryToolbarButtonContainer">
@@ -108,147 +249,6 @@
               title="文档属性" tabindex="62" data-l10n-id="document_properties">
               <span data-l10n-id="document_properties_label">文档属性</span>
             </button>
-          </div>
-        </div>
-    
-        <div class="toolbar">
-          <div id="toolbarContainer">
-            <div id="toolbarViewer">
-              <div id="toolbarViewerLeft">
-                <img src="./images/icon/logo.jpg" alt="" />
-                <div class="toolbar-item" id="openFile">
-                    <img src="./images/icon/openfile.png" alt="" />
-                    <p>打开</p>
-                </div>
-                <div class="toolbar-item" id="closeFile">
-                    <img src="./images/icon/closefile.png" alt="" />
-                    <p>关闭</p>
-                </div>
-                <div class="toolbar-item" id="download">
-                    <img src="./images/icon/download.png" alt="" />
-                    <p>另存</p>
-                </div>
-                <div class="toolbar-item" id="print">
-                    <img src="./images/icon/print.png" alt="" />
-                    <p>打印</p>
-                </div>
-                
-                <div class="spacer"></div>
-                
-                <div class="toolbar-item" id="sign">
-                    <img src="./images/icon/sign.png" alt="" />
-                    <p>签章</p>
-                </div>
-                <div class="toolbar-item" id="multi-sign">
-                    <img src="./images/icon/sign.png" alt="" />
-                    <p>多页</p>
-                </div>
-                <div class="toolbar-item" id="write">
-                    <img src="./images/icon/write.png" alt="" />
-                    <p>手写</p>
-                </div>
-                
-                <div class="spacer"></div>
-                
-                <div class="toolbar-item" id="verification">
-                    <img src="./images/icon/verification.png" alt="" />
-                    <p>验证</p>
-                </div>
-                
-                <div class="toolbar-item" id="presentationMode">
-                    <img src="./images/icon/fullscreen.png" alt="" />
-                    <p>全屏</p>
-                </div>
-                
-                <div class="toolbar-item">
-                    <img src="./images/icon/comment.png" alt="" />
-                    <p>注释</p>
-                </div>
-                
-                <div class="toolbar-item">
-                    <img src="./images/icon/about.png" alt="" />
-                    <p>关于</p>
-                </div>
-                
-                <div class="toolbar-item" id="pageRotateCcw">
-                    <img src="./images/icon/left.png" alt="" />
-                    <p>左旋</p>
-                </div>
-                
-                <div class="toolbar-item" id="pageRotateCw">
-                    <img src="./images/icon/right.png" alt="" />
-                    <p>右旋</p>
-                </div>
-                
-                <div class="toolbar-item" id="viewOutline">
-                    <img src="./images/icon/viewoutline.png" alt="" />
-                    <p>书签</p>
-                </div>
-                
-                <div id="findbar">
-                    <div id="findbarInputContainer">
-                      <input id="findInput" class="searchField" placeholder="请输入...">
-                      <button class="searchBtn" id="findBtn">搜索</button>
-                    </div>
-                    <div class="findToolbarButton">
-                      <em class="findPrevious" id="findPrevious"></em>
-                      <em class="findNext" id="findNext"></em>
-                    </div>
-                    <div id="findbarOptionsContainer">
-                      <input type="checkbox" id="findHighlightAll" class="toolbarField"
-                        tabindex="94">
-                      <label for="findHighlightAll" class="toolbarLabel" data-l10n-id="find_highlight">高亮所有</label>
-                      <input type="checkbox" id="findMatchCase" class="toolbarField" tabindex="95">
-                      <label for="findMatchCase" class="toolbarLabel" data-l10n-id="find_match_case_label">区分大小写</label>
-                      <span id="findResultsCount" class="toolbarLabel hidden"></span>
-                    </div>
-                    <div id="findbarMessageContainer" class="hidden">
-                      <span id="findMsg" class="toolbarLabel"></span>
-                    </div>
-                </div>
-              </div>
-    
-              <div id="toolbarViewerRight" class="hidden">
-                <button id="viewThumbnail" class="toolbarButton" title="缩略图"
-                  tabindex="2" data-l10n-id="thumbs">
-                  <span data-l10n-id="thumbs_label">缩略图</span>
-                </button>
-                <button id="viewAttachments" class="toolbarButton hidden" title="附件"
-                  tabindex="4" data-l10n-id="attachments">
-                  <span data-l10n-id="attachments_label">附件</span>
-                </button>
-                <button id="viewFind" class="toolbarButton" title="检索" tabindex="12"
-                  data-l10n-id="findbar">
-                  <span data-l10n-id="findbar_label">检索</span>
-                </button>
-                
-                <a href="#" id="viewBookmark" class="toolbarButton bookmark hiddenSmallView"
-                  title="Current view (copy or open in new window)" tabindex="35"
-                  data-l10n-id="bookmark">
-                  <span data-l10n-id="bookmark_label">Current View</span>
-                </a>
-    
-                <div class="verticalToolbarSeparator hiddenSmallView"></div>
-    
-                <button id="secondaryToolbarToggle" class="toolbarButton" title="Tools"
-                  tabindex="36" data-l10n-id="tools">
-                  <span data-l10n-id="tools_label">Tools</span>
-                </button>
-              </div>
-              <div id="toolbarViewerMiddle"></div>
-            </div>
-            <div id="loadingBar" class="hidden">
-              <div class="progress">
-                <div class="glimmer">
-                </div>
-              </div>
-            </div>
-            <div class="progress_bar hidden" id="progress_bar">
-                <div class="pro-bar">
-                  <span class="progress-bar-inner" style="background-color: #1abc9c;"
-                    data-value="100" data-percentage-value="100"></span>
-                </div>
-            </div>
           </div>
         </div>
     
