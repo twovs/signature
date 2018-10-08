@@ -137,6 +137,9 @@ class PDFThumbnailView {
     }
 
     let ring = document.createElement('div');
+    let pageNumberLabel = document.createElement('p');
+    pageNumberLabel.textContent = this.id;
+    pageNumberLabel.className = 'pageNumberLabel';
     ring.className = 'thumbnailSelectionRing';
     let borderAdjustment = 2 * THUMBNAIL_CANVAS_BORDER_WIDTH;
     ring.style.width = this.canvasWidth + borderAdjustment + 'px';
@@ -144,6 +147,7 @@ class PDFThumbnailView {
     this.ring = ring;
 
     div.appendChild(ring);
+    div.appendChild(pageNumberLabel);
     anchor.appendChild(div);
     container.appendChild(anchor);
   }

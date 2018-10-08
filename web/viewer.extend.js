@@ -329,6 +329,12 @@
           break;
       }
     });
+
+    // 关闭 silderBar
+    $('#silderClose').on('click', function() {
+      $('#siderMenuBar .menuItem').removeClass('active');
+      PDFViewerApplication.pdfSidebar.close();
+    });
   }
 
   /**
