@@ -31,6 +31,13 @@
   var sign_div,
     sign_img;
 
+  var SidebarView = {
+    NONE: 0,
+    THUMBS: 1,
+    OUTLINE: 2,
+    ATTACHMENTS: 3,
+  };
+
   var toolbarHeight = $('#toolbarContainer').height();
 
   function init() {
@@ -297,6 +304,27 @@
     
     $('img').on('mousedown', function(e) {
       e.preventDefault();
+    });
+
+    // 点击左侧 sideBar menu
+    $('#siderMenuBar').on('click', '.menuItem', function() {
+      var menuType = this.dataset.menu;
+
+      switch(menuType) {
+        case 'bookMark':
+          PDFViewerApplication.pdfSidebar.switchView(SidebarView.OUTLINE);
+          break;
+
+        case 'thumbnail':
+          PDFViewerApplication.pdfSidebar.switchView(SidebarView.THUMBS);
+          break;
+
+        case 'annotation':
+          break;
+
+        default:
+          break;
+      }
     });
   }
 

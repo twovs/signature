@@ -167,8 +167,9 @@ html[dir='rtl'] #sidebarContainer {
 #outerContainer.sidebarOpen > #sidebarContainer {
   visibility: visible;
 }
+/* TODO: */
 html[dir='ltr'] #outerContainer.sidebarOpen > #sidebarContainer {
-  left: 0px;
+  left: 52px;
 }
 html[dir='rtl'] #outerContainer.sidebarOpen > #sidebarContainer {
   right: 0px;
@@ -179,7 +180,7 @@ html[dir='rtl'] #outerContainer.sidebarOpen > #sidebarContainer {
   top: 0;
   right: 0;
   bottom: 0;
-  left: 52px;
+  left: 54px;
   min-width: 320px;
   -webkit-transition-duration: 200ms;
   -webkit-transition-timing-function: ease;
@@ -204,7 +205,7 @@ html[dir='rtl'] #outerContainer.sidebarOpen > #mainContainer {
   -webkit-overflow-scrolling: touch;
   position: absolute;
   width: 200px;
-  background-color: hsla(0,0%,0%,.1);
+  background-color: #ededed;
 }
 html[dir='ltr'] #sidebarContent {
   left: 0;
@@ -1894,12 +1895,11 @@ html[dir='rtl'] #documentPropertiesOverlay .row > * {
     top: 37px;
   }
   #sidebarContent {
-    top: 0px;
-    background-color: hsla(0,0%,0%,.7);
+    top: 32px;
   }
 
   html[dir='ltr'] #outerContainer.sidebarOpen > #mainContainer {
-    left: 0px;
+    left: 252px;
   }
   html[dir='rtl'] #outerContainer.sidebarOpen > #mainContainer {
     right: 0px;
@@ -2494,6 +2494,7 @@ section[data-annotation-id]:hover {
   bottom: 34px;
   width: 52px;
   background-color: #fff;
+  z-index: 99;
 }
 
 #siderMenuBar .menuItem {
@@ -2502,6 +2503,8 @@ section[data-annotation-id]:hover {
   text-align: center;
   border-bottom: 1px solid #e6e6e6;
   cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 #siderMenuBar .menuItem:first-child {
