@@ -142,7 +142,7 @@ select {
 
 #sidebarContainer {
   position: absolute;
-  top: 0;
+  top: 58px;
   bottom: 0;
   width: 200px;
   visibility: hidden;
@@ -2418,7 +2418,6 @@ section[data-annotation-id]:hover {
 }
 
 .toolbarField.pageNumber {
-    width: 18px;
     height: 18px;
     border: 1px solid #c5c5c7;
     background-color: #fff;
@@ -2486,4 +2485,27 @@ section[data-annotation-id]:hover {
 
 #scaleSelectContainer {
     float: left;
+}
+
+#siderMenuBar {
+  position: absolute;
+  left: 0;
+  top: 58px;
+  bottom: 34px;
+  width: 52px;
+  background-color: #fff;
+}
+
+#siderMenuBar .menuItem {
+  height: 46px;
+  line-height: 68px;
+  text-align: center;
+  border-bottom: 1px solid #e6e6e6;
+  cursor: pointer;
+}
+
+#siderMenuBar .menuItem:first-child {
+  height: 27px;
+  line-height: 27px;
+  cursor: default;
 }
