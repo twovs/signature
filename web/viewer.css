@@ -1891,9 +1891,9 @@ html[dir='rtl'] #documentPropertiesOverlay .row > * {
     top: 58px;
     z-index: 100;
   }
-  .loadingInProgress #sidebarContainer {
+  /* .loadingInProgress #sidebarContainer {
     top: 37px;
-  }
+  } */
   #sidebarContent {
     top: 32px;
   }
@@ -2302,7 +2302,7 @@ section[data-annotation-id]:hover {
 
 #sidebarContainer,
 #mainContainer {
-  bottom: 32px;
+  bottom: 34px;
 }
 
 #bottomContainer {
@@ -2494,10 +2494,11 @@ section[data-annotation-id]:hover {
   bottom: 34px;
   width: 52px;
   background-color: #fff;
-  z-index: 99;
+  z-index: 200;
 }
 
 #siderMenuBar .menuItem {
+  width: 100%;
   height: 46px;
   line-height: 68px;
   text-align: center;
@@ -2505,6 +2506,10 @@ section[data-annotation-id]:hover {
   cursor: pointer;
   user-select: none;
   -webkit-user-select: none;
+}
+
+#siderMenuBar .menuItem.active {
+  background-color: #ededed;
 }
 
 #siderMenuBar .menuItem:first-child {

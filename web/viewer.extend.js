@@ -308,7 +308,10 @@
 
     // 点击左侧 sideBar menu
     $('#siderMenuBar').on('click', '.menuItem', function() {
-      var menuType = this.dataset.menu;
+      var menuType = this.dataset.menu,
+        $this = $(this);
+
+      $this.addClass('active').siblings('.menuItem').removeClass('active');
 
       switch(menuType) {
         case 'bookMark':
