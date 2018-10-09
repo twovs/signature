@@ -1260,6 +1260,7 @@ html[dir='rtl'] .outlineItem > .outlineItems {
 
 html[dir='ltr'] .outlineItem > a {
   padding: 2px 0 5px 4px;
+  color: #333;
 }
 html[dir='ltr'] .attachmentsItem > button {
   padding: 2px 0 3px 7px;
@@ -1281,9 +1282,11 @@ html[dir='rtl'] .attachmentsItem > button {
   color: hsla(0,0%,100%,.5);
 }
 .outlineItemToggler::before {
-  content: url(images/treeitem-expanded.png);
+  /* content: url(images/treeitem-expanded.png); */
+  content: url(images/icon/outlineparent.png);
   display: inline-block;
   position: absolute;
+  cursor: pointer;
 }
 html[dir='ltr'] .outlineItemToggler.outlineItemsHidden::before {
   content: url(images/treeitem-collapsed.png);
@@ -1301,7 +1304,7 @@ html[dir='rtl'] .outlineItemToggler {
   float: right;
 }
 html[dir='ltr'] .outlineItemToggler::before {
-  right: 4px;
+  right: 5px;
 }
 html[dir='rtl'] .outlineItemToggler::before {
   left: 4px;
@@ -1776,19 +1779,21 @@ html[dir='rtl'] #documentPropertiesOverlay .row > * {
   }
 
   .outlineItemToggler::before {
-    -webkit-transform: scale(0.5);
-    transform: scale(0.5);
-    top: -1px;
-    content: url(images/treeitem-expanded@2x.png);
+    -webkit-transform: scale(0.8);
+    transform: scale(0.8);
+    top: 0;
+    /* content: url(images/treeitem-expanded@2x.png); */
+    content: url(images/icon/outlineparent.png);
   }
   html[dir='ltr'] .outlineItemToggler.outlineItemsHidden::before {
-    content: url(images/treeitem-collapsed@2x.png);
+    /* content: url(images/treeitem-collapsed@2x.png); */
+    content: url(images/icon/outlineparent.png);
   }
   html[dir='rtl'] .outlineItemToggler.outlineItemsHidden::before {
     content: url(images/treeitem-collapsed-rtl@2x.png);
   }
   html[dir='ltr'] .outlineItemToggler::before {
-    right: 0;
+    right: 1px;
   }
   html[dir='rtl'] .outlineItemToggler::before {
     left: 0;
