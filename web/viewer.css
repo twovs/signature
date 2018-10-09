@@ -1229,6 +1229,18 @@ html[dir='ltr'] .outlineItem > .outlineItems {
   margin-left: 20px;
 }
 
+html[dir='ltr'] .outlineItem > .outlineItems {
+  position: relative;
+}
+
+html[dir='ltr'] .outlineItem > .outlineItems > .outlineItem::before {
+  position: absolute;
+  content: url(images/icon/outlinechild.png);
+  left: -11px;
+  margin-top: 2px;
+  cursor: pointer;
+}
+
 html[dir='rtl'] .outlineWithDeepNesting > .outlineItem,
 html[dir='rtl'] .outlineItem > .outlineItems {
   margin-right: 20px;
@@ -1779,8 +1791,8 @@ html[dir='rtl'] #documentPropertiesOverlay .row > * {
   }
 
   .outlineItemToggler::before {
-    -webkit-transform: scale(0.8);
-    transform: scale(0.8);
+    -webkit-transform: scale(0.9);
+    transform: scale(0.9);
     top: 0;
     /* content: url(images/treeitem-expanded@2x.png); */
     content: url(images/icon/outlineparent.png);
