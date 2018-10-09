@@ -311,7 +311,8 @@
       var menuType = this.dataset.menu,
         $this = $(this);
 
-      $this.addClass('active').siblings('.menuItem').removeClass('active');
+      $this.hasClass('siliderOpen') ? PDFViewerApplication.pdfSidebar.toggle() : $this.addClass('active');
+      $this.siblings('.menuItem').removeClass('active');
 
       switch(menuType) {
         case 'bookMark':

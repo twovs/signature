@@ -263,6 +263,8 @@ html[dir='rtl'] #viewerContainer {
   margin-top: 9px;
   transform: rotate(180deg);
   cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .pageNumberLabel {
@@ -2532,5 +2534,70 @@ section[data-annotation-id]:hover {
 #siderMenuBar .menuItem:first-child {
   height: 27px;
   line-height: 27px;
-  cursor: default;
+}
+
+/* 关于新点 */
+.aboutContainer {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 576px;
+  height: 364px;
+  margin-top: -182px;
+  margin-left: -288px;
+}
+
+.aboutContainer .aboutContainer-left {
+  width: 86px;
+  height: 100%;
+  background: url(./images/icon/aboutleft.png) no-repeat;
+}
+
+.aboutContainer .aboutContainer-right {
+  position: relative;
+  width: 450px;
+  height: 100%;
+  padding-left: 20px;
+  padding-right: 20px;
+  background-color: #ededed;
+}
+
+.aboutContainer .aboutContainer-right--title {
+  height: 60px;
+}
+
+.aboutContainer .about-logo {
+  margin-top: 17px;
+}
+
+.aboutContainer .aboutContainer-right--con {
+  height: 245px;
+  border: 1px solid #dadae6;
+  background-color: #fff;
+}
+
+.aboutContainer .aboutContainer-right--con p {
+  padding-left: 16px;
+  padding-right: 16px;
+  padding-top: 15px;
+  font-size: 12px;
+  text-indent: 20px;
+  line-height: 24px;
+}
+
+.aboutContainer .abountContainer-close {
+  position: absolute;
+  left: 50%;
+  width: 70px;
+  height: 24px;
+  margin-top: 13px;
+  border: 1px solid #5292e2;
+  background-color: #64a9ed;
+  color: #fff;
+  cursor: pointer;
+  transform: translateX(-50%);
+}
+
+.aboutContainer .abountContainer-close:active {
+  background-color: #2196F8;
 }
