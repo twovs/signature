@@ -174,6 +174,10 @@ class Toolbar {
       eventBus.dispatch('print');
     });
 
+    items.about.addEventListener('click', function() {
+      eventBus.dispatch('about');
+    });
+
     items.download.addEventListener('click', function() {
       eventBus.dispatch('download');
     });

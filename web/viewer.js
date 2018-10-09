@@ -81,6 +81,8 @@ function getViewerConfiguration() {
       presentationModeButton: document.getElementById('presentationMode'),
       download: document.getElementById('download'),
       viewBookmark: document.getElementById('viewBookmark'),
+      about: document.getElementById('toolbar-about'),
+      aboutContainer: document.getElementById('aboutContainer'),
     },
     secondaryToolbar: {
       toolbar: document.getElementById('secondaryToolbar'),

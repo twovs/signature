@@ -1419,6 +1419,7 @@ let PDFViewerApplication = {
     eventBus.on('openfile', webViewerOpenFile);
     eventBus.on('closefile', webViewerCloseFile);
     eventBus.on('print', webViewerPrint);
+    eventBus.on('about', webViewerAbout);
     eventBus.on('download', webViewerDownload);
     eventBus.on('firstpage', webViewerFirstPage);
     eventBus.on('lastpage', webViewerLastPage);
@@ -1492,6 +1493,7 @@ let PDFViewerApplication = {
     eventBus.off('openfile', webViewerOpenFile);
     eventBus.off('closefile', webViewerCloseFile);
     eventBus.off('print', webViewerPrint);
+    eventBus.off('about', webViewerAbout);
     eventBus.off('download', webViewerDownload);
     eventBus.off('firstpage', webViewerFirstPage);
     eventBus.off('lastpage', webViewerLastPage);
@@ -2084,6 +2086,7 @@ function webViewerOpenFile() {
 
 function webViewerCloseFile(){
   PDFViewerApplication.close();
+  PDFViewerApplication.pdfSidebar.close();
 
   switch (PDFViewerApplication.pageRotation) {
     case 90:
@@ -2101,6 +2104,10 @@ function webViewerCloseFile(){
     default:
       break;
   }
+}
+
+function webViewerAbout() {
+  PDFViewerApplication.appConfig.toolbar.aboutContainer.classList.remove('hidden');
 }
 
 function webViewerPrint() {

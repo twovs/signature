@@ -42,6 +42,7 @@
 
   function init() {
     initListener();
+    toolbarBindListeners();
   }
 
   function initListener() {
@@ -335,6 +336,16 @@
     $('#silderClose').on('click', function() {
       $('#siderMenuBar .menuItem').removeClass('active');
       PDFViewerApplication.pdfSidebar.close();
+    });
+  }
+
+  /**
+   * 绑定工具栏关于新点事件
+   */
+  function toolbarBindListeners() {
+    // 关闭关于新点
+    document.getElementById('abountContainer-close').addEventListener('click', function() {
+      PDFViewerApplication.appConfig.toolbar.aboutContainer.classList.add('hidden');
     });
   }
 
