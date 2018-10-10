@@ -2674,6 +2674,7 @@ section[data-annotation-id]:hover {
 .signContainer .signContainer-con--item input[type=radio] {
   margin-right: 7px;
   margin-left: 18px;
+  margin-bottom: 8px;
 }
 
 .signContainer .signContainer-con--item input[type=radio]:first-child,
@@ -2681,6 +2682,17 @@ section[data-annotation-id]:hover {
   margin-left: 0;
 }
 
+.signContainer .signContainer-con--item input[type=radio]:nth-child(4) {
+  margin-bottom: 0;
+}
+
 .signContainer .signContainer-con--item .sigtype-group {
   width: 77.5%;
+}
+
+.signContainer-con--item .password {
+  width: 72.8%;
+  border: 1px solid #bdbec1;
+  margin: 0;
+  padding: 4px 7px;
 }
