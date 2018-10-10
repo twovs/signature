@@ -2704,8 +2704,8 @@ section[data-annotation-id]:hover {
 }
 
 .sigsearch-input {
-  width: 145px;
-  padding: 2px 7px;
+  width: 125px;
+  padding: 2px 27px 2px 7px;
   margin-left: 18px;
 }
 
@@ -2716,4 +2716,55 @@ section[data-annotation-id]:hover {
   width: 12px;
   height: 15px;
   background: url(./images/icon/search.png) no-repeat;
+}
+
+.sigpwd-menu {
+  padding-left: 75px;
+  margin-top: 8px;
+}
+
+.save-pwd {
+  margin-right: 9px;
+}
+
+.refresh-hardware,
+.signContainer .signature-inf .confirm-btn {
+  width: 70px;
+  height: 24px;
+  margin-left: 109px;
+  background-color: #64a9ed;
+  border: 1px solid #5292e2;
+  cursor: pointer;
+  color: #fff;
+}
+
+.signContainer .signature-inf .confirm-btn {
+  margin-left: 53px;
+}
+
+.refresh-hardware:active {
+  background-color: #3288dc;
+}
+
+.signature-preview {
+  height: 189px;
+  margin-top: 12px;
+  background-color: #f2f2f2;
+}
+
+.signContainer .signature-inf {
+  height: 26px;
+  margin-top: 12px;
+  line-height: 26px;
+}
+
+.signContainer .signature-inf .signature-inf--term {
+  color: #666;
+  font-size: 12px;
+}
+
+.signContainer .signature-inf .online-inspection {
+  color: #5292e2;
+  font-size: 12px;
+  text-decoration: none;
 }
