@@ -58,6 +58,7 @@ var LIB_DIR = BUILD_DIR + 'lib/';
 var DIST_DIR = BUILD_DIR + 'dist/';
 var COMMON_WEB_FILES = [
   'web/images/*.{png,svg,gif,cur}',
+  'web/images/icon/*',
   'web/debugger.js'
 ];
 var MOZCENTRAL_DIFF_FILE = 'mozcentral.diff';
@@ -623,6 +624,8 @@ gulp.task('generic', ['buildnumber', 'locale'], function () {
         .pipe(gulp.dest(GENERIC_DIR + 'web')),
     gulp.src('web/viewer.extend.js')
         .pipe(gulp.dest(GENERIC_DIR + 'web')),
+    gulp.src('web/libs/*')
+        .pipe(gulp.dest(GENERIC_DIR + 'web/libs')),
   ]);
 });
 

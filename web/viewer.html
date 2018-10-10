@@ -22,7 +22,7 @@
   <link rel="stylesheet" href="viewer.css">
 <!--#if !PRODUCTION-->
   <link rel="resource" type="application/l10n" href="locale/locale.properties">
-  <link href="https://cdn.bootcss.com/animate.css/3.5.2/animate.min.css" rel="stylesheet">
+  <link href="./libs/animate.min.css" rel="stylesheet">
 <!--#endif-->
 
 <!--#if !PRODUCTION-->
@@ -30,8 +30,8 @@
   <script src="../systemjs.config.js"></script>
 <!--#endif-->
 
-  <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
-  <script src="https://cdn.bootcss.com/mustache.js/2.3.0/mustache.min.js"></script>
+  <script src="./libs/jquery.min.js"></script>
+  <script src="./libs/mustache.min.js"></script>
 
 <!--#if (GENERIC && !MINIFIED) -->
 <!--#include viewer-snippet.html-->
@@ -534,13 +534,16 @@
           <input type="radio" name="sigtype" checked />普通签章
           <input type="radio" name="sigtype" />批量签章
           <input type="radio" name="sigtype" />骑缝签章
-          <input type="radio" name="sigtype" />查询签章
+          <div class="sigsearch">
+            <input type="radio" name="sigtype" />查询签章
+            <input type="text" placeholder="请输入关键字" class="sigsearch-input" />
+          </div>
         </div>
       </div>
 
       <div class="signContainer-con--item">
         <label>输入密码：</label>
-        <input type="text" placeholder="请输入口令" class="password" />
+        <input type="password" placeholder="请输入口令" class="password" />
       </div>
     </div>
   </div>

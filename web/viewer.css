@@ -237,7 +237,7 @@ html[dir='rtl'] #viewerContainer {
   position: relative;
   left: 0;
   right: 0;
-  z-index: 9999;
+  z-index: 999;
   cursor: default;
 }
 
@@ -2627,7 +2627,7 @@ section[data-annotation-id]:hover {
   width: 381px;
   height: 517px;
   transform: translate(-50%, -50%);
-  z-index: 201;
+  z-index: 1000;
 }
 
 .signContainer .signContainer-title {
@@ -2674,11 +2674,13 @@ section[data-annotation-id]:hover {
 .signContainer .signContainer-con--item input[type=radio] {
   margin-right: 7px;
   margin-left: 18px;
+}
+
+.signContainer .signContainer-con--item .sigtype-group > input[type=radio] {
   margin-bottom: 8px;
 }
 
-.signContainer .signContainer-con--item input[type=radio]:first-child,
-.signContainer .signContainer-con--item input[type=radio]:nth-child(4) {
+.signContainer .signContainer-con--item input[type=radio]:first-child {
   margin-left: 0;
 }
 
@@ -2695,4 +2697,10 @@ section[data-annotation-id]:hover {
   border: 1px solid #bdbec1;
   margin: 0;
   padding: 4px 7px;
+}
+
+.sigsearch-input {
+  width: 145px;
+  padding: 2px 7px;
+  margin-left: 18px;
 }
