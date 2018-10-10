@@ -2699,8 +2699,21 @@ section[data-annotation-id]:hover {
   padding: 4px 7px;
 }
 
+.sigtype-group .sigsearch {
+  position: relative;
+}
+
 .sigsearch-input {
   width: 145px;
   padding: 2px 7px;
   margin-left: 18px;
+}
+
+.signContainer-con--item .icon-search {
+  position: absolute;
+  top: 5px;
+  right: 12px;
+  width: 12px;
+  height: 15px;
+  background: url(./images/icon/search.png) no-repeat;
 }
