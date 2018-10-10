@@ -190,7 +190,7 @@ html[dir='rtl'] #outerContainer.sidebarOpen > #sidebarContainer {
 html[dir='ltr'] #outerContainer.sidebarOpen > #mainContainer {
   -webkit-transition-property: left;
   transition-property: left;
-  left: 252px;
+  left: 25px;
 }
 html[dir='rtl'] #outerContainer.sidebarOpen > #mainContainer {
   -webkit-transition-property: right;
@@ -2617,4 +2617,70 @@ section[data-annotation-id]:hover {
 
 .aboutContainer .abountContainer-close:active {
   background-color: #2196F8;
+}
+
+/* 添加签章区域 */
+.signContainer {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 381px;
+  height: 517px;
+  transform: translate(-50%, -50%);
+  z-index: 201;
+}
+
+.signContainer .signContainer-title {
+  height: 34px;
+  line-height: 34px;
+  background-color: #5292e2;
+  color: #fff;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.signContainer .signContainer-title label {
+  font-size: 14px;
+}
+
+.signContainer .signContainer-close {
+  font-style: normal;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.signContainer .signContainer-con {
+  min-height: 428px;
+  padding-left: 25px;
+  padding-right: 25px;
+  padding-top: 13px;
+  background-color: #fff;
+}
+
+.signContainer .signContainer-con--item {
+  margin-top: 14px;
+}
+
+.signContainer .signContainer-con--item label {
+  font-size: 14px;
+  color: #333;
+}
+
+.signContainer .signContainer-con--item select {
+  height: 24px;
+  width: 77.7%;
+}
+
+.signContainer .signContainer-con--item input[type=radio] {
+  margin-right: 7px;
+  margin-left: 18px;
+}
+
+.signContainer .signContainer-con--item input[type=radio]:first-child,
+.signContainer .signContainer-con--item input[type=radio]:nth-child(4) {
+  margin-left: 0;
+}
+
+.signContainer .signContainer-con--item .sigtype-group {
+  width: 77.5%;
 }

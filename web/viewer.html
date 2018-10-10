@@ -514,6 +514,37 @@
     </div>
   </div>
 
+  <!-- 添加签章区域 -->
+  <div id="signContainer" class="signContainer">
+    <div class="signContainer-title clearfix">
+      <label class="l">添加签章</label>
+      <em class="signContainer-close r">X</em>
+    </div>
+    <div class="signContainer-con">
+      <div class="signContainer-con--item">
+        <label>签章名称：</label>
+        <select>
+          <option value="法定代表人公章">法定代表人公章</option>
+        </select>
+      </div>
+
+      <div class="signContainer-con--item clearfix">
+        <label class="l">签章类型：</label>
+        <div class="r sigtype-group">
+          <input type="radio" name="sigtype" />普通签章
+          <input type="radio" name="sigtype" />批量签章
+          <input type="radio" name="sigtype" />骑缝签章
+          <input type="radio" name="sigtype" />查询签章
+        </div>
+      </div>
+
+      <div class="signContainer-con--item">
+        <label>输入密码：</label>
+        <input type="text" placeholder="请输入口令" />
+      </div>
+    </div>
+  </div>
+
 <!-- template -->
 <script type="text/template" id="tpl-uipopup">
   <div>
