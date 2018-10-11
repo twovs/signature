@@ -87,19 +87,10 @@ function getViewerConfiguration() {
     secondaryToolbar: {
       toolbar: document.getElementById('secondaryToolbar'),
       toggleButton: document.getElementById('secondaryToolbarToggle'),
-      toolbarButtonContainer:
-        document.getElementById('secondaryToolbarButtonContainer'),
-      openFileButton: document.getElementById('secondaryOpenFile'),
-      printButton: document.getElementById('secondaryPrint'),
-      downloadButton: document.getElementById('secondaryDownload'),
-      viewBookmarkButton: document.getElementById('secondaryViewBookmark'),
       firstPageButton: document.getElementById('firstPage'),
       lastPageButton: document.getElementById('lastPage'),
       pageRotateCwButton: document.getElementById('pageRotateCw'),
       pageRotateCcwButton: document.getElementById('pageRotateCcw'),
-      cursorSelectToolButton: document.getElementById('cursorSelectTool'),
-      cursorHandToolButton: document.getElementById('cursorHandTool'),
-      documentPropertiesButton: document.getElementById('documentProperties'),
     },
     fullscreen: {
       contextFirstPage: document.getElementById('contextFirstPage'),
@@ -197,6 +188,9 @@ function webViewerLoad() {
 
 function createApi(config) {
   let defaultSettings = {
+    ShowToolBarButton: function(nIndex, bShow) {
+       
+    },
     pageNumberNavitorTo: function (pageNumber) {
       PDFViewerApplication.pdfViewer.currentPageLabel = pageNumber;
     },

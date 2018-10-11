@@ -57,25 +57,14 @@ class SecondaryToolbar {
   constructor(options, mainContainer, eventBus) {
     this.toolbar = options.toolbar;
     this.toggleButton = options.toggleButton;
-    this.toolbarButtonContainer = options.toolbarButtonContainer;
     this.buttons = [
-      { element: options.openFileButton, eventName: 'openfile', close: true, },
-      { element: options.printButton, eventName: 'print', close: true, },
-      { element: options.downloadButton, eventName: 'download', close: true, },
-      { element: options.viewBookmarkButton, eventName: null, close: true, },
       { element: options.firstPageButton, eventName: 'firstpage',
         close: true, },
       { element: options.lastPageButton, eventName: 'lastpage', close: true, },
       { element: options.pageRotateCwButton, eventName: 'rotatecw',
         close: false, },
       { element: options.pageRotateCcwButton, eventName: 'rotateccw',
-        close: false, },
-      { element: options.cursorSelectToolButton, eventName: 'switchcursortool',
-        eventDetails: { tool: CursorTool.SELECT, }, close: true, },
-      { element: options.cursorHandToolButton, eventName: 'switchcursortool',
-        eventDetails: { tool: CursorTool.HAND, }, close: true, },
-      { element: options.documentPropertiesButton,
-        eventName: 'documentproperties', close: true, },
+        close: false, }
     ];
     this.items = {
       firstPage: options.firstPageButton,
@@ -210,8 +199,6 @@ class SecondaryToolbar {
     if (this.containerHeight === this.previousContainerHeight) {
       return;
     }
-    this.toolbarButtonContainer.setAttribute('style',
-      'max-height: ' + (this.containerHeight - SCROLLBAR_PADDING) + 'px;');
 
     this.previousContainerHeight = this.containerHeight;
   }
