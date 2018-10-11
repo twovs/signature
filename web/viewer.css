@@ -2260,15 +2260,6 @@ section[data-annotation-id]:hover {
   cursor: default;
 }
 
-.slade {
-  position: absolute;
-  top: 0px;
-  width: 100%;
-  height: 100%;
-  z-index: 10000;
-  background-color: hsla(0, 0%, 0%, .2);
-}
-
 /* 进度条 */
 .progress_bar .pro-bar {
   background: hsl(0, 0%, 97%);
@@ -2625,7 +2616,6 @@ section[data-annotation-id]:hover {
   top: 50%;
   left: 50%;
   width: 381px;
-  height: 517px;
   transform: translate(-50%, -50%);
   z-index: 1000;
 }
@@ -2651,10 +2641,9 @@ section[data-annotation-id]:hover {
 
 .signContainer .signContainer-con {
   min-height: 428px;
-  padding-left: 25px;
-  padding-right: 25px;
-  padding-top: 13px;
+  padding: 13px 25px;
   background-color: #fff;
+  box-shadow: inset 0 0 1px 1px hsla(0,0%,0%,.25);
 }
 
 .signContainer .signContainer-con--item {
@@ -2692,6 +2681,18 @@ section[data-annotation-id]:hover {
   width: 77.5%;
 }
 
+.signContainer .signContainer-con--item .pageChoiceType {
+  width: 78%;
+}
+
+.signContainer .signContainer-con--item .pageChoiceType input[type=radio] {
+  margin-left: 0;
+}
+
+.signContainer .signContainer-con--item .pageChoiceType input[type=radio]:first-child {
+  margin-bottom: 10px; 
+}
+
 .signContainer-con--item .password {
   width: 72.8%;
   border: 1px solid #bdbec1;
@@ -2703,10 +2704,15 @@ section[data-annotation-id]:hover {
   position: relative;
 }
 
-.sigsearch-input {
+.sigsearch-input,
+.pagetype-input {
   width: 125px;
   padding: 2px 27px 2px 7px;
   margin-left: 18px;
+}
+
+.pagetype-input {
+  margin-left: 46px;
 }
 
 .signContainer-con--item .icon-search {
@@ -2750,6 +2756,8 @@ section[data-annotation-id]:hover {
   height: 189px;
   margin-top: 12px;
   background-color: #f2f2f2;
+  text-align: center;
+  overflow: hidden;
 }
 
 .signContainer .signature-inf {

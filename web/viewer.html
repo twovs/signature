@@ -105,10 +105,6 @@
                 <img src="./images/icon/sign.png" alt="" />
                 <p>签章</p>
             </div>
-            <div class="toolbar-item" id="multi-sign">
-                <img src="./images/icon/sign.png" alt="" />
-                <p>多页</p>
-            </div>
             <div class="toolbar-item" id="write">
                 <img src="./images/icon/write.png" alt="" />
                 <p>手写</p>
@@ -480,22 +476,10 @@
     </div>
   </div>
 
-  <!--平板签字区域-->
-  <div id="signpad" class="signpad-container">
-    <div style="background-color:#474747;background-image: url(images/texture.png),
-                          linear-gradient(hsla(0,0%,32%,.99), hsla(0,0%,27%,.95));">
-      <input type="button" value="开始签章" class="toolbarButton" style="width: 70px; margin-left: 3px; " />
-      <input type="button" value="清除重签" class="toolbarButton" style="width: 70px; margin-left: -5px; " />
-      <input type="button" value="关闭" class="toolbarButton" style="width: 40px; margin-left: 133px;" />
-    </div>
-    <div id="signpadshow" style="width: 320px; height: 200px; border: 3px solid #474747; background-color: #e7e7e7; text-align: center;"></div>
-  </div>
   <div id="delsigndiv">
     <ul>
       <li id="delsign">删除</li>
     </ul>
-  </div>
-  <div class="slade" id="slade" style="display:none">
   </div>
 
   <!-- 关于新点 -->
@@ -515,7 +499,7 @@
   </div>
 
   <!-- 添加签章区域 -->
-  <div id="signContainer" class="signContainer">
+  <div id="signContainer" class="signContainer hidden">
     <div class="signContainer-title clearfix">
       <label class="l">添加签章</label>
       <em class="signContainer-close r">X</em>
@@ -530,15 +514,24 @@
 
       <div class="signContainer-con--item clearfix">
         <label class="l">签章类型：</label>
-        <div class="r sigtype-group">
-          <input type="radio" name="sigtype" checked />普通签章
-          <input type="radio" name="sigtype" />批量签章
-          <input type="radio" name="sigtype" />骑缝签章
+        <div class="r sigtype-group" id="selectSignType">
+          <input type="radio" name="sigtype" checked value="normal" />普通签章
+          <input type="radio" name="sigtype" value="multiSign" />批量签章
+          <input type="radio" name="sigtype" value="pagingSeal" />骑缝签章
           <div class="sigsearch">
-            <input type="radio" name="sigtype" />查询签章
+            <input type="radio" name="sigtype" value="searchSign" />查询签章
             <input type="text" placeholder="请输入关键字" class="sigsearch-input" />
             <i class="icon-search"></i>
           </div>
+        </div>
+      </div>
+
+      <div class="signContainer-con--item clearfix hidden" id="choicePage">
+        <label class="l">页面选择：</label>
+        <div class="pageChoiceType r">
+          <input type="radio" name="pagetype" checked />全部 <br />
+          <input type="radio" name="pagetype" />跨页
+          <input type="text" placeholder="例如：1、3、5" class="pagetype-input" />
         </div>
       </div>
 
@@ -553,7 +546,9 @@
       </div>
 
       <!-- 签章预览功能 -->
-      <div class="signature-preview"></div>
+      <div class="signature-preview" id="signature-preview">
+        <!-- <img src="./images/company.png" alt=""> -->
+      </div>
       <!-- 签章信息 -->
       <div class="signature-inf">
         <span class="signature-inf--term">您的签章还有581天即将到期</span>
