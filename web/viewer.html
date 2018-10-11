@@ -82,47 +82,47 @@
         <div id="toolbarViewer">
           <div id="toolbarViewerLeft">
             <img src="./images/icon/logo.jpg" alt="" />
-            <div class="toolbar-item" id="openFile">
+            <div class="toolbar-item" id="openFile" tabindex="0">
                 <img src="./images/icon/openfile.png" alt="" />
                 <p>打开</p>
             </div>
-            <div class="toolbar-item" id="closeFile">
+            <div class="toolbar-item" id="closeFile" tabindex="1">
                 <img src="./images/icon/closefile.png" alt="" />
                 <p>关闭</p>
             </div>
-            <div class="toolbar-item" id="download">
+            <div class="toolbar-item" id="download" tabindex="2">
                 <img src="./images/icon/download.png" alt="" />
                 <p>另存</p>
             </div>
-            <div class="toolbar-item" id="print">
+            <div class="toolbar-item" id="print" tabindex="3">
                 <img src="./images/icon/print.png" alt="" />
                 <p>打印</p>
             </div>
             
             <div class="spacer"></div>
             
-            <div class="toolbar-item" id="sign">
+            <div class="toolbar-item" id="sign" tabindex="33">
                 <img src="./images/icon/sign.png" alt="" />
                 <p>签章</p>
             </div>
-            <div class="toolbar-item" id="write">
+            <div class="toolbar-item" id="write" tabindex="34">
                 <img src="./images/icon/write.png" alt="" />
                 <p>手写</p>
             </div>
             
             <div class="spacer"></div>
             
-            <div class="toolbar-item" id="verification">
+            <div class="toolbar-item" id="verification" tabindex="36">
                 <img src="./images/icon/verification.png" alt="" />
                 <p>验证</p>
             </div>
             
-            <div class="toolbar-item" id="presentationMode">
+            <div class="toolbar-item" id="presentationMode" tabindex="35">
                 <img src="./images/icon/fullscreen.png" alt="" />
                 <p>全屏</p>
             </div>
             
-            <div class="toolbar-item">
+            <div class="toolbar-item" tabindex="40">
                 <img src="./images/icon/comment.png" alt="" />
                 <p>注释</p>
             </div>
@@ -132,22 +132,22 @@
                 <p>关于</p>
             </div>
             
-            <div class="toolbar-item" id="pageRotateCcw">
+            <div class="toolbar-item" id="pageRotateCcw" tabindex="14">
                 <img src="./images/icon/left.png" alt="" />
                 <p>左旋</p>
             </div>
             
-            <div class="toolbar-item" id="pageRotateCw">
+            <div class="toolbar-item" id="pageRotateCw" tabindex="13">
                 <img src="./images/icon/right.png" alt="" />
                 <p>右旋</p>
             </div>
             
-            <div class="toolbar-item" id="viewOutline">
+            <div class="toolbar-item" id="viewOutline" tabindex="26">
                 <img src="./images/icon/viewoutline.png" alt="" />
                 <p>书签</p>
             </div>
             
-            <div id="findbar">
+            <div id="findbar" tabindex="25">
                 <div id="findbarInputContainer">
                   <input id="findInput" class="searchField" placeholder="请输入...">
                   <button class="searchBtn" id="findBtn">搜索</button>
@@ -171,31 +171,6 @@
           </div>
 
           <div id="toolbarViewerRight" class="hidden">
-            <button id="viewThumbnail" class="toolbarButton" title="缩略图"
-              data-l10n-id="thumbs">
-              <span data-l10n-id="thumbs_label">缩略图</span>
-            </button>
-            <button id="viewAttachments" class="toolbarButton hidden" title="附件"
-              data-l10n-id="attachments">
-              <span data-l10n-id="attachments_label">附件</span>
-            </button>
-            <button id="viewFind" class="toolbarButton" title="检索"
-              data-l10n-id="findbar">
-              <span data-l10n-id="findbar_label">检索</span>
-            </button>
-            
-            <a href="#" id="viewBookmark" class="toolbarButton bookmark hiddenSmallView"
-              title="Current view (copy or open in new window)"
-              data-l10n-id="bookmark">
-              <span data-l10n-id="bookmark_label">Current View</span>
-            </a>
-
-            <div class="verticalToolbarSeparator hiddenSmallView"></div>
-
-            <button id="secondaryToolbarToggle" class="toolbarButton" title="Tools"
-              data-l10n-id="tools">
-              <span data-l10n-id="tools_label">Tools</span>
-            </button>
           </div>
           <div id="toolbarViewerMiddle"></div>
         </div>
@@ -365,19 +340,19 @@
       </div> 
       
       <div class="toolbarViewerMiddle">
-        <div id="firstPage" class="btn-firstPage"></div>
-        <div id="previous" class="btn-previous"></div>
-        <div id="next" class="btn-next"></div>
-        <div id="lastPage" class="btn-lastPage"></div>
+        <div id="firstPage" class="btn-firstPage" tabindex="5"></div>
+        <div id="previous" class="btn-previous" tabindex="6"></div>
+        <div id="next" class="btn-next" tabindex="7"></div>
+        <div id="lastPage" class="btn-lastPage" tabindex="8"></div>
       </div>
         
       <div class="toolbarViewerRight">
         <!-- 显示页面的实际尺寸 -->
-        <div class="btn-pageActualOption" data-value="page-actual" id="pageActualOption"></div>
+        <div class="btn-pageActualOption" data-value="page-actual" tabindex="21" id="pageActualOption"></div>
         <!-- 使页面高度和显示区域相同 -->
-        <div class="btn-pageFitOption" data-value="page-fit" id="pageFitOption"></div>
+        <div class="btn-pageFitOption" data-value="page-fit" id="pageFitOption" tabindex="22"></div>
         <!-- 使页面宽度与显示区域相同 -->
-        <div class="btn-pageWidthOption" data-value="page-width" id="pageWidthOption"></div>
+        <div class="btn-pageWidthOption" data-value="page-width" tabindex="23" id="pageWidthOption"></div>
           
         <div class="splitToolbarButton">
           <button id="zoomOut" class="toolbarButton zoomOut" title="Zoom Out"

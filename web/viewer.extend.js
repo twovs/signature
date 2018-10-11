@@ -356,6 +356,11 @@
         PDFViewerApplication.appConfig.toolbar.aboutContainer.classList.add(
           'hidden');
       });
+
+    // 书签展示
+    document.getElementById('viewOutline').addEventListener('click', function() {
+      PDFViewerApplication.pdfOutlineViewer.toggleOutlineTree();
+    });
   }
 
   /**

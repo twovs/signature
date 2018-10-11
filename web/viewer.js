@@ -74,19 +74,16 @@ function getViewerConfiguration() {
       next: document.getElementById('next'),
       zoomIn: document.getElementById('zoomIn'),
       zoomOut: document.getElementById('zoomOut'),
-      viewFind: document.getElementById('viewFind'),
       openFile: document.getElementById('openFile'),
       closeFile: document.getElementById('closeFile'),
       print: document.getElementById('print'),
       presentationModeButton: document.getElementById('presentationMode'),
       download: document.getElementById('download'),
-      viewBookmark: document.getElementById('viewBookmark'),
       about: document.getElementById('toolbar-about'),
       aboutContainer: document.getElementById('aboutContainer'),
     },
     secondaryToolbar: {
       toolbar: document.getElementById('secondaryToolbar'),
-      toggleButton: document.getElementById('secondaryToolbarToggle'),
       firstPageButton: document.getElementById('firstPage'),
       lastPageButton: document.getElementById('lastPage'),
       pageRotateCwButton: document.getElementById('pageRotateCw'),
@@ -102,10 +99,6 @@ function getViewerConfiguration() {
       // Divs (and sidebar button)
       mainContainer: document.getElementById('mainContainer'),
       outerContainer: document.getElementById('outerContainer'),
-      // Buttons
-      thumbnailButton: document.getElementById('viewThumbnail'),
-      outlineButton: document.getElementById('viewOutline'),
-      attachmentsButton: document.getElementById('viewAttachments'),
       // Views
       thumbnailView: document.getElementById('thumbnailView'),
       outlineView: document.getElementById('outlineView'),
@@ -113,7 +106,6 @@ function getViewerConfiguration() {
     },
     findBar: {
       bar: document.getElementById('findbar'),
-      toggleButton: document.getElementById('viewFind'),
       findField: document.getElementById('findInput'),
       highlightAllCheckbox: document.getElementById('findHighlightAll'),
       caseSensitiveCheckbox: document.getElementById('findMatchCase'),
@@ -189,7 +181,17 @@ function webViewerLoad() {
 function createApi(config) {
   let defaultSettings = {
     ShowToolBarButton: function(nIndex, bShow) {
-       
+      nIndex = parseInt(nIndex, 10);
+      bShow = typeof bShow == 'boolean' ? bShow : true;
+
+      var moduleEl = document.querySelector('[tabindex="'+ nIndex +'"]');
+
+      if (moduleEl) {
+        bShow ? moduleEl.classList.remove('hidden') : moduleEl.classList.add('hidden');
+      }
+      else {
+        alert('无此编号按钮');
+      }
     },
     pageNumberNavitorTo: function (pageNumber) {
       PDFViewerApplication.pdfViewer.currentPageLabel = pageNumber;

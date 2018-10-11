@@ -27,7 +27,6 @@ class PDFFindBar {
     this.opened = false;
 
     this.bar = options.bar || null;
-    this.toggleButton = options.toggleButton || null;
     this.findField = options.findField || null;
     this.highlightAll = options.highlightAllCheckbox || null;
     this.caseSensitive = options.caseSensitiveCheckbox || null;
@@ -44,11 +43,6 @@ class PDFFindBar {
       throw new Error('PDFFindBar cannot be used without a ' +
                       'PDFFindController instance.');
     }
-
-    // Add event listeners to the DOM elements.
-    this.toggleButton.addEventListener('click', () => {
-      this.toggle();
-    });
 
     this.findField.addEventListener('input', () => {
       this.dispatchEvent('');
@@ -168,7 +162,6 @@ class PDFFindBar {
   open() {
     if (!this.opened) {
       this.opened = true;
-      this.toggleButton.classList.add('toggled');
       this.bar.classList.remove('hidden');
     }
     this.findField.select();
@@ -182,7 +175,6 @@ class PDFFindBar {
       return;
     }
     this.opened = false;
-    this.toggleButton.classList.remove('toggled');
     this.bar.classList.add('hidden');
     this.findController.active = false;
   }

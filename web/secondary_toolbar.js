@@ -121,9 +121,6 @@ class SecondaryToolbar {
   }
 
   _bindClickListeners() {
-    // Button to toggle the visibility of the secondary toolbar.
-    this.toggleButton.addEventListener('click', this.toggle.bind(this));
-
     // All items within the secondary toolbar.
     for (let button in this.buttons) {
       let { element, eventName, close, eventDetails, } = this.buttons[button];
