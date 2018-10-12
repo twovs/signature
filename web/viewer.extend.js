@@ -14,6 +14,7 @@
     $signContainer = $('#signContainer'),
     $signaturePreview = $('#signature-preview'),
     $sign = $('#sign'),
+    $outerContainer = $('#outerContainer'),
     $mainContainer = $('#mainContainer'),
     $contextmenu = $('#delsigndiv'),
     $selectSignType = $('#selectSignType'),
@@ -51,7 +52,7 @@
     var offsetLeft,
       offsetTop;
 
-    $viewerContainer.on('click', 'section[data-annotation-id]', function () {
+    $viewerContainer.on('click', 'section[data-annotation-type=sign]', function () {
       var id = $(this).attr('data-annotation-id'),
         signData = window.responseSignData || [];
 
@@ -317,9 +318,9 @@
       var menuType = this.dataset.menu,
         $this = $(this);
 
-      $this.hasClass('siliderOpen') ? PDFViewerApplication.pdfSidebar.toggle() :
-        $this.addClass('active');
-      $this.siblings('.menuItem').removeClass('active');
+      if (!$this.hasClass('silderOpen')) {
+        $this.toggleClass('active').siblings('.menuItem').removeClass('active');
+      }
 
       switch (menuType) {
         case 'bookMark':

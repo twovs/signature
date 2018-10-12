@@ -247,6 +247,7 @@ class AnnotationElement {
     let height = data.rect[3] - data.rect[1];
 
     container.setAttribute('data-annotation-id', data.id);
+    container.setAttribute('data-annotation-type', 'sign');
 
     // Do *not* modify `data.rect`, since that will corrupt the annotation
     // position on subsequent calls to `_createContainer` (see issue 6804).
@@ -399,7 +400,7 @@ class LinkAnnotationElement extends AnnotationElement {
     let link = document.createElement('a');
     addLinkAttributes(link, {
       url: this.data.url,
-      target: (this.data.newWindow ? LinkTarget.BLANK : undefined),
+      target: LinkTarget.BLANK,
     });
 
     if (!this.data.url) {
