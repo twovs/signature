@@ -1791,6 +1791,7 @@ if (typeof PDFJSDev === 'undefined' || PDFJSDev.test('GENERIC')) {
   };
 }
 
+// TODO:
 function webViewerPageRendered(evt) {
   let pageNumber = evt.pageNumber;
   let pageIndex = pageNumber - 1;

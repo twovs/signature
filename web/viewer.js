@@ -249,7 +249,20 @@ function createApi(config) {
       PDFViewerApplication.close();
     },
     AfterSignPDF: function() {},
-    AfterDelSignature: function() {}
+    AfterDelSignature: function() {},
+    /**
+     * 可支持指定位置盖章
+     * @param {Object} params 参数
+     * nPageStart 签章起始页
+     * nPageEnd 签章末页
+     * nSignatureIndex 签章索引
+     * dbXAxisCoordinate X轴坐标
+     * dbYAxisCoordinate Y轴坐标
+     * strUsbkeyPassword 硬件介质Key密码
+     */
+    AddSignatureFromMouseType: function(params) {
+      
+    }
   };
 
   window.epTools = window.epTools || {};

@@ -2776,3 +2776,7 @@ section[data-annotation-id]:hover {
   font-size: 12px;
   text-decoration: none;
 }
+
+div[tabindex] {
+  outline: none !important;
+}
