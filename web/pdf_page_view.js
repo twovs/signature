@@ -185,6 +185,7 @@ class PDFPageView {
         this.canvas.height = 0;
         delete this.canvas;
       }
+
       this._resetZoomLayer();
     }
     if (this.svg) {
@@ -227,6 +228,14 @@ class PDFPageView {
         ((Math.floor(this.viewport.height) * outputScale.sy) | 0) >
         PDFJS.maxCanvasPixels) {
         isScalingRestricted = true;
+      }
+    }
+
+    // 当前页面自动签的章
+    let signArray = this.signArray;
+    if (signArray && Array.isArray(signArray)) {
+      for (let i = 0, len = signArray.length; i < len; i++) {
+        let item = signArray[i];
       }
     }
 
@@ -381,6 +390,13 @@ class PDFPageView {
       div.insertBefore(canvasWrapper, this.annotationLayer.div);
     } else {
       div.appendChild(canvasWrapper);
+    }
+
+    let signArray = this.signArray;
+    if (signArray && Array.isArray(signArray)) {
+      signArray.forEach(function(e) {
+        div.appendChild(e);
+      });
     }
 
     let textLayer = null;

@@ -180,7 +180,7 @@ html[dir='rtl'] #outerContainer.sidebarOpen > #sidebarContainer {
   top: 0;
   right: 0;
   bottom: 0;
-  left: 54px;
+  left: 0;
   min-width: 320px;
   -webkit-transition-duration: 200ms;
   -webkit-transition-timing-function: ease;
@@ -190,7 +190,7 @@ html[dir='rtl'] #outerContainer.sidebarOpen > #sidebarContainer {
 html[dir='ltr'] #outerContainer.sidebarOpen > #mainContainer {
   -webkit-transition-property: left;
   transition-property: left;
-  left: 25px;
+  left: 252px;
 }
 html[dir='rtl'] #outerContainer.sidebarOpen > #mainContainer {
   -webkit-transition-property: right;

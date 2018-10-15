@@ -261,7 +261,59 @@ function createApi(config) {
      * strUsbkeyPassword 硬件介质Key密码
      */
     AddSignatureFromMouseType: function(params) {
-      
+      let nPageStart = parseInt(params.nPageStart) || 1,
+        nPageEnd = params.nPageEnd || 5,
+        nSignatureIndex = params.nSignatureIndex || 1,
+        dbXAxisCoordinate = params.dbXAxisCoordinate,
+        dbYAxisCoordinate = params.dbYAxisCoordinate;
+
+      let pdfViewer = PDFViewerApplication.pdfViewer;
+
+      // if (!dbXAxisCoordinate && typeof dbXAxisCoordinate != 'number') {
+      //   console.error('请传入X轴坐标');
+      //   return;
+      // }
+
+      // if (!dbYAxisCoordinate && typeof dbYAxisCoordinate != 'number') {
+      //   console.error('请传入Y轴坐标');
+      //   return;
+      // }
+
+      if (nPageEnd > 0 && nPageEnd > nPageStart) {
+        let signImage = document.createElement('img');
+
+        signImage.src = './images/company.png';
+        signImage.onload = function() {
+          const imgWidth = this.width,
+            imgHeight = this.height;
+
+          for (let i = nPageStart; i <= nPageEnd; i++) {
+            let curPageView = pdfViewer.getPageView(i - 1),
+              $curPageEl = $('#viewer').find('[data-page-number="'+ i +'"]'),
+              $div = $('<div></div>');
+
+            $div.css({
+              width: imgWidth + 'px',
+              height: imgHeight + 'px',
+              position: 'absolute',
+              left: '200px',
+              top: '200px'
+            });
+
+            $div.append('<img src="./images/company.png" />');
+            $curPageEl.append($div);
+            
+            if (curPageView.signArray && Array.isArray(curPageView.signArray)) {
+              curPageView.signArray.push($div.get(0));
+            }
+            else {
+              curPageView.signArray = [$div.get(0)];
+            }
+            
+            pdfViewer.renderingQueue.renderView(curPageView);
+          }
+        };
+      }
     }
   };
 

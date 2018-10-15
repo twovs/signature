@@ -539,9 +539,6 @@
           top = initTop,
           left = initLeft;
 
-        var canvasWidth = $el.find('.canvasWrapper').width(),
-          canvasHeight = $el.find('.canvasWrapper').height();
-
         top = initTop / e.scale * scale;
         left = initLeft / e.scale * scale;
         width = initImgWidth / e.scale * scale;
