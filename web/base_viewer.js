@@ -321,7 +321,6 @@ class BaseViewer {
       return;
     }
     let pagesCount = pdfDocument.numPages;
-
     let pagesCapability = createPromiseCapability();
     this.pagesPromise = pagesCapability.promise;
 
@@ -384,9 +383,11 @@ class BaseViewer {
           renderer: this.renderer,
           l10n: this.l10n,
         });
+
         bindOnAfterAndBeforeDraw(pageView);
         this._pages.push(pageView);
       };
+      
       // TODO: 这里限制如果超过200页的，暂时只显示200页
       if (pagesCount > 200) {
         for (let pageNum = 1; pageNum <= 200; ++pageNum) {
@@ -398,6 +399,7 @@ class BaseViewer {
           getPageView.call(this, pageNum);
         }
       }
+
       // Fetch all the pages since the viewport is needed before printing
       // starts to create the correct size canvas. Wait until one page is
       // rendered so we don't tie up too many resources early on.
@@ -496,7 +498,7 @@ class BaseViewer {
     if (this.pagesCount === 0) {
       return;
     }
-    console.log('scroll');
+
     this.update();
   }
 

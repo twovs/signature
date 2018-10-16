@@ -45,7 +45,6 @@ class PDFViewer extends BaseViewer {
       return;
     }
     this._resizeBuffer(numVisiblePages);
-
     this.renderingQueue.renderHighestPriority(visible);
 
     let currentId = this._currentPageNumber;
