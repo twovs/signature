@@ -227,7 +227,6 @@
     // 关闭签章区域
     var closeSignPad = function () {
       $signContainer.addClass('hidden');
-      $choicePage.addClass('hidden');
     };
 
     $selectSignType.on('click', 'input[type=radio]', function () {

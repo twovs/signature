@@ -267,7 +267,8 @@ function createApi(config) {
         dbXAxisCoordinate = params.dbXAxisCoordinate,
         dbYAxisCoordinate = params.dbYAxisCoordinate;
 
-      let pdfViewer = PDFViewerApplication.pdfViewer;
+      let pdfViewer = PDFViewerApplication.pdfViewer,
+        pageScale = PDFViewerApplication.toolbar.pageScale;
 
       // if (!dbXAxisCoordinate && typeof dbXAxisCoordinate != 'number') {
       //   console.error('请传入X轴坐标');
@@ -290,19 +291,21 @@ function createApi(config) {
           for (let i = nPageStart; i <= nPageEnd; i++) {
             let curPageView = pdfViewer.getPageView(i - 1),
               $curPageEl = $('#viewer').find('[data-page-number="'+ i +'"]'),
-              $div = $('<div></div>');
+              $div = $('<div></div>'),
+              top = 200,
+              left = 200;
 
             $div.css({
               width: imgWidth + 'px',
               height: imgHeight + 'px',
               position: 'absolute',
-              left: '200px',
-              top: '200px'
+              left: left + 'px',
+              top: top + 'px'
             });
 
             $div.append('<img src="./images/company.png" />');
             $curPageEl.append($div);
-            
+
             if (curPageView.signArray && Array.isArray(curPageView.signArray)) {
               curPageView.signArray.push($div.get(0));
             }
@@ -310,6 +313,14 @@ function createApi(config) {
               curPageView.signArray = [$div.get(0)];
             }
             
+            // 自动签章的相关参数
+            curPageView.autoSignParams = {
+              initPageScale: pageScale,
+              initTop: top,
+              initLeft: left,
+              initWidth: imgWidth,
+              initHeight: imgHeight
+            };
             pdfViewer.renderingQueue.renderView(curPageView);
           }
         };

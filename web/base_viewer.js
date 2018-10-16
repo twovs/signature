@@ -365,7 +365,7 @@ class BaseViewer {
     firstPagePromise.then((pdfPage) => {
       let scale = this.currentScale;
       let viewport = pdfPage.getViewport(scale * CSS_UNITS);
-      for (let pageNum = 1; pageNum <= pagesCount; ++pageNum) {
+      let getPageView = function(pageNum) {
         let textLayerFactory = null;
         if (!PDFJS.disableTextLayer) {
           textLayerFactory = this;
@@ -386,8 +386,18 @@ class BaseViewer {
         });
         bindOnAfterAndBeforeDraw(pageView);
         this._pages.push(pageView);
+      };
+      // TODO: 这里限制如果超过200页的，暂时只显示200页
+      if (pagesCount > 200) {
+        for (let pageNum = 1; pageNum <= 200; ++pageNum) {
+          getPageView.call(this, pageNum);
+        }
       }
-
+      else {
+        for (let pageNum = 1; pageNum <= pagesCount; ++pageNum) {
+          getPageView.call(this, pageNum);
+        }
+      }
       // Fetch all the pages since the viewport is needed before printing
       // starts to create the correct size canvas. Wait until one page is
       // rendered so we don't tie up too many resources early on.
@@ -398,7 +408,7 @@ class BaseViewer {
           return;
         }
         let getPagesLeft = pagesCount;
-        for (let pageNum = 1; pageNum <= pagesCount; ++pageNum) {
+        let getPage = function(pageNum) {
           pdfDocument.getPage(pageNum).then((pdfPage) => {
             let pageView = this._pages[pageNum - 1];
             if (!pageView.pdfPage) {
@@ -415,6 +425,16 @@ class BaseViewer {
               pagesCapability.resolve();
             }
           });
+        };
+        if (pagesCount > 200) {
+          for (let pageNum = 1; pageNum <= 200; ++pageNum) {
+            getPage.call(this, pageNum);
+          }
+        }
+        else {
+          for (let pageNum = 1; pageNum <= pagesCount; ++pageNum) {
+            getPage.call(this, pageNum);
+          }
         }
       });
 
@@ -476,6 +496,7 @@ class BaseViewer {
     if (this.pagesCount === 0) {
       return;
     }
+    console.log('scroll');
     this.update();
   }
 

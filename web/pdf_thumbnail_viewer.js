@@ -142,7 +142,8 @@ class PDFThumbnailViewer {
     pdfDocument.getPage(1).then((firstPage) => {
       let pagesCount = pdfDocument.numPages;
       let viewport = firstPage.getViewport(1.0);
-      for (let pageNum = 1; pageNum <= pagesCount; ++pageNum) {
+      // TODO: 这里进行分页渲染，超过200页的，暂时只显示200页
+      let getThumbnail = function(pageNum) {
         let thumbnail = new PDFThumbnailView({
           container: this.container,
           id: pageNum,
@@ -153,6 +154,16 @@ class PDFThumbnailViewer {
           l10n: this.l10n,
         });
         this._thumbnails.push(thumbnail);
+      };
+      if (pagesCount > 200) {
+        for (let pageNum = 1; pageNum <= 200; ++pageNum) {
+          getThumbnail.call(this, pageNum);
+        }
+      }
+      else {
+        for (let pageNum = 1; pageNum <= pagesCount; ++pageNum) {
+          getThumbnail.call(this, pageNum);
+        }
       }
     }).catch((reason) => {
       console.error('Unable to initialize thumbnail viewer', reason);

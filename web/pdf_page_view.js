@@ -234,8 +234,69 @@ class PDFPageView {
     // 当前页面自动签的章
     let signArray = this.signArray;
     if (signArray && Array.isArray(signArray)) {
+      let pageScale = this.scale,
+        pageRotation = this.rotation,
+        autoSignParams = this.autoSignParams,
+        initPageScale = autoSignParams.initPageScale,
+        initTop = autoSignParams.initTop,
+        initLeft = autoSignParams.initLeft,
+        initWidth = autoSignParams.initWidth,
+        initHeight = autoSignParams.initHeight;
+
       for (let i = 0, len = signArray.length; i < len; i++) {
-        let item = signArray[i];
+        let $item = $(signArray[i]),
+          top = initTop / initPageScale * pageScale,
+          left = initLeft / initPageScale * pageScale,
+          width = initWidth / initPageScale * pageScale,
+          height = initHeight / initPageScale * pageScale;
+
+        $item.css({
+          width: width,
+          height: height
+        });
+
+        $item.find('img').css({
+          width: width,
+          height: height
+        });
+
+        switch(pageRotation) {
+          case 0:
+            $item.css({
+              top: top,
+              left: left,
+              bottom: 'auto',
+              right: 'auto'
+            });
+            break;
+
+          case 90:
+            $item.css({
+              top: left,
+              left: 'auto',
+              right: top,
+              bottom: 'auto'
+            });
+            break;
+
+          case 180:
+            $item.css({
+              top: 'auto',
+              left: 'auto',
+              bottom: top,
+              right: left
+            });
+            break;
+
+          case 270:
+            $item.css({
+              top: 'auto',
+              left: top,
+              bottom: left,
+              right: 'auto'
+            });
+            break;
+        }
       }
     }
 
