@@ -14,7 +14,6 @@
     $signContainer = $('#signContainer'),
     $signaturePreview = $('#signature-preview'),
     $sign = $('#sign'),
-    $outerContainer = $('#outerContainer'),
     $mainContainer = $('#mainContainer'),
     $contextmenu = $('#delsigndiv'),
     $selectSignType = $('#selectSignType'),

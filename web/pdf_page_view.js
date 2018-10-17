@@ -99,13 +99,13 @@ class PDFPageView {
     this.zoomLayer = null;
 
     var div = document.createElement('div');
-
+    
     div.className = 'page';
     div.style.width = Math.floor(this.viewport.width) + 'px';
     div.style.height = Math.floor(this.viewport.height) + 'px';
     div.setAttribute('data-page-number', this.id);
     this.div = div;
-
+    
     container.appendChild(div);
   }
 
@@ -261,7 +261,7 @@ class PDFPageView {
           height: height
         });
 
-        switch (pageRotation) {
+        switch(pageRotation) {
           case 0:
             $item.css({
               top: top,
@@ -456,7 +456,7 @@ class PDFPageView {
 
     let signArray = this.signArray;
     if (signArray && Array.isArray(signArray)) {
-      signArray.forEach(function (e) {
+      signArray.forEach(function(e) {
         div.appendChild(e);
       });
     }
@@ -481,8 +481,7 @@ class PDFPageView {
     this.textLayer = textLayer;
 
     var pageDrawCallback = window.pageDrawCallback;
-    pageDrawCallback && typeof pageDrawCallback == 'function' &&
-      pageDrawCallback.call(this);
+    pageDrawCallback && typeof pageDrawCallback == 'function' && pageDrawCallback.call(this);
 
     let renderContinueCallback = null;
     if (this.renderingQueue) {
