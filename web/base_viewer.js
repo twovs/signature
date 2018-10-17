@@ -527,7 +527,7 @@ class BaseViewer {
 		let _currentPageNumber = this._currentPageNumber;
 
 		// TODO: 这边可以进行页面的创建，但是有问题这边 scrollUpdate
-		if (_currentPageNumber % 200 == 0 && this._pages.length == 200) {
+		if ((_currentPageNumber % 200 == 0 || _currentPageNumber >= this._pages.length - 3) && this._pages.length == 200) {
 			this._generationPages();
 		}
 
