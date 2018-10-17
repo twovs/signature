@@ -499,9 +499,10 @@ class BaseViewer {
       return;
     }
 
-    // TODO: 这边可以进行页面的创建，但是有问题这边
+    // TODO: 这边可以进行页面的创建，但是有问题这边 scrollUpdate
     if (this._currentPageNumber >= 197 || this._currentPageNumber == 200) {
       let firstPagePromise = this.firstPagePromise;
+      let onePageRenderedCapability = createPromiseCapability();
 
       firstPagePromise.then((pdfPage) => {
       let scale = this.currentScale;
@@ -525,8 +526,7 @@ class BaseViewer {
           renderer: this.renderer,
           l10n: this.l10n,
         });
-
-        // bindOnAfterAndBeforeDraw(pageView);
+        
         this._pages.push(pageView);
       };
       
