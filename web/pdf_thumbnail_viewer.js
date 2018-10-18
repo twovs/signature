@@ -49,10 +49,17 @@ class PDFThumbnailViewer {
   }
 
   /**
-   * TODO:
+   * TODO: scrollViewer
    * @private
    */
   _scrollUpdated() {
+    let visibleThumbs = this._getVisibleThumbs(),
+      last = visibleThumbs.last.id;
+
+    if (last % 200 === 0 && this._thumbnails.length == last) {
+      this._generationThumbnail();
+    }
+
     this.renderingQueue.renderHighestPriority();
   }
 
@@ -165,6 +172,46 @@ class PDFThumbnailViewer {
         for (let pageNum = 1; pageNum <= pagesCount; ++pageNum) {
           getThumbnail.call(this, pageNum);
         }
+      }
+    }).catch((reason) => {
+      console.error('Unable to initialize thumbnail viewer', reason);
+    });
+  }
+
+  /**
+   * @private
+   */
+  _generationThumbnail() {
+    let pdfDocument = this.pdfDocument;
+
+    if (!pdfDocument) {
+      return;
+    }
+
+    pdfDocument.getPage(1).then((firstPage) => {
+      let viewport = firstPage.getViewport(1.0);
+      let getThumbnail = function(pageNum) {
+        let thumbnail = new PDFThumbnailView({
+          container: this.container,
+          id: pageNum,
+          defaultViewport: viewport.clone(),
+          linkService: this.linkService,
+          renderingQueue: this.renderingQueue,
+          disableCanvasToImageConversion: false,
+          l10n: this.l10n,
+        });
+        this._thumbnails.push(thumbnail);
+      };
+
+      let thumbnailsLength = this._thumbnails.length,
+        len = thumbnailsLength * 2;
+				
+			if (len > this.pdfDocument.numPages) {
+				len = this.pdfDocument.numPages;
+			}
+
+      for(let i = thumbnailsLength + 1; i <= len; i++) {
+        getThumbnail.call(this, i);
       }
     }).catch((reason) => {
       console.error('Unable to initialize thumbnail viewer', reason);
