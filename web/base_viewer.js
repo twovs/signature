@@ -524,10 +524,14 @@ class BaseViewer {
 			return;
 		}
 
-		let _currentPageNumber = this._currentPageNumber;
+		let _currentPageNumber = this._currentPageNumber,
+			_pagesLength = this._pages.length;
+			
+		console.log('_currentPageNumber: ' + _currentPageNumber);
+		console.log('_pagesLength: ' + _pagesLength);
 
 		// TODO: 这边可以进行页面的创建，但是有问题这边 scrollUpdate
-		if ((_currentPageNumber % 200 == 0 || _currentPageNumber >= this._pages.length - 3) && this._pages.length == 200) {
+		if (_currentPageNumber % 200 === 0 && _pagesLength == _currentPageNumber) {
 			this._generationPages();
 		}
 
@@ -564,7 +568,9 @@ class BaseViewer {
 				this._pages.push(pageView);
 			};
 			
-			for (let i = this._pages.length + 1, len = 400; i <= 400; i++) {
+			let pagesLength = this._pages.length;
+			
+			for (let i = pagesLength + 1, len = pagesLength * 2; i <= len; i++) {
 				getPageView.call(this, i);
 			}
 
@@ -598,7 +604,9 @@ class BaseViewer {
 						});
 				};
 				
-				for (let i = this._pages.length, len = 400; i < len; i++) {
+				let pagesLength = this._pages.length;
+				
+				for (let i = pagesLength + 1, len = pagesLength * 2; i < len; i++) {
 					getPage.call(this, i);
 				}
 			});
