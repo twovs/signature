@@ -49,6 +49,7 @@ class PDFThumbnailViewer {
   }
 
   /**
+   * TODO:
    * @private
    */
   _scrollUpdated() {
@@ -155,7 +156,6 @@ class PDFThumbnailViewer {
         });
         this._thumbnails.push(thumbnail);
       };
-
       if (pagesCount > 200) {
         for (let pageNum = 1; pageNum <= 200; ++pageNum) {
           getThumbnail.call(this, pageNum);

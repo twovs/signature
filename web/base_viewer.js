@@ -526,9 +526,6 @@ class BaseViewer {
 
 		let _currentPageNumber = this._currentPageNumber,
 			_pagesLength = this._pages.length;
-			
-		console.log('_currentPageNumber: ' + _currentPageNumber);
-		console.log('_pagesLength: ' + _pagesLength);
 
 		// TODO: 这边可以进行页面的创建，但是有问题这边 scrollUpdate
 		if (_currentPageNumber % 200 === 0 && _pagesLength == _currentPageNumber) {
@@ -568,9 +565,14 @@ class BaseViewer {
 				this._pages.push(pageView);
 			};
 			
-			let pagesLength = this._pages.length;
+			let pagesLength = this._pages.length,
+				len = pagesLength * 2;
+				
+			if (len > this.pdfDocument.numPages) {
+				len = this.pdfDocument.numPages;
+			}
 			
-			for (let i = pagesLength + 1, len = pagesLength * 2; i <= len; i++) {
+			for (let i = pagesLength + 1; i <= len; i++) {
 				getPageView.call(this, i);
 			}
 
@@ -604,9 +606,14 @@ class BaseViewer {
 						});
 				};
 				
-				let pagesLength = this._pages.length;
+				let pagesLength = this._pages.length,
+					len = pagesLength * 2;
+					
+				if (len > this.pdfDocument.numPages) {
+					len = this.pdfDocument.numPages;
+				}
 				
-				for (let i = pagesLength + 1, len = pagesLength * 2; i < len; i++) {
+				for (let i = pagesLength + 1; i <= len; i++) {
 					getPage.call(this, i);
 				}
 			});
