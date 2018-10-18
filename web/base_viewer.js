@@ -203,11 +203,100 @@ class BaseViewer {
       return;
     }
 
-    // this.pagesCount -> this.pdfDocument.numPages
+    //TODO: this.pagesCount -> this.pdfDocument.numPages
     if (!(0 < val && val <= this.pdfDocument.numPages)) {
       console.error(
         `${this._name}._setCurrentPageNumber: "${val}" is out of bounds.`);
       return;
+    }
+
+    if (val > this.pagesCount) {
+      // 去加载到当前页的pdf
+      let firstPagePromise = this.firstPagePromise;
+      let onePageRenderedCapability = createPromiseCapability();
+
+      firstPagePromise.then((pdfPage) => {
+        let scale = this.currentScale;
+        let viewport = pdfPage.getViewport(scale * CSS_UNITS);
+        let getPageView = function (pageNum) {
+          let textLayerFactory = null;
+          if (!PDFJS.disableTextLayer) {
+            textLayerFactory = this;
+          }
+          let pageView = new PDFPageView({
+            container: this._setDocumentViewerElement,
+            eventBus: this.eventBus,
+            id: pageNum,
+            scale,
+            defaultViewport: viewport.clone(),
+            renderingQueue: this.renderingQueue,
+            textLayerFactory,
+            annotationLayerFactory: this,
+            enhanceTextSelection: this.enhanceTextSelection,
+            renderInteractiveForms: this.renderInteractiveForms,
+            renderer: this.renderer,
+            l10n: this.l10n,
+          });
+
+          this._pages.push(pageView);
+        };
+
+        for (let i = this._pages.length + 1; i <= val; i++) {
+          getPageView.call(this, i);
+        }
+
+        // Fetch all the pages since the viewport is needed before printing
+        // starts to create the correct size canvas. Wait until one page is
+        // rendered so we don't tie up too many resources early on.
+        onePageRenderedCapability.promise.then(() => {
+          if (PDFJS.disableAutoFetch) {
+            // XXX: Printing is semi-broken with auto fetch disabled.
+            pagesCapability.resolve();
+            return;
+          }
+          let getPagesLeft = pagesCount;
+          let getPage = function (pageNum) {
+            pdfDocument.getPage(pageNum).then((pdfPage) => {
+                let pageView = this._pages[pageNum - 1];
+                if (!pageView.pdfPage) {
+                  pageView.setPdfPage(pdfPage);
+                }
+                this.linkService.cachePageRef(pageNum, pdfPage.ref);
+                if (--getPagesLeft === 0) {
+                  pagesCapability.resolve();
+                }
+              },
+              (reason) => {
+                console.error(
+                  `Unable to get page ${pageNum} to initialize viewer`,
+                  reason);
+
+                if (--getPagesLeft === 0) {
+                  pagesCapability.resolve();
+                }
+              });
+          };
+
+          for (let i = this._pages.length + 1; i <= val; i++) {
+            getPage.call(this, i);
+          }
+        });
+
+        this.eventBus.dispatch('pagesinit', {
+          source: this,
+        });
+
+        if (this.defaultRenderingQueue) {
+          this.update();
+        }
+
+        if (this.findController) {
+          this.findController.resolveFirstPage();
+        }
+      }).
+      catch((reason) => {
+        console.error('Unable to initialize viewer', reason);
+      });
     }
 
     let arg = {
