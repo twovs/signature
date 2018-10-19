@@ -93,7 +93,7 @@ class PDFThumbnailViewer {
     // 如果输入跳转的页数，大于现在的 _thumbnails 数，则生成后在进行跳转
     if (page > this._thumbnails.length) {
       let pdfDocument = this.pdfDocument;
-
+      
       if (!pdfDocument) {
         return;
       }
@@ -123,11 +123,22 @@ class PDFThumbnailViewer {
         for (let pageNum = this._thumbnails.length + 1; pageNum <= len; ++pageNum) {
           getThumbnail.call(this, pageNum);
         }
+
+        this._thumbnailIntoView(page);
       }).catch((reason) => {
         console.error('Unable to initialize thumbnail viewer', reason);
       });
     }
+    else {
+      this._thumbnailIntoView(page);
+    }
+  }
 
+  /**
+   * 生成跳转的 thumbnail
+   * @param {Number} page 要跳转的页面 
+   */
+  _thumbnailIntoView(page) {
     let selected = document.querySelector('.thumbnail.selected');
     if (selected) {
       selected.classList.remove('selected');

@@ -846,7 +846,7 @@ class BaseViewer {
       this._setScale(this._currentScaleValue, true);
     }
 
-    let pageView = this._pages[this._currentPageNumber - 1];
+	let pageView = this._pages[this._currentPageNumber - 1];
     this._scrollIntoView({
       pageDiv: pageView.div,
     });
