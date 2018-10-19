@@ -196,13 +196,6 @@ class BaseViewer {
    * @private
    */
   _setCurrentPageNumber(val, resetCurrentPageView = false) {
-    if (this._currentPageNumber === val) {
-      if (resetCurrentPageView) {
-        this._resetCurrentPageView();
-      }
-      return;
-    }
-
     //TODO: this.pagesCount -> this.pdfDocument.numPages
     if (!(0 < val && val <= this.pdfDocument.numPages)) {
       console.error(
@@ -288,10 +281,17 @@ class BaseViewer {
 
         if (this.defaultRenderingQueue) {
           this.update();
-        }
+		}
 
         if (this.findController) {
           this.findController.resolveFirstPage();
+		}
+		
+        if (this._currentPageNumber === val) {
+          if (resetCurrentPageView) {
+            this._resetCurrentPageView();
+          }
+          return;
         }
       }).
       catch((reason) => {
@@ -846,7 +846,7 @@ class BaseViewer {
       this._setScale(this._currentScaleValue, true);
     }
 
-	let pageView = this._pages[this._currentPageNumber - 1];
+    let pageView = this._pages[this._currentPageNumber - 1];
     this._scrollIntoView({
       pageDiv: pageView.div,
     });
