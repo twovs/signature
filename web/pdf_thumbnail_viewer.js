@@ -67,7 +67,7 @@ class PDFThumbnailViewer {
     let visibleThumbs = this._getVisibleThumbs(),
       last = visibleThumbs.last.id;
 
-    if (last % 200 === 0 && this._thumbnails.length == last) {
+    if (last % 100 === 0 && this._thumbnails.length == last) {
       this._generationThumbnail();
     }
 
@@ -93,7 +93,7 @@ class PDFThumbnailViewer {
     // 如果输入跳转的页数，大于现在的 _thumbnails 数，则生成后在进行跳转
     if (page > this._thumbnails.length) {
       let pdfDocument = this.pdfDocument;
-      
+
       if (!pdfDocument) {
         return;
       }
@@ -216,7 +216,7 @@ class PDFThumbnailViewer {
     pdfDocument.getPage(1).then((firstPage) => {
       let pagesCount = pdfDocument.numPages;
       let viewport = firstPage.getViewport(1.0);
-      // TODO: 这里进行分页渲染，超过200页的，暂时只显示200页
+      // TODO: 这里进行分页渲染，超过100页的，暂时只显示100页
       let getThumbnail = function (pageNum) {
         let thumbnail = new PDFThumbnailView({
           container: this.container,
@@ -229,8 +229,8 @@ class PDFThumbnailViewer {
         });
         this._thumbnails.push(thumbnail);
       };
-      if (pagesCount > 200) {
-        for (let pageNum = 1; pageNum <= 200; ++pageNum) {
+      if (pagesCount > 100) {
+        for (let pageNum = 1; pageNum <= 100; ++pageNum) {
           getThumbnail.call(this, pageNum);
         }
       } else {
@@ -269,7 +269,7 @@ class PDFThumbnailViewer {
       };
 
       let thumbnailsLength = this._thumbnails.length,
-        len = thumbnailsLength * 2;
+        len = thumbnailsLength + 100;
 
       if (len > this.pdfDocument.numPages) {
         len = this.pdfDocument.numPages;

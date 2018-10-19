@@ -329,7 +329,6 @@ function createApi(config) {
   };
 
   window.epTools = window.epTools || {};
-  extend(window.epTools, defaultSettings);
 
   Object.defineProperties(window.epTools, function() {
     var result = {};
@@ -342,6 +341,10 @@ function createApi(config) {
 
     return result;
   }());
+
+  if (window.epTools.ready && typeof window.epTools.ready == 'function') {
+    window.epTools.ready.call(window.epTools);
+  }
 }
 
 function extend() {

@@ -7,7 +7,13 @@
     win[k] = returnVal[k];
   }
 
-}(this, function () {
+}(this, function () {  
+  window.epTools = {
+    ready: function() {
+      console.log('ready');
+    }
+  };
+
   var $uiPopup = $('#ui-popup'),
     $uiPopupContent = $('#ui-popup-content'),
     $viewerContainer = $('#viewerContainer'),
@@ -51,41 +57,42 @@
     var offsetLeft,
       offsetTop;
 
-    $viewerContainer.on('click', 'section[data-annotation-type=sign]', function () {
-      var id = $(this).attr('data-annotation-id'),
-        signData = window.responseSignData || [];
+    $viewerContainer.on('click', 'section[data-annotation-type=sign]',
+      function () {
+        var id = $(this).attr('data-annotation-id'),
+          signData = window.responseSignData || [];
 
-      if (signData.length < 1) {
-        alert('暂无此签章信息');
-        return;
-      }
-
-      $.each(signData, function (i, e) {
-        if (e.id == id) {
-          var cert = e.cert;
-
-          if (e.isIntegrity) {
-            e.signCls = 'success';
-            e.signDescription = '签名有效，由"' + cert.signer +
-              '"签名，自应用本签名以来，"文档"未被修改';
-          } else {
-            e.signCls = 'error';
-            e.signDescription = '签名无效，由"' + cert.signer +
-              '"签名，自应用本签名以来，"文档"已被更改或损坏';
-          }
-
-          var blob = base64ToBlob(cert.base64Cert);
-
-          cert.certDownloadUrl = window.URL.createObjectURL(blob);
-          e.signdate = getDate(e.signdate);
-
-          $uiPopupContent.html(Mustache.render($tplPopup, e));
-          $uiPopup.addClass('zoomIn animated faster');
-          $uiPopup.removeClass('hidden');
-          window.URL.revokeObjectURL(blob);
+        if (signData.length < 1) {
+          alert('暂无此签章信息');
+          return;
         }
-      });
-    }).on('click', '.page', function () {
+
+        $.each(signData, function (i, e) {
+          if (e.id == id) {
+            var cert = e.cert;
+
+            if (e.isIntegrity) {
+              e.signCls = 'success';
+              e.signDescription = '签名有效，由"' + cert.signer +
+                '"签名，自应用本签名以来，"文档"未被修改';
+            } else {
+              e.signCls = 'error';
+              e.signDescription = '签名无效，由"' + cert.signer +
+                '"签名，自应用本签名以来，"文档"已被更改或损坏';
+            }
+
+            var blob = base64ToBlob(cert.base64Cert);
+
+            cert.certDownloadUrl = window.URL.createObjectURL(blob);
+            e.signdate = getDate(e.signdate);
+
+            $uiPopupContent.html(Mustache.render($tplPopup, e));
+            $uiPopup.addClass('zoomIn animated faster');
+            $uiPopup.removeClass('hidden');
+            window.URL.revokeObjectURL(blob);
+          }
+        });
+      }).on('click', '.page', function () {
       var pageNumber = $(this).attr('data-page-number');
 
       // 如果开启了签章，并且已有pdf展示
@@ -317,7 +324,8 @@
         $this = $(this);
 
       if (!$this.hasClass('silderOpen')) {
-        $this.toggleClass('active').siblings('.menuItem').removeClass('active');
+        $this.toggleClass('active').siblings('.menuItem').removeClass(
+          'active');
       }
 
       switch (menuType) {
@@ -357,9 +365,10 @@
       });
 
     // 书签展示
-    document.getElementById('viewOutline').addEventListener('click', function() {
-      PDFViewerApplication.pdfOutlineViewer.toggleOutlineTree();
-    });
+    document.getElementById('viewOutline').addEventListener('click',
+      function () {
+        PDFViewerApplication.pdfOutlineViewer.toggleOutlineTree();
+      });
   }
 
   /**
@@ -367,10 +376,9 @@
    * @returns {String} uuid 唯一标识
    */
   function uuidv4() {
-    return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
-      (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(
-        16)
-    )
+    return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, function (c) {
+      (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+    });
   }
 
   /**

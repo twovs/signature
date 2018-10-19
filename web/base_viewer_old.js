@@ -291,6 +291,7 @@ class BaseViewer {
           if (resetCurrentPageView) {
             this._resetCurrentPageView();
           }
+          return;
         }
       }).
       catch((reason) => {
@@ -502,9 +503,9 @@ class BaseViewer {
         this._pages.push(pageView);
       };
 
-      // TODO: 这里限制如果超过100页的，暂时只显示100页
-      if (pagesCount > 100) {
-        for (let pageNum = 1; pageNum <= 100; ++pageNum) {
+      // TODO: 这里限制如果超过200页的，暂时只显示200页
+      if (pagesCount > 200) {
+        for (let pageNum = 1; pageNum <= 200; ++pageNum) {
           getPageView.call(this, pageNum);
         }
       } else {
@@ -542,8 +543,8 @@ class BaseViewer {
             }
           });
         };
-        if (pagesCount > 100) {
-          for (let pageNum = 1; pageNum <= 100; ++pageNum) {
+        if (pagesCount > 200) {
+          for (let pageNum = 1; pageNum <= 200; ++pageNum) {
             getPage.call(this, pageNum);
           }
         } else {
@@ -618,7 +619,7 @@ class BaseViewer {
       _pagesLength = this._pages.length;
 
     // TODO: 这边可以进行页面的创建，但是有问题这边 scrollUpdate
-    if (_currentPageNumber % 100 === 0 && _pagesLength == _currentPageNumber) {
+    if (_currentPageNumber % 200 === 0 && _pagesLength == _currentPageNumber) {
       this._generationPages();
     }
 
@@ -656,7 +657,7 @@ class BaseViewer {
       };
 
       let pagesLength = this._pages.length,
-        len = pagesLength + 100;
+        len = pagesLength * 2;
 
       if (len > this.pdfDocument.numPages) {
         len = this.pdfDocument.numPages;
@@ -699,7 +700,7 @@ class BaseViewer {
         };
 
         let pagesLength = this._pages.length,
-          len = pagesLength + 100;
+          len = pagesLength * 2;
 
         if (len > this.pdfDocument.numPages) {
           len = this.pdfDocument.numPages;
@@ -845,12 +846,10 @@ class BaseViewer {
       this._setScale(this._currentScaleValue, true);
     }
 
-	let pageView = this._pages[this._currentPageNumber - 1];
-	if (pageView) {
-		this._scrollIntoView({
-			pageDiv: pageView.div,
-		});
-	}
+    let pageView = this._pages[this._currentPageNumber - 1];
+    this._scrollIntoView({
+      pageDiv: pageView.div,
+    });
   }
 
   /**
@@ -887,7 +886,9 @@ class BaseViewer {
 
     let pageView = this._pages[pageNumber - 1];
     if (!pageView) {
-    //   console.error(`${this._name}.scrollPageIntoView: Invalid "pageNumber" parameter.`);
+      console.error(
+        `${this._name}.scrollPageIntoView: Invalid "pageNumber" parameter.`
+      );
       return;
     }
     let x = 0,
