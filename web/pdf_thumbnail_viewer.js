@@ -14,9 +14,15 @@
  */
 
 import {
-  getVisibleElements, isValidRotation, NullL10n, scrollIntoView, watchScroll
+  getVisibleElements,
+  isValidRotation,
+  NullL10n,
+  scrollIntoView,
+  watchScroll
 } from './ui_utils';
-import { PDFThumbnailView } from './pdf_thumbnail_view';
+import {
+  PDFThumbnailView
+} from './pdf_thumbnail_view';
 
 const THUMBNAIL_SCROLL_MARGIN = -19;
 
@@ -38,7 +44,12 @@ class PDFThumbnailViewer {
   /**
    * @param {PDFThumbnailViewerOptions} options
    */
-  constructor({ container, linkService, renderingQueue, l10n = NullL10n, }) {
+  constructor({
+    container,
+    linkService,
+    renderingQueue,
+    l10n = NullL10n,
+  }) {
     this.container = container;
     this.linkService = linkService;
     this.renderingQueue = renderingQueue;
@@ -74,7 +85,49 @@ class PDFThumbnailViewer {
     return getVisibleElements(this.container, this._thumbnails);
   }
 
+  /**
+   * TODO: 选择跳转第几页的 scrollPage
+   * @param {Number} page 页数 
+   */
   scrollThumbnailIntoView(page) {
+    // 如果输入跳转的页数，大于现在的 _thumbnails 数，则生成后在进行跳转
+    if (page > this._thumbnails.length) {
+      let pdfDocument = this.pdfDocument;
+
+      if (!pdfDocument) {
+        return;
+      }
+
+      pdfDocument.getPage(1).then((firstPage) => {
+        let viewport = firstPage.getViewport(1.0);
+        let getThumbnail = function (pageNum) {
+          let thumbnail = new PDFThumbnailView({
+            container: this.container,
+            id: pageNum,
+            defaultViewport: viewport.clone(),
+            linkService: this.linkService,
+            renderingQueue: this.renderingQueue,
+            disableCanvasToImageConversion: false,
+            l10n: this.l10n,
+          });
+          this._thumbnails.push(thumbnail);
+        };
+
+        let len = page;
+
+        if (len > this.pdfDocument.numPages) {
+          console.error(`超出pdf页数 ${page}`);
+          return;
+        }
+        
+        for (let pageNum = this._thumbnails.length + 1; pageNum <= len; ++pageNum) {
+          getThumbnail.call(this, pageNum);
+        }
+      }).catch((reason) => {
+        console.error('Unable to initialize thumbnail viewer', reason);
+      });
+    }
+
     let selected = document.querySelector('.thumbnail.selected');
     if (selected) {
       selected.classList.remove('selected');
@@ -93,7 +146,9 @@ class PDFThumbnailViewer {
       // Account for only one thumbnail being visible.
       let last = (numVisibleThumbs > 1 ? visibleThumbs.last.id : first);
       if (page <= first || page >= last) {
-        scrollIntoView(thumbnail, { top: THUMBNAIL_SCROLL_MARGIN, });
+        scrollIntoView(thumbnail, {
+          top: THUMBNAIL_SCROLL_MARGIN,
+        });
       }
     }
   }
@@ -151,7 +206,7 @@ class PDFThumbnailViewer {
       let pagesCount = pdfDocument.numPages;
       let viewport = firstPage.getViewport(1.0);
       // TODO: 这里进行分页渲染，超过200页的，暂时只显示200页
-      let getThumbnail = function(pageNum) {
+      let getThumbnail = function (pageNum) {
         let thumbnail = new PDFThumbnailView({
           container: this.container,
           id: pageNum,
@@ -167,8 +222,7 @@ class PDFThumbnailViewer {
         for (let pageNum = 1; pageNum <= 200; ++pageNum) {
           getThumbnail.call(this, pageNum);
         }
-      }
-      else {
+      } else {
         for (let pageNum = 1; pageNum <= pagesCount; ++pageNum) {
           getThumbnail.call(this, pageNum);
         }
@@ -190,7 +244,7 @@ class PDFThumbnailViewer {
 
     pdfDocument.getPage(1).then((firstPage) => {
       let viewport = firstPage.getViewport(1.0);
-      let getThumbnail = function(pageNum) {
+      let getThumbnail = function (pageNum) {
         let thumbnail = new PDFThumbnailView({
           container: this.container,
           id: pageNum,
@@ -205,12 +259,12 @@ class PDFThumbnailViewer {
 
       let thumbnailsLength = this._thumbnails.length,
         len = thumbnailsLength * 2;
-				
-			if (len > this.pdfDocument.numPages) {
-				len = this.pdfDocument.numPages;
-			}
 
-      for(let i = thumbnailsLength + 1; i <= len; i++) {
+      if (len > this.pdfDocument.numPages) {
+        len = this.pdfDocument.numPages;
+      }
+
+      for (let i = thumbnailsLength + 1; i <= len; i++) {
         getThumbnail.call(this, i);
       }
     }).catch((reason) => {
@@ -239,7 +293,7 @@ class PDFThumbnailViewer {
     if (!labels) {
       this._pageLabels = null;
     } else if (!(labels instanceof Array &&
-                 this.pdfDocument.numPages === labels.length)) {
+        this.pdfDocument.numPages === labels.length)) {
       this._pageLabels = null;
       console.error('PDFThumbnailViewer_setPageLabels: Invalid page labels.');
     } else {
@@ -281,8 +335,8 @@ class PDFThumbnailViewer {
   forceRendering() {
     let visibleThumbs = this._getVisibleThumbs();
     let thumbView = this.renderingQueue.getHighestPriority(visibleThumbs,
-                                                           this._thumbnails,
-                                                           this.scroll.down);
+      this._thumbnails,
+      this.scroll.down);
     if (thumbView) {
       this._ensurePdfPageLoaded(thumbView).then(() => {
         this.renderingQueue.renderView(thumbView);
