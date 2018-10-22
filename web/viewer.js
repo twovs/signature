@@ -18,6 +18,14 @@
 
 let DEFAULT_URL = '';
 
+window.epTools = {
+  ready: function(callback) {
+    if (callback && typeof callback == 'function') {
+      this._readyCallback = callback;
+    }
+  }
+};
+
 if (typeof PDFJSDev !== 'undefined' && PDFJSDev.test('CHROME')) {
   (function rewriteUrlClosure() {
     // Run this code outside DOMContentLoaded to make sure that the URL
@@ -160,9 +168,6 @@ function getViewerConfiguration() {
 function webViewerLoad() {
   let config = getViewerConfiguration();
 
-  // 创建API
-  createApi(config);
-
   if (typeof PDFJSDev === 'undefined' || !PDFJSDev.test('PRODUCTION')) {
     Promise.all([
       SystemJS.import('pdfjs-web/app'),
@@ -171,10 +176,12 @@ function webViewerLoad() {
     ]).then(function([app, ...otherModules]) {
       window.PDFViewerApplication = app.PDFViewerApplication;
       app.PDFViewerApplication.run(config);
+      createApi(config);
     });
   } else {
     window.PDFViewerApplication = pdfjsWebApp.PDFViewerApplication;
     pdfjsWebApp.PDFViewerApplication.run(config);
+    createApi(config);
   }
 }
 
@@ -328,7 +335,7 @@ function createApi(config) {
     }
   };
 
-  window.epTools = window.epTools || {};
+  extend(window.epTools, defaultSettings);
 
   Object.defineProperties(window.epTools, function() {
     var result = {};
@@ -342,8 +349,10 @@ function createApi(config) {
     return result;
   }());
 
-  if (window.epTools.ready && typeof window.epTools.ready == 'function') {
-    window.epTools.ready.call(window.epTools);
+  let _readyCallback = window.epTools._readyCallback;
+
+  if (_readyCallback && typeof _readyCallback == 'function') {
+    _readyCallback.call(window.epTools);
   }
 }
 

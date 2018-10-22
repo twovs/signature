@@ -7,13 +7,7 @@
     win[k] = returnVal[k];
   }
 
-}(this, function () {  
-  window.epTools = {
-    ready: function() {
-      console.log('ready');
-    }
-  };
-
+}(this, function () {
   var $uiPopup = $('#ui-popup'),
     $uiPopupContent = $('#ui-popup-content'),
     $viewerContainer = $('#viewerContainer'),

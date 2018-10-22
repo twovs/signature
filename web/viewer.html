@@ -564,14 +564,9 @@
   </script>
   <script src="./viewer.extend.js"></script>
   <script>
-    var epTools = {
-      AfterSignPDF: function() {
-        console.log('签章成功');
-      },
-      AfterDelSignature: function() {
-        console.error('签章失败');
-      }
-    };
+    epTools.ready(function() {
+      // do somethings
+    });
   </script>
 </body>
 
