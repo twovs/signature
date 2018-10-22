@@ -33,6 +33,8 @@
   var sign_div,
     sign_img;
 
+  var blob_Url = null;
+
   var SidebarView = {
     NONE: 0,
     THUMBS: 1,
@@ -75,15 +77,12 @@
                 '"签名，自应用本签名以来，"文档"已被更改或损坏';
             }
 
-            var blob = base64ToBlob(cert.base64Cert);
-
-            cert.certDownloadUrl = window.URL.createObjectURL(blob);
+            blob_Url = base64ToBlob(cert.base64Cert);
             e.signdate = getDate(e.signdate);
 
             $uiPopupContent.html(Mustache.render($tplPopup, e));
             $uiPopup.addClass('zoomIn animated faster');
             $uiPopup.removeClass('hidden');
-            window.URL.revokeObjectURL(blob);
           }
         });
       }).on('click', '.page', function () {
@@ -300,6 +299,25 @@
     $uiPopup.on('click', '.ui-popup-close', function () {
       $uiPopup.removeClass('zoomIn animated faster');
       $uiPopup.addClass('hidden');
+    }).on('click', '.ep-a-cert', function(e) {
+      e.preventDefault();
+
+      // 点击下载证书
+      if (blob_Url) {
+
+        if ('msSaveOrOpenBlob' in window.navigator) {
+          // Microsoft Edge and Microsoft Internet Explorer 10-11
+          window.navigator.msSaveOrOpenBlob(blob_Url, '证书');
+        }
+        else {
+          // chrome or firefox
+          var a = document.createElement('a');
+
+          a.download = '证书';
+          a.href = window.URL.createObjectURL(blob_Url);
+          a.click();
+        }
+      }
     });
 
     $contextmenu.on('click', 'li', function () {
@@ -501,6 +519,7 @@
   function base64ToBlob(b64) {
     // 解码 b64 并且转换成 btype
     // 注意，这边 atob 必须解码的是没有 url 部分的 base64 值，如果带有 url 部分，解码会报错！
+    b64 = b64.replace(/\s/g, '');
     var btypes = window.atob(b64);
 
     // 处理异常，将ascii码小于0的转换为大于0
