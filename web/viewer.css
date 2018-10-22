@@ -24,7 +24,7 @@ html {
   height: 100%;
   width: 100%;
   /* Font size is needed to make the activity bar the correct size. */
-  font-size: 10px;
+  font-size: 14px;
 }
 
 body {
@@ -37,7 +37,6 @@ body,
 input,
 button,
 select {
-  font: message-box;
   outline: none;
 }
 
@@ -2400,6 +2399,7 @@ section[data-annotation-id]:hover {
     right: 2px;
     width: 42px;
     height: 22px;
+    line-height: 0;
     background-color: #64a9ed;
     font-size: 12px;
     color: #fff;
@@ -2651,7 +2651,7 @@ section[data-annotation-id]:hover {
 }
 
 .signContainer .signContainer-con--item label {
-  font-size: 14px;
+  font-size: 13px;
   color: #333;
 }
 
@@ -2661,7 +2661,7 @@ section[data-annotation-id]:hover {
 }
 
 .signContainer .signContainer-con--item input[type=radio] {
-  margin-right: 7px;
+  margin-right: 6px;
   margin-left: 18px;
 }
 
@@ -2679,10 +2679,12 @@ section[data-annotation-id]:hover {
 
 .signContainer .signContainer-con--item .sigtype-group {
   width: 77.5%;
+  font-size: 13px;
 }
 
 .signContainer .signContainer-con--item .pageChoiceType {
   width: 78%;
+  font-size: 13px;
 }
 
 .signContainer .signContainer-con--item .pageChoiceType input[type=radio] {
@@ -2727,6 +2729,7 @@ section[data-annotation-id]:hover {
 .sigpwd-menu {
   padding-left: 75px;
   margin-top: 8px;
+  font-size: 13px;
 }
 
 .save-pwd {
@@ -2737,7 +2740,7 @@ section[data-annotation-id]:hover {
 .signContainer .signature-inf .confirm-btn {
   width: 70px;
   height: 24px;
-  margin-left: 109px;
+  margin-left: 108px;
   background-color: #64a9ed;
   border: 1px solid #5292e2;
   cursor: pointer;
@@ -2745,7 +2748,7 @@ section[data-annotation-id]:hover {
 }
 
 .signContainer .signature-inf .confirm-btn {
-  margin-left: 53px;
+  margin-left: 52px;
 }
 
 .refresh-hardware:active {
