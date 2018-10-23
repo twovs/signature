@@ -16,6 +16,8 @@
 import { AbortException, createPromiseCapability, Util } from '../shared/util';
 import { CustomStyle, getDefaultSetting } from './dom_utils';
 
+alert(321);
+
 /**
  * Text layer render parameters.
  *
@@ -55,6 +57,7 @@ var renderTextLayer = (function renderTextLayerClosure() {
 
   function appendText(task, geom, styles) {
     // Initialize all used properties to keep the caches monomorphic.
+    // TODO: 这里是解析 pdf 中文字的，并且 append 到 div.textLayer 中的 => geom.str
     var textDiv = document.createElement('div');
     var textDivProperties = {
       style: null,
@@ -70,6 +73,7 @@ var renderTextLayer = (function renderTextLayerClosure() {
     };
 
     task._textDivs.push(textDiv);
+    console.log(geom.str);
     if (isAllWhitespace(geom.str)) {
       textDivProperties.isWhitespace = true;
       task._textDivProperties.set(textDiv, textDivProperties);
@@ -105,7 +109,6 @@ var renderTextLayer = (function renderTextLayerClosure() {
     styleBuf[7] = style.fontFamily;
     textDivProperties.style = styleBuf.join('');
     textDiv.setAttribute('style', textDivProperties.style);
-
     textDiv.textContent = geom.str;
     // |fontName| is only used by the Font Inspector. This test will succeed
     // when e.g. the Font Inspector is off but the Stepper is on, but it's

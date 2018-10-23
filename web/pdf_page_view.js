@@ -671,6 +671,8 @@ class PDFPageView {
     renderTask.promise.then(function () {
       showCanvas();
       renderCapability.resolve(undefined);
+
+      // TODO: 这里是每次渲染的画布
     }, function (error) {
       showCanvas();
       renderCapability.reject(error);

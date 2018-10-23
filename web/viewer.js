@@ -213,7 +213,7 @@ function createApi(config) {
       PDFViewerApplication.localUrl = '';
       PDFViewerApplication.open(path);
     },
-    linkTo: function (text) {
+    GotoBookMarkByBookMarkName: function (text) {
       var outline = PDFViewerApplication.pdfOutlineViewer.outline;
 
       if (outline && Array.isArray(outline)) {
