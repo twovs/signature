@@ -231,6 +231,22 @@ class AnnotationElement {
     return container;
   }
 
+  pf(value) {
+    if (Number.isInteger(value)) {
+      return value.toString();
+    }
+    var s = value.toFixed(10);
+    var i = s.length - 1;
+    if (s[i] !== '0') {
+      return s;
+    }
+    // removing trailing zeros
+    do {
+      i--;
+    } while (s[i] === '0');
+    return s.substr(0, s[i] === '.' ? i : i + 1);
+  }
+
   /**
    * Create an empty container for the annotation's HTML element.
    *
@@ -246,8 +262,21 @@ class AnnotationElement {
     let width = data.rect[2] - data.rect[0];
     let height = data.rect[3] - data.rect[1];
 
+    // TODO: 这里做了重要改动，直接将签章生成 svg，直接丢到 annotationLayer 中。
+    let svg = this.svgFactory.create(width, height);
+    let imgEl = this.svgFactory.createElement('svg:image');
+
+    imgEl.setAttributeNS(null, 'width', this.pf(width));
+    imgEl.setAttributeNS(null, 'height', this.pf(height));
+    imgEl.setAttributeNS(null, 'x', '0');
+    imgEl.setAttributeNS(null, 'y', this.pf(-height));
+    imgEl.setAttributeNS(null, 'transform',
+      'scale(' + this.pf(1 / width) + ' ' + this.pf(-1 / height) + ')');
+
+    svg.appendChild(imgEl);
     container.setAttribute('data-annotation-id', data.id);
     container.setAttribute('data-annotation-type', 'sign');
+    container.appendChild(svg);
 
     // Do *not* modify `data.rect`, since that will corrupt the annotation
     // position on subsequent calls to `_createContainer` (see issue 6804).
@@ -317,17 +346,10 @@ class AnnotationElement {
 
     container.style.left = rect[0] + 'px';
     container.style.top = rect[1] + 'px';
-
     container.style.width = width + 'px';
     container.style.height = height + 'px';
+    container.style.cursor = 'pointer';
 
-    var div = document.createElement('div');
-
-    div.style.width = width + 'px';
-    div.style.height = height + 'px';
-    div.style.cursor = 'pointer';
-
-    container.appendChild(div);
     this.layer.appendChild(container);
 
     return container;

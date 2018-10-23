@@ -261,7 +261,6 @@ var convertImgDataToPng = (function convertImgDataToPngClosure() {
     writePngChunk('IDATA', idat, data, offset);
     offset += CHUNK_WRAPPER_SIZE + idat.length;
     writePngChunk('IEND', new Uint8Array(0), data, offset);
-
     return createObjectURL(data, 'image/png', forceDataSchema);
   }
 
@@ -1112,7 +1111,7 @@ SVGGraphics = (function SVGGraphicsClosure() {
     paintSolidColorImageMask:
         function SVGGraphics_paintSolidColorImageMask() {
       var current = this.current;
-      var rect = this.svgFactory.createElement('svg:rect');
+      var rect = this.svgFactory.createElement('svg:C');
       rect.setAttributeNS(null, 'x', '0');
       rect.setAttributeNS(null, 'y', '0');
       rect.setAttributeNS(null, 'width', '1px');
@@ -1123,6 +1122,7 @@ SVGGraphics = (function SVGGraphicsClosure() {
     },
 
     paintJpegXObject: function SVGGraphics_paintJpegXObject(objId, w, h) {
+      // TODO:
       var imgObj = this.objs.get(objId);
       var imgEl = this.svgFactory.createElement('svg:image');
       imgEl.setAttributeNS(XLINK_NS, 'xlink:href', imgObj.src);
