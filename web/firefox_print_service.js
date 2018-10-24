@@ -51,6 +51,7 @@ function composePage(pdfDocument, pageNumber, size, printContainer) {
         viewport: pdfPage.getViewport(1, size.rotation),
         intent: 'print',
       };
+      
       return pdfPage.render(renderContext).promise;
     }).then(function() {
       // Tell the printEngine that rendering this canvas/page has finished.

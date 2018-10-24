@@ -3,6 +3,7 @@
 
 <head>
   <meta charset="utf-8">
+  <meta http-equiv="Cache-control" content="no-cache">
   <meta name="viewport" content="width=device-width, minimum-scale=0.333333, initial-scale=0.333333, maximum-scale=2.0, user-scalable=yes">
 <!--#if GENERIC || CHROME-->
   <meta name="google" content="notranslate">
@@ -572,8 +573,11 @@
   </script>
   <script src="./viewer.extend.js?t=20181090"></script>
   <script>
+    var epTools = window.epTools;
+    
     epTools.ready(function() {
       // do somethings
+     	epTools.SetDarkMark('不通过', '*');
     });
   </script>
 </body>

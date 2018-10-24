@@ -200,10 +200,10 @@ function createApi(config) {
         alert('无此编号按钮');
       }
     },
-    pageNumberNavitorTo: function (pageNumber) {
+    GoToPage: function (pageNumber) {
       PDFViewerApplication.pdfViewer.currentPageLabel = pageNumber;
     },
-    getCurrentPage: function () {
+    GetCurrentPageIndex: function () {
       return PDFViewerApplication.page;
     },
     getPageCount: function () {
@@ -332,6 +332,18 @@ function createApi(config) {
           }
         };
       }
+    },
+    
+    /**
+     * 设置暗标
+     * @param {Object} str 当前字符串
+     * @param {Object} darkMarkStr 暗标字符
+     */
+    SetDarkMark: function(str, darkMarkStr) {
+    	this._darkMarkOptions = {
+    		str: str,
+    		darkMarkStr: darkMarkStr
+    	};
     }
   };
 

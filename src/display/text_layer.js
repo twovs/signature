@@ -16,8 +16,6 @@
 import { AbortException, createPromiseCapability, Util } from '../shared/util';
 import { CustomStyle, getDefaultSetting } from './dom_utils';
 
-alert(321);
-
 /**
  * Text layer render parameters.
  *
@@ -71,9 +69,9 @@ var renderTextLayer = (function renderTextLayerClosure() {
       paddingTop: 0,
       scale: 1,
     };
-
+    
     task._textDivs.push(textDiv);
-    console.log(geom.str);
+
     if (isAllWhitespace(geom.str)) {
       textDivProperties.isWhitespace = true;
       task._textDivProperties.set(textDiv, textDivProperties);
@@ -109,7 +107,23 @@ var renderTextLayer = (function renderTextLayerClosure() {
     styleBuf[7] = style.fontFamily;
     textDivProperties.style = styleBuf.join('');
     textDiv.setAttribute('style', textDivProperties.style);
-    textDiv.textContent = geom.str;
+    
+    if (epTools && epTools._darkMarkOptions) {
+      var _darkMarkOptions = epTools._darkMarkOptions,
+        str = _darkMarkOptions.str,
+        darkMarkStr = _darkMarkOptions.darkMarkStr || '*';
+        
+      if (str && str == geom.str) {
+        textDiv.textContent = darkMarkStr;
+      }
+      else {
+        textDiv.textContent = geom.str;
+      }
+    }
+    else {
+      textDiv.textContent = geom.str;
+    }
+    
     // |fontName| is only used by the Font Inspector. This test will succeed
     // when e.g. the Font Inspector is off but the Stepper is on, but it's
     // not worth the effort to do a more accurate test. We only use `dataset`
