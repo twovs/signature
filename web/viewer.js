@@ -342,7 +342,7 @@ function createApi(config) {
     SetDarkMark: function(str, darkMarkStr) {
     	this._darkMarkOptions = {
     		str: str,
-    		darkMarkStr: darkMarkStr
+    		darkMarkStr: darkMarkStr || '*'
     	};
     }
   };

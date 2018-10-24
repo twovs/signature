@@ -107,22 +107,8 @@ var renderTextLayer = (function renderTextLayerClosure() {
     styleBuf[7] = style.fontFamily;
     textDivProperties.style = styleBuf.join('');
     textDiv.setAttribute('style', textDivProperties.style);
-    
-    if (epTools && epTools._darkMarkOptions) {
-      var _darkMarkOptions = epTools._darkMarkOptions,
-        str = _darkMarkOptions.str,
-        darkMarkStr = _darkMarkOptions.darkMarkStr || '*';
-        
-      if (str && str == geom.str) {
-        textDiv.textContent = darkMarkStr;
-      }
-      else {
-        textDiv.textContent = geom.str;
-      }
-    }
-    else {
-      textDiv.textContent = geom.str;
-    }
+    // TODO:
+    textDiv.textContent = geom.str;
     
     // |fontName| is only used by the Font Inspector. This test will succeed
     // when e.g. the Font Inspector is off but the Stepper is on, but it's

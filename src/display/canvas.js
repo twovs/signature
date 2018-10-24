@@ -1517,11 +1517,42 @@ var CanvasGraphics = (function CanvasGraphicsClosure() {
       }
 
       ctx.lineWidth = lineWidth;
+      
+      let _glyphs = JSON.parse(JSON.stringify(glyphs));
+        
+      // TODO: 有暗标的话，处理暗标
+      if (window.epTools && window.epTools._darkMarkOptions) {
+        let _darkMarkOptions = window.epTools._darkMarkOptions,
+          str = _darkMarkOptions.str,
+          darkMarkStr = _darkMarkOptions.darkMarkStr;
+          
+        let _text = '';
 
+        if (_glyphs.length >= str.length) {
+          for (let i = 0; i < _glyphs.length; i++) {            
+            _text += _glyphs[i].unicode;
+          }
+          
+          var searchIndexOf = _text.indexOf(str);
+          
+          if (searchIndexOf !== -1) {
+            for (let i = searchIndexOf; i < (searchIndexOf + str.length); i++) {
+              _glyphs[i].unicode = darkMarkStr;
+              _glyphs[i].fontChar = darkMarkStr;
+            }
+          }
+          
+          _text = '';
+        }
+      }
+      
       var x = 0,
         i;
-      for(i = 0; i < glyphsLength; ++i) {
-        var glyph = glyphs[i];
+      
+      // TODO: 这里的 character 就是 canvas 中绘制的文字
+      // glyphs 所有pdf文字的集合
+      for(i = 0; i < _glyphs.length; ++i) {
+        var glyph = _glyphs[i];
         if(isNum(glyph)) {
           x += spacingDir * glyph * fontSize / 1000;
           continue;
@@ -1569,23 +1600,6 @@ var CanvasGraphics = (function CanvasGraphicsClosure() {
         // Only attempt to draw the glyph if it is actually in the embedded font
         // file or if there isn't a font file so the fallback font is shown.
         if(glyph.isInFont || font.missingFile) {
-          // TODO: 这里的 character 就是 canvas 中绘制的文字
-          if(epTools && epTools._darkMarkOptions) {
-            var _darkMarkOptions = epTools._darkMarkOptions,
-              str = _darkMarkOptions.str,
-              darkMarkStr = _darkMarkOptions.darkMarkStr,
-              strLen = str.length;
-
-            if(str.split('')[0] == character || check_word_arr[0] == str.split('')[0]) {
-              if(check_word_arr.length < strLen) {
-                check_word_arr.push(character);
-              } else if(check_word_arr.length == strLen) {
-                console.log(check_word_arr.join(''), str, character)
-                
-                check_word_arr = [];
-              }
-            }
-          }
           if(simpleFillText && !accent) {
             // common case
             ctx.fillText(character, scaledX, scaledY);
