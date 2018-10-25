@@ -365,12 +365,6 @@ function createApi(config) {
         }
         
         document.getElementById('iWebOA').GetWebData2LocalFile(networkUrl, savePath);
-        
-        var stream = new ActiveXObject('ADODB.Stream');
-        
-        stream.Type = 1;
-        stream.Open();
-        console.log(stream.LoadFromFile(savePath));
       }
       else {
         console.error('iWebOA 只能在 ie 浏览器环境下使用');
