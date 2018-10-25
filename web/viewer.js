@@ -206,7 +206,7 @@ function createApi(config) {
     GetCurrentPageIndex: function () {
       return PDFViewerApplication.page;
     },
-    getPageCount: function () {
+    GetPageCounts: function () {
       return PDFViewerApplication.pagesCount;
     },
     OpenFile: function (path) {
@@ -344,6 +344,37 @@ function createApi(config) {
     		str: str,
     		darkMarkStr: darkMarkStr || '*'
     	};
+    },
+    
+    /**
+     * 调用 iwebOA 下载文件，并且保存 - 只有在 ie 环境下才可以使用
+     * @param {Object} networkUrl 要下载文件的网络路径
+     * @param {Object} savePath 保存在本地的路径
+     */
+    iWebOA: function(networkUrl, savePath) {
+      // 如果是在 ie 浏览器下
+      if (!!window.ActiveXObject || 'ActiveXObject' in window) {
+        if (!networkUrl && typeof networkUrl !== 'string') {
+          console.error('请输入下载的网络路径');
+          return;
+        }
+        
+        if (!savePath && typeof savePath !== 'string') {
+          console.error('请输入要保存的路径');
+          return;
+        }
+        
+        document.getElementById('iWebOA').GetWebData2LocalFile(networkUrl, savePath);
+        
+        var stream = new ActiveXObject('ADODB.Stream');
+        
+        stream.Type = 1;
+        stream.Open();
+        console.log(stream.LoadFromFile(savePath));
+      }
+      else {
+        console.error('iWebOA 只能在 ie 浏览器环境下使用');
+      }
     }
   };
 
