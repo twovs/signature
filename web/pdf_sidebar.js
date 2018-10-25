@@ -27,6 +27,7 @@ const SidebarView = {
   THUMBS: 1,
   OUTLINE: 2,
   ATTACHMENTS: 3,
+  ANNOTATION: 4
 };
 
 /**
@@ -82,6 +83,7 @@ class PDFSidebar {
 
     this.thumbnailView = options.thumbnailView;
     this.outlineView = options.outlineView;
+    this.annotationView = options.annotationView;
     this.attachmentsView = options.attachmentsView;
 
     this.disableNotification = options.disableNotification || false;
@@ -111,6 +113,10 @@ class PDFSidebar {
 
   get isOutlineViewVisible() {
     return (this.isOpen && this.active === SidebarView.OUTLINE);
+  }
+  
+  get isAnnotationViewVisible() {
+    return (this.isOpen && this.active === SidebarView.ANNOTATION);
   }
 
   get isAttachmentsViewVisible() {
@@ -164,7 +170,6 @@ class PDFSidebar {
         } else {
           if (PDFViewerApplication.pdfSidebar.isThumbnailViewVisible) {
             PDFViewerApplication.pdfSidebar.toggle();
-          } else {
           }
         }
 
@@ -183,13 +188,13 @@ class PDFSidebar {
         } else {
           if (PDFViewerApplication.pdfSidebar.isOutlineViewVisible) {
             PDFViewerApplication.pdfSidebar.toggle();
-          } else {
           }
         }
 
         this.thumbnailView.classList.add('hidden');
         this.outlineView.classList.remove('hidden');
         this.attachmentsView.classList.add('hidden');
+        this.annotationView.classList.add('hidden');
         break;
       case SidebarView.ATTACHMENTS:
         if (!PDFViewerApplication.pdfSidebar.isOpen) {
@@ -203,7 +208,22 @@ class PDFSidebar {
 
         this.thumbnailView.classList.add('hidden');
         this.outlineView.classList.add('hidden');
+        this.annotationView.classList.add('hidden');
         this.attachmentsView.classList.remove('hidden');
+        break;
+      case SidebarView.ANNOTATION:
+        if (!PDFViewerApplication.pdfSidebar.isOpen) {
+          PDFViewerApplication.pdfSidebar.toggle();
+        } else {
+          if (PDFViewerApplication.pdfSidebar.isOutlineViewVisible) {
+            PDFViewerApplication.pdfSidebar.toggle();
+          }
+        }
+        
+        this.thumbnailView.classList.add('hidden');
+        this.outlineView.classList.add('hidden');
+        this.annotationView.classList.remove('hidden');
+        this.attachmentsView.classList.add('hidden');
         break;
       default:
         console.error('PDFSidebar_switchView: "' + view +

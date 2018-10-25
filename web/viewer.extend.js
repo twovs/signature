@@ -40,6 +40,7 @@
     THUMBS: 1,
     OUTLINE: 2,
     ATTACHMENTS: 3,
+    ANNOTATION: 4
   };
 
   var toolbarHeight = $('#toolbarContainer').height();
@@ -349,6 +350,7 @@
           break;
 
         case 'annotation':
+          PDFViewerApplication.pdfSidebar.switchView(SidebarView.ANNOTATION);
           break;
 
         default:

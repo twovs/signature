@@ -110,6 +110,7 @@ function getViewerConfiguration() {
       // Views
       thumbnailView: document.getElementById('thumbnailView'),
       outlineView: document.getElementById('outlineView'),
+      annotationView: document.getElementById('annotationView'),
       attachmentsView: document.getElementById('attachmentsView'),
     },
     findBar: {
