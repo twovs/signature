@@ -215,7 +215,7 @@ class PDFSidebar {
         if (!PDFViewerApplication.pdfSidebar.isOpen) {
           PDFViewerApplication.pdfSidebar.toggle();
         } else {
-          if (PDFViewerApplication.pdfSidebar.isOutlineViewVisible) {
+          if (PDFViewerApplication.pdfSidebar.isAnnotationViewVisible) {
             PDFViewerApplication.pdfSidebar.toggle();
           }
         }
