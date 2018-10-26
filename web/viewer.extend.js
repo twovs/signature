@@ -19,7 +19,8 @@
     $selectSignType = $('#selectSignType'),
     $choicePage = $('#choicePage');
 
-  var $tplPopup = $('#tpl-uipopup').html();
+  var $tplPopup = $('#tpl-uipopup').html(),
+    tplAnnotationView = document.getElementById('tpl-annotationView').innerHTML;
 
   var isOpenSig = false, // 是否满足签章条件，并且点击了开始签章
     signSerial = 0,
@@ -320,6 +321,7 @@
         });
       }
       
+      $(PDFViewerApplication.appConfig.sidebar.annotationView).find('[data-id="'+ signId +'"]').remove();
       $el.remove();
       $contextmenu.hide();
     });
@@ -506,6 +508,9 @@
             // 创建签章状态标识 isIntegrity 为 false
             createSignStatusImg('error', signName, epTools.AfterSignPDF);
           }
+          
+          // 添加到数字签名区域
+          addToAnnotationView(curVerify);
         }
       },
       error: function() {
@@ -516,6 +521,17 @@
         signStatus = null;
       }
     });
+  }
+  
+  /**
+   * addToAnnotationView 添加到数字签名区域
+   * @param {Object} data 签章的数据
+   */
+  function addToAnnotationView(data) {
+    data.signdate = getDate(data.signdate);
+    data.signImg = 'data:image/png;base64,' + data.signImg;
+    
+    PDFViewerApplication.appConfig.sidebar.annotationView.innerHTML += Mustache.render(tplAnnotationView, data);
   }
 
   /**

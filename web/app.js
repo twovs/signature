@@ -2018,6 +2018,22 @@ verify = function verify(file) {
   }
 
   epTools.msg = file;
+  
+  var getDate = function(millisecond) {
+   var date = new Date(millisecond);
+
+   return date.getFullYear() + '-' + appendZero(date.getMonth() + 1) + '-' +
+      appendZero(date.getDate()) + ' ' + appendZero(date.getHours()) + ':' +
+      appendZero(date.getMinutes()) + ':' + appendZero(date.getSeconds());
+  };
+  
+  var appendZero = function(sum) {
+    if(sum < 10) {
+      return '0' + sum;
+    }
+
+    return sum;
+  };
 
   $.ajax({
     url: url,
@@ -2027,7 +2043,20 @@ verify = function verify(file) {
     contentType: false,
     dataType: 'json',
     success: function (res) {
+      var tpl = document.getElementById('tpl-annotationView').innerHTML,
+        item = '',
+        M = Mustache;
+        
       window.responseSignData = res;
+      
+      $.each(res, function(i, e) {
+        e.signdate = getDate(e.signdate);
+        e.signImg = 'data:image/png;base64,' + e.signImg;
+        e.integrityText = e.isIntegrity ? '签名后文档未修改' : '签名后文档已修改';
+        item += M.render(tpl, e);
+      });
+      
+      PDFViewerApplication.appConfig.sidebar.annotationView.innerHTML = item;
     },
     error: function (err) {
       console.error('获取电子签章信息失败！');
@@ -2080,6 +2109,7 @@ function webViewerOpenFile() {
 function webViewerCloseFile(){
   PDFViewerApplication.close();
   PDFViewerApplication.pdfSidebar.close();
+  PDFViewerApplication.appConfig.sidebar.annotationView.innerHTML = '';
 
   switch (PDFViewerApplication.pageRotation) {
     case 90:

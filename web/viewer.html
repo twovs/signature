@@ -499,74 +499,92 @@
     <param name="_ExtentY" value="26" />
     <param name="_StockProps" value="0" />
 
-<!-- template -->
-<script type="text/template" id="tpl-uipopup">
-  <div>
-    <div class="ep-title {{signCls}}">
-      <i class="ep-icon"></i>
-      <span>{{signDescription}}</span>
+  <!-- template -->
+  <script type="text/template" id="tpl-uipopup">
+    <div>
+      <div class="ep-title {{signCls}}">
+        <i class="ep-icon"></i>
+        <span>{{signDescription}}</span>
+      </div>
     </div>
-  </div>
-
-  <div class="ep-content">
-    <div class="ep-tab">
-      <ul class="ep-nav clearfix">
-        <li class="active">
-          <a href="javascript:void(0);">签名信息</a>
-        </li>
-      </ul>
-
-      <div class="ep-tab--content">
-        <div class="ep-tab-pane active certinfo">
-          <div class="ep-meta">
-            <div class="ep-item clearfix">
-              <label class="ep-label">原因：</label>
-              <span class="ep-value">
-                {{reason}}
-              </span>
-            </div>
-
-            <div class="ep-item clearfix">
-              <label class="ep-label">签名日期：</label>
-              <span class="ep-value">
-                {{signdate}}
-              </span>
-            </div>
-
-            <div class="ep-item clearfix">
-              <label class="ep-label">签名者：</label>
-              <span class="ep-value">
-                {{cert.signer}}
-                <a href="javascript:void(0);" download class="ep-a-cert">下载证书</a>
-              </span>
-            </div>
-
-            <div class="ep-item clearfix">
-              <label class="ep-label" style="width: 18%">证书序列号：</label>
-              <span class="ep-value" style="width: 82%">
-                {{cert.serialNumber}}
-              </span>
-            </div>
-
-            <div class="ep-item clearfix">
-              <label class="ep-label">签名算法：</label>
-              <span class="ep-value">
-                {{cert.sigAlg}}
-              </span>
-            </div>
-
-            <div class="ep-item clearfix">
-              <label class="ep-label">位置：</label>
-              <span class="ep-value">
-                {{location}}
-              </span>
+  
+    <div class="ep-content">
+      <div class="ep-tab">
+        <ul class="ep-nav clearfix">
+          <li class="active">
+            <a href="javascript:void(0);">签名信息</a>
+          </li>
+        </ul>
+  
+        <div class="ep-tab--content">
+          <div class="ep-tab-pane active certinfo">
+            <div class="ep-meta">
+              <div class="ep-item clearfix">
+                <label class="ep-label">原因：</label>
+                <span class="ep-value">
+                  {{reason}}
+                </span>
+              </div>
+  
+              <div class="ep-item clearfix">
+                <label class="ep-label">签名日期：</label>
+                <span class="ep-value">
+                  {{signdate}}
+                </span>
+              </div>
+  
+              <div class="ep-item clearfix">
+                <label class="ep-label">签名者：</label>
+                <span class="ep-value">
+                  {{cert.signer}}
+                  <a href="javascript:void(0);" download class="ep-a-cert">下载证书</a>
+                </span>
+              </div>
+  
+              <div class="ep-item clearfix">
+                <label class="ep-label" style="width: 18%">证书序列号：</label>
+                <span class="ep-value" style="width: 82%">
+                  {{cert.serialNumber}}
+                </span>
+              </div>
+  
+              <div class="ep-item clearfix">
+                <label class="ep-label">签名算法：</label>
+                <span class="ep-value">
+                  {{cert.sigAlg}}
+                </span>
+              </div>
+  
+              <div class="ep-item clearfix">
+                <label class="ep-label">位置：</label>
+                <span class="ep-value">
+                  {{location}}
+                </span>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
   </script>
+  
+  <!-- annotationView template -->
+  <script type="text/template" id="tpl-annotationView">
+    <div class="annotationView-item" data-id="{{signid}}">
+      <p>{{signid}}</p>
+      <div>
+        <img src="{{signImg}}" alt="" />
+      </div>
+      <p>{{integrityText}}</p>
+      <p>原因：{{reason}}</p>
+      <p>项目名称：签章工具</p>
+      <p>用户名称：{{cert.signer}}</p>
+      <p>印章名称：电子签章</p>
+      <p>UK序列号：{{cert.serialNumber}}</p>
+      <p>签章时间：{{signdate}}</p>
+    </div>
+  </script>
+  
   <script>
       // 获取签章信息接口
       var verifyUrl = 'http://218.4.136.115:9999/H5PDF/sign/verify';

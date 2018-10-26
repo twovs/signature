@@ -2798,3 +2798,22 @@ section[data-annotation-id]:hover {
 div[tabindex] {
   outline: none !important;
 }
+
+/* 数字签名区域  */
+#annotationView {
+  padding: 5px 10px;
+}
+
+.annotationView-item {
+  margin-bottom: 20px;
+}
+
+.annotationView-item p {
+  padding-top: 5px;
+  padding-bottom: 5px;
+  font-size: 12px;
+}
+
+.annotationView-item img {
+  max-width: 100%;
+}

@@ -272,21 +272,21 @@ function createApi(config) {
       let nPageStart = parseInt(params.nPageStart) || 1,
         nPageEnd = params.nPageEnd || 5,
         nSignatureIndex = params.nSignatureIndex || 1,
-        dbXAxisCoordinate = params.dbXAxisCoordinate,
-        dbYAxisCoordinate = params.dbYAxisCoordinate;
+        dbXAxisCoordinate = params.dbXAxisCoordinate || 200,
+        dbYAxisCoordinate = params.dbYAxisCoordinate || 200;
 
       let pdfViewer = PDFViewerApplication.pdfViewer,
         pageScale = PDFViewerApplication.toolbar.pageScale;
 
-      // if (!dbXAxisCoordinate && typeof dbXAxisCoordinate != 'number') {
-      //   console.error('请传入X轴坐标');
-      //   return;
-      // }
-
-      // if (!dbYAxisCoordinate && typeof dbYAxisCoordinate != 'number') {
-      //   console.error('请传入Y轴坐标');
-      //   return;
-      // }
+       if(!dbXAxisCoordinate && typeof dbXAxisCoordinate != 'number') {
+        console.error('请传入X轴坐标');
+        return;
+      }
+        
+      if(!dbYAxisCoordinate && typeof dbYAxisCoordinate != 'number') {
+        console.error('请传入Y轴坐标');
+        return;
+      } 
 
       if (nPageEnd > 0 && nPageEnd > nPageStart) {
         let signImage = document.createElement('img');
@@ -299,9 +299,9 @@ function createApi(config) {
           for (let i = nPageStart; i <= nPageEnd; i++) {
             let curPageView = pdfViewer.getPageView(i - 1),
               $curPageEl = $('#viewer').find('[data-page-number="'+ i +'"]'),
-              $div = $('<div></div>'),
-              top = 200,
-              left = 200;
+              $div = $('<div class="_addSign"></div>'),
+              top = dbXAxisCoordinate,
+              left = dbYAxisCoordinate;
 
             $div.css({
               width: imgWidth + 'px',

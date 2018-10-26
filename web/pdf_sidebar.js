@@ -175,6 +175,7 @@ class PDFSidebar {
 
         this.thumbnailView.classList.remove('hidden');
         this.outlineView.classList.add('hidden');
+        this.annotationView.classList.add('hidden');
         this.attachmentsView.classList.add('hidden');
 
         if (this.isOpen && isViewChanged) {
@@ -305,6 +306,7 @@ class PDFSidebar {
     } else { // Fallback
       this.pdfViewer.forceRendering();
       this.pdfThumbnailViewer.forceRendering();
+      this.appConfig.sidebar.annotationView.innerHTML = '';
     }
   }
 
