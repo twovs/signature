@@ -2227,6 +2227,7 @@ html[dir='rtl'] #documentPropertiesOverlay .row > * {
 
 section[data-annotation-id]:hover {
   border: 2px dashed rgba(173, 173, 173, 173);
+  margin: -2px;
 }
 
 .signpad-container {

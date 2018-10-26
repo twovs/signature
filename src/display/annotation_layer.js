@@ -269,13 +269,12 @@ class AnnotationElement {
     imgEl.setAttributeNS(null, 'width', this.pf(width));
     imgEl.setAttributeNS(null, 'height', this.pf(height));
     imgEl.setAttributeNS(null, 'x', '0');
-    imgEl.setAttributeNS(null, 'y', this.pf(-height));
-    imgEl.setAttributeNS(null, 'transform',
-      'scale(' + this.pf(1 / width) + ' ' + this.pf(-1 / height) + ')');
+    imgEl.setAttributeNS(null, 'y', '0');
 
     svg.appendChild(imgEl);
     container.setAttribute('data-annotation-id', data.id);
     container.setAttribute('data-annotation-type', 'sign');
+    container.setAttribute('data-annotation-fieldname', data.fieldName);
     container.appendChild(svg);
 
     // Do *not* modify `data.rect`, since that will corrupt the annotation
@@ -349,7 +348,32 @@ class AnnotationElement {
     container.style.width = width + 'px';
     container.style.height = height + 'px';
     container.style.cursor = 'pointer';
-
+    
+    var responseSignData = window.responseSignData || [];
+    
+    $.each(responseSignData, function(i, e) {
+      if (e.id == data.id && e.signid == data.fieldName) {
+        var img = document.createElement('img');
+        var isIntegrity = e.isIntegrity;
+        var viewportTransform = viewport.transform;
+        
+        img.src = isIntegrity ? './images/sign-check-48.png' : './images/sign-error-48.png';
+        img.className = '_signstatus';
+        img.onload = function() {
+          $(this).css({
+            position: 'absolute',
+            top: 0,
+            right: 0,
+            width: '20px',
+            transform: 'matrix(' + viewportTransform[0] + ', ' + -viewportTransform[1] + ', ' + -viewportTransform[2] + ', ' + viewportTransform[3] + ', 0, 0)'
+          });
+          
+          container.appendChild(img);
+          img = null;
+        };
+      }
+    });
+    
     this.layer.appendChild(container);
 
     return container;
