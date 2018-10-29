@@ -111,6 +111,7 @@
           "sign": [{
             "name": signName,
             "page": pageNumber,
+            "signimg": signimg,
             "llx": left / scale * 0.75,
             "lly": ($canvasWrapper - top - div.offsetHeight) /
               scale * 0.75,
@@ -411,6 +412,27 @@
     $uiPopupContent.html(Mustache.render($tplPopup, e));
     $uiPopup.addClass('zoomIn animated faster');
     $uiPopup.removeClass('hidden');
+  }
+  
+  /**
+   * img 转 base64
+   * @param {HTMLElement} img nodeType = 1
+   * @returns {String} base64 转换完成的 base64
+   */
+  function imgToBase64(img) {
+    if (img.nodeType == 1) {
+      var canvasEl = document.createElement('canvas'),
+        ctx = canvasEl.getContext('2d'),
+        imgWidth = img.width,
+        imgHeight = img.height;
+      
+      canvasEl.style.width = imgWidth;
+      canvasEl.style.height = imgHeight;
+      
+      ctx.drawImage(img, 0, 0, imgWidth, imgHeight);
+      
+      return canvasEl.toDataURL('image/png');
+    }
   }
 
   /**

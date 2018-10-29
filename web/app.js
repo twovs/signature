@@ -710,6 +710,7 @@ let PDFViewerApplication = {
    *                      is opened.
    */
   open(file, args) {
+    // TODO:
     if ((typeof PDFJSDev === 'undefined' || PDFJSDev.test('GENERIC')) &&
       (arguments.length > 2 || typeof args === 'number')) {
       return Promise.reject(
@@ -741,6 +742,9 @@ let PDFViewerApplication = {
       PDFJSDev.test('FIREFOX || MOZCENTRAL || CHROME')) {
       parameters.docBaseUrl = this.baseUrl;
     }
+      
+    // TODO: 请求 verify 接口
+    verify(file);
 
     if (args) {
       for (let prop in args) {
