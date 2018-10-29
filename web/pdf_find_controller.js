@@ -297,7 +297,7 @@ class PDFFindController {
   }
 
   nextMatch() {
-    let previous = this.state.findPrevious;
+    let previous = this.state.findPrevious || {};
     let currentPageIndex = this.pdfViewer.currentPageNumber - 1;
     let numPages = this.pdfViewer.pagesCount;
 

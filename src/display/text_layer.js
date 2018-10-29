@@ -107,7 +107,19 @@ var renderTextLayer = (function renderTextLayerClosure() {
     styleBuf[7] = style.fontFamily;
     textDivProperties.style = styleBuf.join('');
     textDiv.setAttribute('style', textDivProperties.style);
-    // TODO:
+    // TODO: textLayer 文字
+    if (window.epTools && window.epTools._darkMarkOptions) {
+      let _darkMarkOptions = window.epTools._darkMarkOptions,
+          str = _darkMarkOptions.str,
+          darkMarkStr = _darkMarkOptions.darkMarkStr,
+          newDarkMark = darkMarkStr;
+          
+      for (let i = 0, len = str.length; i < len; i++) {
+        newDarkMark += darkMarkStr;
+      }
+          
+      geom.str = geom.str.replaceAll(str, newDarkMark);
+    }
     textDiv.textContent = geom.str;
     
     // |fontName| is only used by the Font Inspector. This test will succeed

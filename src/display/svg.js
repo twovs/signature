@@ -751,7 +751,6 @@ SVGGraphics = (function SVGGraphicsClosure() {
         var character = glyph.fontChar;
         var spacing = (glyph.isSpace ? wordSpacing : 0) + charSpacing;
         var charWidth = width * widthAdvanceScale + spacing * fontDirection;
-
         if (!glyph.isInFont && !font.missingFile) {
           x += charWidth;
           // TODO: To assist with text selection, we should replace the missing

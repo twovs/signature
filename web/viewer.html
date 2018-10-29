@@ -33,6 +33,7 @@
 
   <script src="./libs/jquery.min.js"></script>
   <script src="./libs/mustache.min.js"></script>
+  <script src="./libs/qrcode.min.js"></script>
 
 <!--#if (GENERIC && !MINIFIED) -->
 <!--#include viewer-snippet.html-->
@@ -490,6 +491,9 @@
       </div>
     </div>
   </div>
+  
+  <!-- 二维码 -->
+  <div id="qrcode"></div>
 
   <!-- iweboa -->
   <object id="iWebOA" class="hidden" height="40" width="250px" classid="CLSID:219D9F1F-DE00-4C5C-82E9-E8CBAA79CB6D"
@@ -590,6 +594,8 @@
       var verifyUrl = 'http://218.4.136.115:9999/H5PDF/sign/verify';
       // 上传签章信息接口
       var signPdfUrl = 'http://218.4.136.115:9999/H5PDF/sign/comSign';
+      // 生成二维码
+      var createQrCodeUrl = 'http://192.168.108.217:8099/H5PDF/qrsign/signStep1';
   </script>
   <script src="./viewer.extend.js?t=20181090"></script>
   <script>

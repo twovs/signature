@@ -725,7 +725,6 @@ let PDFViewerApplication = {
         return this.open(file, args);
       });
     }
-
     let parameters = Object.create(null);
     if (typeof file === 'string') { // URL
       this.setTitleUsingUrl(file);
@@ -742,10 +741,14 @@ let PDFViewerApplication = {
       PDFJSDev.test('FIREFOX || MOZCENTRAL || CHROME')) {
       parameters.docBaseUrl = this.baseUrl;
     }
-      
     // TODO: 请求 verify 接口
-    verify(file);
-
+    if (file) {
+      if (typeof file === 'string' && file.indexOf('blob:') !== -1) {
+      }
+      else {
+        verify(file);
+      }
+    }
     if (args) {
       for (let prop in args) {
         if ((typeof PDFJSDev === 'undefined' || !PDFJSDev.test('PDFJS_NEXT')) &&
@@ -1776,7 +1779,6 @@ if (typeof PDFJSDev === 'undefined' || PDFJSDev.test('GENERIC')) {
 
     if (file) {
       PDFViewerApplication.open(file);
-      verify(file);
       
       var openFileCallback = window.openFileCallback;
       openFileCallback && typeof openFileCallback == 'function' && openFileCallback.call(this);

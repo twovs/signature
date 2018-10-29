@@ -104,45 +104,56 @@
         });
 
         $(div).append(img);
-        $curPageEl.append(div);
 
-        // 进行签章合并
-        sendSignPdf({
+        var imgBase64 = imgToBase64(img) || 　'';
+
+        if(imgBase64.indexOf('base64') !== -1) {
+          imgBase64 = imgBase64.split(',')[1];
+        }
+
+        var params = {
           "sign": [{
             "name": signName,
             "page": pageNumber,
-            "signimg": signimg,
+            "signimg": imgBase64,
             "llx": left / scale * 0.75,
             "lly": ($canvasWrapper - top - div.offsetHeight) /
               scale * 0.75,
             "urx": (left + div.offsetWidth) / scale * 0.75,
             "ury": ($canvasWrapper - top) / scale * 0.75
           }]
-        }, signName, div);
+        };
 
-        signElArray.push({
-          pageNumber: pageNumber,
-          signName: signName,
-          signEl: div,
-          scale: PDFViewerApplication.toolbar.pageScale,
-          imgWidth: img.width,
-          imgHeight: img.height,
-          top: top,
-          left: left,
-          pageRotation: PDFViewerApplication.pageRotation
+        // 验证二维码, 一定要扫码后方可进行签章
+        verifyScanQrCode(params, function() {
+          $curPageEl.append(div);
+          // 进行签章合并
+          sendSignPdf(params, signName, div);
+
+          signElArray.push({
+            pageNumber: pageNumber,
+            signName: signName,
+            signEl: div,
+            scale: PDFViewerApplication.toolbar.pageScale,
+            imgWidth: img.width,
+            imgHeight: img.height,
+            top: top,
+            left: left,
+            pageRotation: PDFViewerApplication.pageRotation
+          });
+
+          var movesign = $(this).find('.movesign');
+
+          $.each(movesign, function(i, e) {
+            e.remove();
+          });
+
+          sign_div = null;
+          sign_img = null;
+          isOpenSig = false;
+
+          signSerial++;
         });
-
-        var movesign = $(this).find('.movesign');
-
-        $.each(movesign, function(i, e) {
-          e.remove();
-        });
-
-        sign_div = null;
-        sign_img = null;
-        isOpenSig = false;
-
-        signSerial++;
       }
     }).on('mouseenter', '.page', function(e) {
       var $this = $(this);
@@ -310,19 +321,19 @@
     $contextmenu.on('click', 'li', function() {
       var $el = $viewerContainer.find('[data-index="' + delSerial + '"]'),
         signId = $el.attr('data-signid');
-      
+
       signElArray.splice(delSerial, 1, undefined);
-      
-      if (signId) {
+
+      if(signId) {
         // 删除对应的签章信息
         $.each(signInformation, function(i, e) {
-          if (e[signId]) {
+          if(e[signId]) {
             signInformation.splice(i, 1, undefined);
           }
         });
       }
-      
-      $(PDFViewerApplication.appConfig.sidebar.annotationView).find('[data-id="'+ signId +'"]').remove();
+
+      $(PDFViewerApplication.appConfig.sidebar.annotationView).find('[data-id="' + signId + '"]').remove();
       $el.remove();
       $contextmenu.hide();
     });
@@ -369,24 +380,77 @@
     $viewerContainer.on('click', '._addSign', function() {
       var signid = this.dataset.signid,
         value = null;
-        
+
       $.each(signInformation, function(i, e) {
         var item = e[signid];
-        
-        if (item) {
+
+        if(item) {
           value = item;
           return;
         }
       });
-      
+
       if(!value) {
         alert('暂无此签章信息');
         return;
       }
-      
+
       // 渲染签章信息
       renderSignInformation(value);
     });
+  }
+
+  /**
+   * TODO: 签章验证二维码
+   * @param {Object} params 参数
+   * @param {Function} successCallback 成功回调函数
+   */
+  function verifyScanQrCode(params, successCallback) {
+    var type = epTools.type,
+      msg = epTools.msg;
+
+    var formData = new FormData();
+
+    if(type == 'url') {
+      params.pdf = {
+        type: type,
+        msg: msg
+      };
+
+      formData.append('signReq', JSON.stringify(params));
+    } else if(type == 'file') {
+      params.pdf = {
+        type: type,
+        msg: ''
+      };
+
+      formData.append('signReq', JSON.stringify(params));
+      formData.append('file', msg);
+    }
+    
+    $.ajax({
+    	type: "post",
+    	url: createQrCodeUrl,
+    	data: formData,
+    	processData: false,
+      contentType: false,
+      dataType: 'json',
+      timeout: 5000,
+      success: function(response) {
+        console.log(response);
+      },
+      error: function() {
+        console.error('生成二维码失败');
+      }
+    });
+    successCallback && typeof successCallback === 'function' && successCallback();
+  }
+
+  /**
+   * 创建二维码 - 基于 qrcode.js
+   */
+  function createQrCode() {
+
   }
 
   /**
@@ -413,24 +477,24 @@
     $uiPopup.addClass('zoomIn animated faster');
     $uiPopup.removeClass('hidden');
   }
-  
+
   /**
    * img 转 base64
    * @param {HTMLElement} img nodeType = 1
    * @returns {String} base64 转换完成的 base64
    */
   function imgToBase64(img) {
-    if (img.nodeType == 1) {
+    if(img.nodeType == 1) {
       var canvasEl = document.createElement('canvas'),
         ctx = canvasEl.getContext('2d'),
         imgWidth = img.width,
         imgHeight = img.height;
-      
+
       canvasEl.style.width = imgWidth;
       canvasEl.style.height = imgHeight;
-      
+
       ctx.drawImage(img, 0, 0, imgWidth, imgHeight);
-      
+
       return canvasEl.toDataURL('image/png');
     }
   }
@@ -521,16 +585,15 @@
           // 设置 signId
           signEl.dataset.signid = signId;
           signInformation.push(tmp);
-          
-          if (!!isIntegrity) {
+
+          if(!!isIntegrity) {
             // TODO: 创建签章状态标识 isIntegrity 为 true
             createSignStatusImg('success', signName, epTools.AfterSignPDF);
-          }
-          else {
+          } else {
             // 创建签章状态标识 isIntegrity 为 false
             createSignStatusImg('error', signName, epTools.AfterSignPDF);
           }
-          
+
           // 添加到数字签名区域
           addToAnnotationView(curVerify);
         }
@@ -544,7 +607,7 @@
       }
     });
   }
-  
+
   /**
    * addToAnnotationView 添加到数字签名区域
    * @param {Object} data 签章的数据
@@ -552,7 +615,7 @@
   function addToAnnotationView(data) {
     data.signdate = getDate(data.signdate);
     data.signImg = 'data:image/png;base64,' + data.signImg;
-    
+
     PDFViewerApplication.appConfig.sidebar.annotationView.innerHTML += Mustache.render(tplAnnotationView, data);
   }
 

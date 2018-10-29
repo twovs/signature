@@ -168,6 +168,18 @@ function getViewerConfiguration() {
 
 function webViewerLoad() {
   let config = getViewerConfiguration();
+  
+  String.prototype.replaceAll = function(replaceStr, newStr) {
+    var str = this;
+    
+    if (str.indexOf(replaceStr) !== -1) {
+      str = this.replace(replaceStr, newStr);
+      return str.replaceAll(replaceStr, newStr);
+    }
+    else {
+      return str;
+    }
+  };
 
   if (typeof PDFJSDev === 'undefined' || !PDFJSDev.test('PRODUCTION')) {
     Promise.all([
@@ -340,7 +352,7 @@ function createApi(config) {
      * @param {Object} str 当前字符串
      * @param {Object} darkMarkStr 暗标字符
      */
-    SetDarkMark: function(str, darkMarkStr) {
+    SetDarkMark: function(str, darkMarkStr) {      
     	this._darkMarkOptions = {
     		str: str,
     		darkMarkStr: darkMarkStr || '*'
