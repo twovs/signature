@@ -129,11 +129,36 @@
         };
 
         // 验证二维码, 一定要扫码后方可进行签章
-        createSignQrCode(params, function() {
+        createSignQrCode(params, function(res) {
           $curPageEl.append(div);
           // 进行签章合并
-          sendSignPdf(params, signName, div);
+          if(signStatus == 0) {
+            $sign.hide();
+          }
 
+          var tmp = {},
+            verify = res.msg.verify,
+            curVerify = verify[verify.length - 1],
+            signId = curVerify.signid,
+            isIntegrity = curVerify.isIntegrity;
+            
+          epTools.downloadUrl = res.msg.url;
+          tmp[signId] = curVerify;
+          // 设置 signId
+          signEl.dataset.signid = signId;
+          signInformation.push(tmp);
+
+          if(!!isIntegrity) {
+            // TODO: 创建签章状态标识 isIntegrity 为 true
+            createSignStatusImg('success', signName, epTools.AfterSignPDF);
+          } else {
+            // 创建签章状态标识 isIntegrity 为 false
+            createSignStatusImg('error', signName, epTools.AfterSignPDF);
+          }
+
+          // 添加到数字签名区域
+          addToAnnotationView(curVerify);
+          
           signElArray.push({
             pageNumber: pageNumber,
             signName: signName,
@@ -402,9 +427,9 @@
       // 渲染签章信息
       renderSignInformation(value);
     });
-    
+
     $('#mask').on('click', function() {
-      this.addClass('hidden');
+      $(this).addClass('hidden');
       $('#qrcode').addClass('hidden');
     });
   }
@@ -447,16 +472,15 @@
       timeout: 5000,
       success: function(response) {
         var qrcodeid = response.msg.qrcodeid;
-        
-        if (response.status == 'ok' && qrcodeid && typeof qrcodeid == 'string') {
+
+        if(response.status == 'ok' && qrcodeid && typeof qrcodeid == 'string') {
           qrcode.clear();
           $('#qrcode').removeClass('hidden');
           $('#mask').removeClass('hidden');
-          qrcode.makeCode(qrcodeid);
+          qrcode.makeCode(JSON.stringify(response.msg));
           // 挂起验证
           verifyQrCodeHasUse(qrcodeid, successCallback);
-        }
-        else {
+        } else {
           console.error('生成二维码失败');
         }
       },
@@ -474,7 +498,7 @@
   function verifyQrCodeHasUse(qrcodeid, successCallback) {
     var time = null;
     var formdata = new FormData();
-    
+
     formdata.append('params', JSON.stringify({
       qrcodeid: qrcodeid
     }));
@@ -493,7 +517,7 @@
               clearTimeout(time);
               $('#qrcode').addClass('hidden');
               $('#mask').addClass('hidden');
-              successCallback && typeof successCallback == 'function' && successCallback();
+              successCallback && typeof successCallback == 'function' && successCallback(response);
               break;
 
             case 'wait':
@@ -596,82 +620,6 @@
       return(c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
     });
     return uuid;
-  }
-
-  /**
-   * 上传签章
-   * @param {Object} params 请求参数
-   * @param {Object} signName 签章名字
-   * @param {HTMLElement} signEl 签章元素
-   */
-  function sendSignPdf(params, signName, signEl) {
-    var type = epTools.type,
-      msg = epTools.msg;
-
-    var formData = new FormData();
-
-    if(type == 'url') {
-      params.pdf = {
-        type: type,
-        msg: msg
-      };
-
-      formData.append('signReq', JSON.stringify(params));
-    } else if(type == 'file') {
-      params.pdf = {
-        type: type,
-        msg: ''
-      };
-
-      formData.append('signReq', JSON.stringify(params));
-      formData.append('file', msg);
-    }
-
-    $.ajax({
-      url: signPdfUrl,
-      data: formData,
-      type: 'post',
-      processData: false,
-      contentType: false,
-      dataType: 'json',
-      timeout: 5000,
-      success: function(res) {
-        if(res.status == 'ok') {
-          if(signStatus == 0) {
-            $sign.hide();
-          }
-
-          var tmp = {},
-            verify = res.msg.verify,
-            curVerify = verify[verify.length - 1],
-            signId = curVerify.signid,
-            isIntegrity = curVerify.isIntegrity;
-
-          tmp[signId] = curVerify;
-          // 设置 signId
-          signEl.dataset.signid = signId;
-          signInformation.push(tmp);
-
-          if(!!isIntegrity) {
-            // TODO: 创建签章状态标识 isIntegrity 为 true
-            createSignStatusImg('success', signName, epTools.AfterSignPDF);
-          } else {
-            // 创建签章状态标识 isIntegrity 为 false
-            createSignStatusImg('error', signName, epTools.AfterSignPDF);
-          }
-
-          // 添加到数字签名区域
-          addToAnnotationView(curVerify);
-        }
-      },
-      error: function() {
-        // 创建签章状态标识
-        delSignStatus(signName, epTools.AfterDelSignature);
-      },
-      complete: function() {
-        signStatus = null;
-      }
-    });
   }
 
   /**

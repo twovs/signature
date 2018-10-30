@@ -2144,7 +2144,21 @@ function webViewerPrint() {
 }
 
 function webViewerDownload() {
-  PDFViewerApplication.download();
+  // 有签章成功后的pdf，先下载签章成功后的pdf，没有就下载当前的
+  if (epTools && epTools.downloadUrl && typeof epTools.downloadUrl == 'string') {
+    let a = document.createElement('a'),
+      downloadUrl = epTools.downloadUrl;
+    
+    a.href = downloadUrl;
+    a.target = '_blank';
+    a.download = downloadUrl.substring(downloadUrl.lastIndexOf('/') + 1)
+    
+    a.click();
+    a = null;
+  }
+  else {
+    PDFViewerApplication.download();
+  }
 }
 
 function webViewerFirstPage() {

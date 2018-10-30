@@ -21,6 +21,7 @@ if (typeof PDFJSDev !== 'undefined' && !PDFJSDev.test('CHROME || GENERIC')) {
 }
 
 function download(blobUrl, filename) {
+  console.log(blobUrl, filename);
   let a = document.createElement('a');
   if (a.click) {
     // Use a.click() if available. Otherwise, Chrome might show
