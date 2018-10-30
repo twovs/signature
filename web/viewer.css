@@ -2840,3 +2840,60 @@ div[tabindex] {
   opacity: 0.6;
   z-index: 99998;
 }
+
+/* 验章区域 */
+#verifyContainer {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 480px;
+  height: 230px;
+  margin-left: -240px;
+  margin-top: -115px;
+  border: 1px solid #2196F8;
+  z-index: 998;
+  background-color: #f5f5f5;
+}
+
+#verifyContainer .verifyContainer-title {
+  height: 30px;
+  line-height: 30px;
+  padding-left: 10px;
+  padding-right: 10px;
+  background-color: #fff;
+}
+
+#verifyContainer .verifyContainer-con {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+#verifyContainer .verifyContainer-con img {
+  margin-top: 5%;
+  margin-left: 5%;
+}
+
+#verifyContainer .verifyContainer-con p {
+  display: inline-block;
+}
+
+#verifyContainer .verifyContainer-con p:nth-child(2) {
+  padding-left: 6%;
+}
+
+#verifyContainer .verifyContainer-con p:last-child {
+  padding-left: 22.7%;
+  margin-top: 4%;
+}
+
+#verifyContainer .verifyContainer-close {
+  position: absolute;
+  right: 30px;
+  bottom: 20px;
+  width: 70px;
+  height: 24px;
+  border: 1px solid #5292e2;
+  background-color: #64a9ed;
+  color: #fff;
+  cursor: pointer;
+}

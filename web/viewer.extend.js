@@ -115,74 +115,76 @@
           imgBase64 = imgBase64.split(',')[1];
         }
 
-        var params = {
-          "sign": [{
-            "name": signName,
-            "page": pageNumber,
-            "signimg": imgBase64,
-            "llx": left / scale * 0.75,
-            "lly": ($canvasWrapper - top - div.offsetHeight) /
-              scale * 0.75,
-            "urx": (left + div.offsetWidth) / scale * 0.75,
-            "ury": ($canvasWrapper - top) / scale * 0.75
-          }]
-        };
+        img.onload = function() {
+          var params = {
+            "sign": [{
+              "name": signName,
+              "page": pageNumber,
+              "signimg": imgBase64,
+              "llx": left / scale * 0.75,
+              "lly": ($canvasWrapper - top - img.height) /
+                scale * 0.75,
+              "urx": (left + img.height) / scale * 0.75,
+              "ury": ($canvasWrapper - top) / scale * 0.75
+            }]
+          };
 
-        // 验证二维码, 一定要扫码后方可进行签章
-        createSignQrCode(params, function(res) {
-          $curPageEl.append(div);
-          // 进行签章合并
-          if(signStatus == 0) {
-            $sign.hide();
-          }
+          // 验证二维码, 一定要扫码后方可进行签章
+          createSignQrCode(params, function(res) {
+            $curPageEl.append(div);
+            // 进行签章合并
+            if(signStatus == 0) {
+              $sign.hide();
+            }
 
-          var tmp = {},
-            verify = res.msg.verify,
-            curVerify = verify[verify.length - 1],
-            signId = curVerify.signid,
-            isIntegrity = curVerify.isIntegrity;
-            
-          epTools.downloadUrl = res.msg.url;
-          tmp[signId] = curVerify;
-          // 设置 signId
-          signEl.dataset.signid = signId;
-          signInformation.push(tmp);
+            var tmp = {},
+              verify = res.msg.verify,
+              curVerify = verify[verify.length - 1],
+              signId = curVerify.signid,
+              isIntegrity = curVerify.isIntegrity;
 
-          if(!!isIntegrity) {
-            // TODO: 创建签章状态标识 isIntegrity 为 true
-            createSignStatusImg('success', signName, epTools.AfterSignPDF);
-          } else {
-            // 创建签章状态标识 isIntegrity 为 false
-            createSignStatusImg('error', signName, epTools.AfterSignPDF);
-          }
+            epTools.downloadUrl = res.msg.url;
+            tmp[signId] = curVerify;
+            // 设置 signId
+            signEl.dataset.signid = signId;
+            signInformation.push(tmp);
 
-          // 添加到数字签名区域
-          addToAnnotationView(curVerify);
-          
-          signElArray.push({
-            pageNumber: pageNumber,
-            signName: signName,
-            signEl: div,
-            scale: PDFViewerApplication.toolbar.pageScale,
-            imgWidth: img.width,
-            imgHeight: img.height,
-            top: top,
-            left: left,
-            pageRotation: PDFViewerApplication.pageRotation
+            if(!!isIntegrity) {
+              // TODO: 创建签章状态标识 isIntegrity 为 true
+              createSignStatusImg('success', signName, epTools.AfterSignPDF);
+            } else {
+              // 创建签章状态标识 isIntegrity 为 false
+              createSignStatusImg('error', signName, epTools.AfterSignPDF);
+            }
+
+            // 添加到数字签名区域
+            addToAnnotationView(curVerify);
+
+            signElArray.push({
+              pageNumber: pageNumber,
+              signName: signName,
+              signEl: div,
+              scale: PDFViewerApplication.toolbar.pageScale,
+              imgWidth: img.width,
+              imgHeight: img.height,
+              top: top,
+              left: left,
+              pageRotation: PDFViewerApplication.pageRotation
+            });
+
+            signSerial++;
           });
 
-          signSerial++;
-        });
+          var movesign = $(this).find('.movesign');
 
-        var movesign = $(this).find('.movesign');
+          $.each(movesign, function(i, e) {
+            e.remove();
+          });
 
-        $.each(movesign, function(i, e) {
-          e.remove();
-        });
-
-        sign_div = null;
-        sign_img = null;
-        isOpenSig = false;
+          sign_div = null;
+          sign_img = null;
+          isOpenSig = false;
+        };
       }
     }).on('mouseenter', '.page', function(e) {
       var $this = $(this);
@@ -606,6 +608,38 @@
       function() {
         PDFViewerApplication.pdfOutlineViewer.toggleOutlineTree();
       });
+
+    // 验证展示
+    document.getElementById('verification').addEventListener('click', function() {
+      var responseSignData = window.responseSignData,
+        $verifyContainerIcon = $('#verifyContainer .verifyContainer-icon'),
+        $verifyContainerResult = $('#verifyContainer .verifyContainer-result'),
+        $verifyContainerCount = $('#verifyContainer .verifyContainer-count');
+
+      if(Array.isArray(responseSignData)) {
+        var result = responseSignData.every(function(e) {
+          return e.isIntegrity == true;
+        });
+
+        // 验证完毕
+        if(result) {
+          $verifyContainerIcon.prop('src', './images/sign-check-48.png');
+          $verifyContainerResult.html('文档未被修改，文档验证有效');
+        } else {
+          $verifyContainerIcon.prop('src', './images/sign-error-48.png');
+          $verifyContainerResult.html('文档已经被修改，文档验证失效');
+        }
+
+        $verifyContainerCount.html('文档验证完毕，共有签章' + responseSignData.length + '个');
+      }
+
+      $('#verifyContainer').toggleClass('hidden');
+    });
+
+    // 验证展示关闭按钮
+    $('#verifyContainer .verifyContainer-close').on('click', function() {
+      $('#verifyContainer').addClass('hidden');
+    });
   }
 
   /**
