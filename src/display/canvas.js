@@ -1517,38 +1517,49 @@ var CanvasGraphics = (function CanvasGraphicsClosure() {
       }
 
       ctx.lineWidth = lineWidth;
-      
+
       let _glyphs = JSON.parse(JSON.stringify(glyphs));
-        
+
       // TODO: 有暗标的话，处理暗标
-      if (window.epTools && window.epTools._darkMarkOptions) {
+      if(window.epTools && window.epTools._darkMarkOptions) {
         let _darkMarkOptions = window.epTools._darkMarkOptions,
           str = _darkMarkOptions.str,
           darkMarkStr = _darkMarkOptions.darkMarkStr;
-          
-        let _text = '';
 
-        if (_glyphs.length >= str.length) {
-          for (let i = 0; i < _glyphs.length; i++) {            
-            _text += _glyphs[i].unicode;
-          }
-          
-          var searchIndexOf = _text.indexOf(str);
-          
-          if (searchIndexOf !== -1) {
-            for (let i = searchIndexOf; i < (searchIndexOf + str.length); i++) {
-              _glyphs[i].unicode = darkMarkStr;
-              _glyphs[i].fontChar = darkMarkStr;
+        if(_glyphs.length >= str.length) {
+
+          var setDarkMarkPolling = function(_glyphs) {
+            let _text = '';
+
+            for(let i = 0; i < _glyphs.length; i++) {
+              _text += _glyphs[i].unicode;
             }
-          }
+
+            var searchIndexOf = _text.indexOf(str);
+
+            if(searchIndexOf !== -1) {
+              for(let i = searchIndexOf; i < (searchIndexOf + str.length); i++) {
+                _glyphs[i].unicode = darkMarkStr;
+                _glyphs[i].fontChar = darkMarkStr;
+              }
+              
+              console.log(_glyphs);
+              
+              return setDarkMarkPolling(_glyphs);
+            }
+            else {
+              return _glyphs;
+            }
+          };
           
-          _text = '';
+          // 递归判断
+          setDarkMarkPolling(_glyphs);
         }
       }
-      
+
       var x = 0,
         i;
-      
+
       // TODO: 这里的 character 就是 canvas 中绘制的文字
       // glyphs 所有pdf文字的集合
       for(i = 0; i < _glyphs.length; ++i) {

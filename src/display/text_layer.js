@@ -112,7 +112,7 @@ var renderTextLayer = (function renderTextLayerClosure() {
       let _darkMarkOptions = window.epTools._darkMarkOptions,
           str = _darkMarkOptions.str,
           darkMarkStr = _darkMarkOptions.darkMarkStr,
-          newDarkMark = darkMarkStr;
+          newDarkMark = '';
           
       for (let i = 0, len = str.length; i < len; i++) {
         newDarkMark += darkMarkStr;

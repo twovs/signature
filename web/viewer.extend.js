@@ -109,12 +109,12 @@
 
         $(div).append(img);
 
-        var imgBase64 = imgToBase64(img) || 　'';
+        var imgBase64 = imgToBase64(img) || '';
 
         if(imgBase64.indexOf('base64') !== -1) {
           imgBase64 = imgBase64.split(',')[1];
         }
-
+        
         img.onload = function() {
           var params = {
             "sign": [{
