@@ -1543,8 +1543,6 @@ var CanvasGraphics = (function CanvasGraphicsClosure() {
                 _glyphs[i].fontChar = darkMarkStr;
               }
               
-              console.log(_glyphs);
-              
               return setDarkMarkPolling(_glyphs);
             }
             else {

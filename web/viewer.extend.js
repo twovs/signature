@@ -114,7 +114,7 @@
         if(imgBase64.indexOf('base64') !== -1) {
           imgBase64 = imgBase64.split(',')[1];
         }
-        
+
         img.onload = function() {
           var params = {
             "sign": [{
@@ -276,34 +276,30 @@
           isOpenSig = false;
 
           alert('请先打开需要签章的pdf文件');
-
           closeSignPad();
         } else {
-          var pageScale = PDFViewerApplication.toolbar.pageScale;
-
-          // 当前签章类型为 普通签章
-          if(selectSignType == 'normal') {
-            sign_img = document.createElement('img');
-            sign_div = document.createElement('div');
-
-            sign_img.src = $signaturePreview.find('img').prop('src');
-            sign_img.onload = function() {
-              $(sign_img).css({
-                width: sign_img.width * pageScale,
-                height: sign_img.height * pageScale
-              });
-            };
-
-            sign_div.appendChild(sign_img);
-            $(sign_div).addClass('movesign');
-            $(sign_div).css({
-              position: 'absolute',
-              textAlign: 'center'
-            });
-
-            isOpenSig = true;
+          
+          switch (selectSignType){
+            
+            // 当前签章类型为 普通签章
+          	case 'normal':
+          	  selectSignTypeNormal();
+          		break;
+          	
+          	// 当前签章类型为 多页签章
+            case 'multiSign':
+              selectSignTypeMultiSign();
+              break;
+            
+            // 当前签章类型为 骑缝签章
+            case 'pagingSeal':
+              
+              break;
+              
+          	default:
+          		break;
           }
-
+          
           // 关闭签章面板
           closeSignPad();
         }
@@ -313,17 +309,13 @@
         closeSignPad();
       });
 
-    var signEvtCallback = function() {
-      $signContainer.removeClass('hidden');
-      $signaturePreview.html("<img src='./images/company.png' />");
-    };
-
     // 单个签章
     $sign.on('click', function() {
       // TODO: 单个签章的我先注释掉了。
       //    signStatus = 0;
 
-      signEvtCallback();
+      $signaturePreview.html("<img src='./images/company.png' />");
+      $signContainer.removeClass('hidden');
     });
 
     $uiPopup.on('click', '.ui-popup-close', function() {
@@ -434,6 +426,40 @@
       $(this).addClass('hidden');
       $('#qrcode').addClass('hidden');
     });
+  }
+  
+  /**
+   * 选择签章类型为普通签章方法
+   */
+  function selectSignTypeNormal() {
+    var pageScale = PDFViewerApplication.toolbar.pageScale;
+    
+    sign_img = document.createElement('img');
+    sign_div = document.createElement('div');
+
+    sign_img.src = $signaturePreview.find('img').prop('src');
+    sign_img.onload = function() {
+      $(sign_img).css({
+        width: sign_img.width * pageScale,
+        height: sign_img.height * pageScale
+      });
+    };
+
+    sign_div.appendChild(sign_img);
+    $(sign_div).addClass('movesign');
+    $(sign_div).css({
+      position: 'absolute',
+      textAlign: 'center'
+    });
+
+    isOpenSig = true;
+  }
+  
+  /**
+   * 选择签章类型为多页签章方法
+   */
+  function selectSignTypeMultiSign() {
+    var pageType = $('#choicePage .pageChoiceType input[type=radio]:checked').prop('value');
   }
 
   /**
