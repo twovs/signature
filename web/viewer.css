@@ -2817,3 +2817,26 @@ div[tabindex] {
 .annotationView-item img {
   max-width: 100%;
 }
+
+#qrcode {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 300px;
+  height: 300px;
+  margin-top: -150px;
+  margin-left: -150px;
+  z-index: 99999;
+  background-color: #fff;
+}
+
+#mask {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #404040;
+  opacity: 0.6;
+  z-index: 99998;
+}

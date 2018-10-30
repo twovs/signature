@@ -46,6 +46,10 @@
   };
 
   var toolbarHeight = $('#toolbarContainer').height();
+  var qrcode = new QRCode('qrcode', {
+    width: 300,
+    height: 300
+  });
 
   function init() {
     initListener();
@@ -125,7 +129,7 @@
         };
 
         // 验证二维码, 一定要扫码后方可进行签章
-        verifyScanQrCode(params, function() {
+        createSignQrCode(params, function() {
           $curPageEl.append(div);
           // 进行签章合并
           sendSignPdf(params, signName, div);
@@ -142,18 +146,18 @@
             pageRotation: PDFViewerApplication.pageRotation
           });
 
-          var movesign = $(this).find('.movesign');
-
-          $.each(movesign, function(i, e) {
-            e.remove();
-          });
-
-          sign_div = null;
-          sign_img = null;
-          isOpenSig = false;
-
           signSerial++;
         });
+
+        var movesign = $(this).find('.movesign');
+
+        $.each(movesign, function(i, e) {
+          e.remove();
+        });
+
+        sign_div = null;
+        sign_img = null;
+        isOpenSig = false;
       }
     }).on('mouseenter', '.page', function(e) {
       var $this = $(this);
@@ -398,14 +402,19 @@
       // 渲染签章信息
       renderSignInformation(value);
     });
+    
+    $('#mask').on('click', function() {
+      this.addClass('hidden');
+      $('#qrcode').addClass('hidden');
+    });
   }
 
   /**
-   * TODO: 签章验证二维码
+   * TODO: 创建签章二维码
    * @param {Object} params 参数
    * @param {Function} successCallback 成功回调函数
    */
-  function verifyScanQrCode(params, successCallback) {
+  function createSignQrCode(params, successCallback) {
     var type = epTools.type,
       msg = epTools.msg;
 
@@ -427,30 +436,87 @@
       formData.append('signReq', JSON.stringify(params));
       formData.append('file', msg);
     }
-    
+
     $.ajax({
-    	type: "post",
-    	url: createQrCodeUrl,
-    	data: formData,
-    	processData: false,
+      type: "post",
+      url: createQrCodeUrl,
+      data: formData,
+      processData: false,
       contentType: false,
       dataType: 'json',
       timeout: 5000,
       success: function(response) {
-        console.log(response);
+        var qrcodeid = response.msg.qrcodeid;
+        
+        if (response.status == 'ok' && qrcodeid && typeof qrcodeid == 'string') {
+          qrcode.clear();
+          $('#qrcode').removeClass('hidden');
+          $('#mask').removeClass('hidden');
+          qrcode.makeCode(qrcodeid);
+          // 挂起验证
+          verifyQrCodeHasUse(qrcodeid, successCallback);
+        }
+        else {
+          console.error('生成二维码失败');
+        }
       },
       error: function() {
         console.error('生成二维码失败');
       }
     });
-    successCallback && typeof successCallback === 'function' && successCallback();
   }
 
   /**
-   * 创建二维码 - 基于 qrcode.js
+   * 验证签章二维码是否已经使用了
+   * @param {String} qrcodeid 二维码id
+   * @param {Function} successCallback status为ok 成功回调函数
    */
-  function createQrCode() {
+  function verifyQrCodeHasUse(qrcodeid, successCallback) {
+    var time = null;
+    var formdata = new FormData();
+    
+    formdata.append('params', JSON.stringify({
+      qrcodeid: qrcodeid
+    }));
 
+    time = setTimeout(function polling() {
+      $.ajax({
+        url: verifyQrCodeHasUseUrl,
+        type: 'post',
+        data: formdata,
+        dataType: 'json',
+        processData: false,
+        contentType: false,
+        success: function(response) {
+          switch(response.status) {
+            case 'ok':
+              clearTimeout(time);
+              $('#qrcode').addClass('hidden');
+              $('#mask').addClass('hidden');
+              successCallback && typeof successCallback == 'function' && successCallback();
+              break;
+
+            case 'wait':
+              time = setTimeout(function() {
+                polling();
+              }, 1000);
+              break;
+
+            case 'Error':
+              clearTimeout(time);
+              $('#qrcode').addClass('hidden');
+              $('#mask').addClass('hidden');
+              alert('二维码过期，请重签');
+              break;
+            default:
+              break;
+          }
+        },
+        error: function() {
+          console.error('验证二维码扫描失败');
+        }
+      });
+    }, 1000);
   }
 
   /**
