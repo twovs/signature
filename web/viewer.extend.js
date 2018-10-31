@@ -35,7 +35,8 @@
   var sign_div,
     sign_img;
 
-  var blob_Url = null;
+  var blob_Url = null,
+    time = null; // 轮训接口的定时器
 
   var SidebarView = {
     NONE: 0,
@@ -103,7 +104,7 @@
             pageNumber + '"]'),
           div = document.createElement('div'),
           img = document.createElement('img'),
-          $canvasWrapper = $(this).find('.canvasWrapper').height(),
+          canvasWrapperHeight = $(this).find('.canvasWrapper').height(),
           scale = PDFViewerApplication.toolbar.pageScale,
           signName = 'Sign-' + generateUUID();
 
@@ -131,64 +132,46 @@
         }
 
         img.onload = function() {
-          var params = {
-            "sign": [{
-              "name": signName,
-              "page": pageNumber,
-              "signimg": imgBase64,
-              "llx": left / scale * 0.75,
-              "lly": ($canvasWrapper - top - img.height) /
-                scale * 0.75,
-              "urx": (left + img.height) / scale * 0.75,
-              "ury": ($canvasWrapper - top) / scale * 0.75
-            }]
+          var defaultOptions = {
+            signDiv: div,
+            pageNumber: pageNumber,
+            signName: signName,
+            img: img,
+            top: top,
+            left: left,
+            $curPageEl: $curPageEl
           };
 
-          // 验证二维码, 一定要扫码后方可进行签章
-          createSignQrCode(params, function(res) {
-            $curPageEl.append(div);
-            // 进行签章合并
-            if(signStatus == 0) {
-              $sign.hide();
-            }
-
-            var tmp = {},
-              verify = res.msg.verify,
-              curVerify = verify[verify.length - 1],
-              signId = curVerify.signid,
-              isIntegrity = curVerify.isIntegrity;
-
-            epTools.downloadUrl = res.msg.url;
-            tmp[signId] = curVerify;
-            // 设置 signId
-            div.dataset.signid = signId;
-            signInformation.push(tmp);
-
-            if(!!isIntegrity) {
-              // TODO: 创建签章状态标识 isIntegrity 为 true
-              createSignStatusImg('success', signName, epTools.AfterSignPDF);
-            } else {
-              // 创建签章状态标识 isIntegrity 为 false
-              createSignStatusImg('error', signName, epTools.AfterSignPDF);
-            }
-
-            // 添加到数字签名区域
-            addToAnnotationView(curVerify);
-
-            signElArray.push({
-              pageNumber: pageNumber,
-              signName: signName,
-              signEl: div,
-              scale: PDFViewerApplication.toolbar.pageScale,
-              imgWidth: img.width,
-              imgHeight: img.height,
-              top: top,
-              left: left,
-              pageRotation: PDFViewerApplication.pageRotation
-            });
-
-            signSerial++;
-          });
+          // TODO: 根据类型走不同的函数处理
+          switch (selectSignType) {
+            case 'normal':
+              selectSignTypeNormal({
+                "user": {
+                  "id": userId,
+                  "signimg": imgBase64
+                },
+                "sign": [{
+                  "name": signName,
+                  "page": pageNumber,
+                  "signimg": imgBase64,
+                  "llx": left / scale * 0.75,
+                  "lly": (canvasWrapperHeight - top - img.height) /
+                    scale * 0.75,
+                  "urx": (left + img.height) / scale * 0.75,
+                  "ury": (canvasWrapperHeight - top) / scale * 0.75
+                }]
+              }, defaultOptions);
+              break;
+              
+            case 'multiSign':
+              break;
+              
+            case 'pagingSeal':
+              break;
+              
+            default:
+              break;
+          }
 
           var movesign = $(this).find('.movesign');
 
@@ -293,28 +276,8 @@
           alert('请先打开需要签章的pdf文件');
           closeSignPad();
         } else {
-
-          switch(selectSignType) {
-
-            // 当前签章类型为 普通签章
-            case 'normal':
-              selectSignTypeNormal();
-              break;
-
-              // 当前签章类型为 多页签章
-            case 'multiSign':
-              selectSignTypeMultiSign();
-              break;
-
-              // 当前签章类型为 骑缝签章
-            case 'pagingSeal':
-
-              break;
-
-            default:
-              break;
-          }
-
+          // 创建 sign_div
+          createSignElement();
           // 关闭签章面板
           closeSignPad();
         }
@@ -438,15 +401,84 @@
     });
 
     $('#mask').on('click', function() {
+      clearTimeout(time);
       $(this).addClass('hidden');
       $('#qrcode').addClass('hidden');
     });
   }
 
   /**
+   * 选择的签章类型是普通签章方法函数
+   * @param {Object} params 接口需要的请求参数
+   * @param {Object} options 一些逻辑处理上需要的参数
+   * signDiv {HTMLElement} 签章插入DOM的元素
+   * signName {String} 签章唯一标识
+   * top {Number} 签章距离 page 顶部的距离
+   * left {Number} 签章距离 page 左侧的距离
+   * img {HTMLElement} 签章图片的DOM元素
+   * $curPageEl {Jquery HTMLElement} 当前页面元素
+   * pageNumber {Number} 当前签章的页数
+   */
+  function selectSignTypeNormal(params, options) {
+    var signEl = options.signDiv,
+      signName = options.signName,
+      top = options.top,
+      left = options.left,
+      img = options.img,
+      $curPageEl = options.$curPageEl,
+      pageNumber = options.pageNumber;
+
+    // 验证二维码, 一定要扫码后方可进行签章
+    createSignQrCode(params, function(res) {
+      $curPageEl.append(signEl);
+      // 进行签章合并
+      if(signStatus == 0) {
+        $sign.hide();
+      }
+
+      var tmp = {},
+        verify = res.msg.verify,
+        curVerify = verify[verify.length - 1],
+        signId = curVerify.signid,
+        isIntegrity = curVerify.isIntegrity;
+
+      epTools.downloadUrl = res.msg.url;
+      tmp[signId] = curVerify;
+      // 设置 signId
+      signEl.dataset.signid = signId;
+      signInformation.push(tmp);
+
+      if(!!isIntegrity) {
+        // TODO: 创建签章状态标识 isIntegrity 为 true
+        createSignStatusImg('success', signName, epTools.AfterSignPDF);
+      } else {
+        // 创建签章状态标识 isIntegrity 为 false
+        createSignStatusImg('error', signName, epTools.AfterSignPDF);
+      }
+
+      // 添加到数字签名区域
+      addToAnnotationView(curVerify);
+
+      signElArray.push({
+        pageNumber: pageNumber,
+        signName: signName,
+        signEl: signEl,
+        scale: PDFViewerApplication.toolbar.pageScale,
+        imgWidth: img.width,
+        imgHeight: img.height,
+        top: top,
+        left: left,
+        pageRotation: PDFViewerApplication.pageRotation
+      });
+
+      signSerial++;
+    });
+  }
+
+  /**
    * 选择签章类型为普通签章方法
    */
-  function selectSignTypeNormal() {
+  function createSignElement() {
     var pageScale = PDFViewerApplication.toolbar.pageScale;
 
     sign_img = document.createElement('img');
@@ -471,13 +503,6 @@
   }
 
   /**
-   * 选择签章类型为多页签章方法
-   */
-  function selectSignTypeMultiSign() {
-    var pageType = $('#choicePage .pageChoiceType input[type=radio]:checked').prop('value');
-  }
-
-  /**
    * TODO: 创建签章二维码
    * @param {Object} params 参数
    * @param {Function} successCallback 成功回调函数
@@ -487,10 +512,6 @@
       msg = epTools.msg;
 
     var formData = new FormData();
-
-    params.user = {
-      id: userId
-    };
 
     if(type == 'url') {
       params.pdf = {
@@ -543,7 +564,6 @@
    * @param {Function} successCallback status为ok 成功回调函数
    */
   function verifyQrCodeHasUse(qrcodeid, successCallback) {
-    var time = null;
     var formdata = new FormData();
 
     formdata.append('params', JSON.stringify({
