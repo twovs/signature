@@ -146,7 +146,7 @@
             epTools.downloadUrl = res.msg.url;
             tmp[signId] = curVerify;
             // 设置 signId
-            signEl.dataset.signid = signId;
+            div.dataset.signid = signId;
             signInformation.push(tmp);
 
             if(!!isIntegrity) {
@@ -608,8 +608,8 @@
         imgWidth = img.width,
         imgHeight = img.height;
 
-      canvasEl.style.width = imgWidth;
-      canvasEl.style.height = imgHeight;
+      canvasEl.width = imgWidth;
+      canvasEl.height = imgHeight;
 
       ctx.drawImage(img, 0, 0, imgWidth, imgHeight);
 
