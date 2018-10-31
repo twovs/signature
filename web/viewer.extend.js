@@ -50,10 +50,25 @@
     width: 300,
     height: 300
   });
+  var userId = getLocationUserId();
 
   function init() {
     initListener();
     toolbarBindListeners();
+  }
+
+  /**
+   * 获取 userid
+   * @returns {String} 匹配结果
+   */
+  function getLocationUserId() {
+    var result = window.location.search.match(/user=([^&]*)/);
+
+    if(result && Array.isArray(result)) {
+      return result[1];
+    }
+
+    return '';
   }
 
   function initListener() {
@@ -278,28 +293,28 @@
           alert('请先打开需要签章的pdf文件');
           closeSignPad();
         } else {
-          
-          switch (selectSignType){
-            
+
+          switch(selectSignType) {
+
             // 当前签章类型为 普通签章
-          	case 'normal':
-          	  selectSignTypeNormal();
-          		break;
-          	
-          	// 当前签章类型为 多页签章
+            case 'normal':
+              selectSignTypeNormal();
+              break;
+
+              // 当前签章类型为 多页签章
             case 'multiSign':
               selectSignTypeMultiSign();
               break;
-            
-            // 当前签章类型为 骑缝签章
+
+              // 当前签章类型为 骑缝签章
             case 'pagingSeal':
-              
+
               break;
-              
-          	default:
-          		break;
+
+            default:
+              break;
           }
-          
+
           // 关闭签章面板
           closeSignPad();
         }
@@ -427,13 +442,13 @@
       $('#qrcode').addClass('hidden');
     });
   }
-  
+
   /**
    * 选择签章类型为普通签章方法
    */
   function selectSignTypeNormal() {
     var pageScale = PDFViewerApplication.toolbar.pageScale;
-    
+
     sign_img = document.createElement('img');
     sign_div = document.createElement('div');
 
@@ -454,7 +469,7 @@
 
     isOpenSig = true;
   }
-  
+
   /**
    * 选择签章类型为多页签章方法
    */
@@ -472,6 +487,10 @@
       msg = epTools.msg;
 
     var formData = new FormData();
+
+    params.user = {
+      id: userId
+    };
 
     if(type == 'url') {
       params.pdf = {
