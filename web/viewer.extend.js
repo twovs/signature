@@ -142,8 +142,11 @@
             $curPageEl: $curPageEl
           };
 
+          var imgWidth = img.width,
+            imgHeight = img.height;
+
           // TODO: 根据类型走不同的函数处理
-          switch (selectSignType) {
+          switch(selectSignType) {
             case 'normal':
               selectSignTypeNormal({
                 "user": {
@@ -153,22 +156,71 @@
                 "sign": [{
                   "name": signName,
                   "page": pageNumber,
-                  "signimg": imgBase64,
                   "llx": left / scale * 0.75,
-                  "lly": (canvasWrapperHeight - top - img.height) /
+                  "lly": (canvasWrapperHeight - top - imgHeight) /
                     scale * 0.75,
-                  "urx": (left + img.height) / scale * 0.75,
+                  "urx": (left + imgWidth) / scale * 0.75,
                   "ury": (canvasWrapperHeight - top) / scale * 0.75
                 }]
               }, defaultOptions);
               break;
-              
+
             case 'multiSign':
-              break;
+              var selectMultiPageSignType = $('#choicePage input[type=radio]:checked').prop('value');
+              var params = {};
+              // 每一页的签章信息
+              var sign = [];
               
+              // 全部页面签章
+              if(selectMultiPageSignType == 'all') {
+                var pagesCount = epTools.GetPageCounts();
+
+                for(var i = 1; i <= pagesCount; i++) {
+                  // 如果遍历到当前点击的这一页
+                  if(i == pageNumber) {
+                    sign.push({
+                      "name": signName,
+                      "page": pageNumber,
+                      "llx": left / scale * 0.75,
+                      "lly": (canvasWrapperHeight - top - imgHeight) /
+                        scale * 0.75,
+                      "urx": (left + imgWidth) / scale * 0.75,
+                      "ury": (canvasWrapperHeight - top) / scale * 0.75
+                    });
+                  } else {
+                    sign.push({
+                      "name": 'Sign-' + generateUUID(),
+                      "page": i,
+                      "llx": left / scale * 0.75,
+                      "lly": (canvasWrapperHeight - top - imgHeight) /
+                        scale * 0.75,
+                      "urx": (left + imgWidth) / scale * 0.75,
+                      "ury": (canvasWrapperHeight - top) / scale * 0.75
+                    });
+                  }
+                }
+
+                params = {
+                  "user": {
+                    "id": userId,
+                    "signimg": imgBase64
+                  },
+                  "sign": sign
+                };
+              }
+              // 指定页面签章
+              else if(selectMultiPageSignType == 'multiplePages') {
+                
+              }
+              
+              console.log(params);
+              
+              selectSignTypeMultiPage(params, defaultOptions);
+              break;
+
             case 'pagingSeal':
               break;
-              
+
             default:
               break;
           }
@@ -473,6 +525,22 @@
 
       signSerial++;
     });
+  }
+
+  /**
+   * 选择的签章类型是普通签章方法函数
+   * @param {Object} params 接口需要的请求参数
+   * @param {Object} options 一些逻辑处理上需要的参数
+   * signDiv {HTMLElement} 签章插入DOM的元素
+   * signName {String} 签章唯一标识
+   * top {Number} 签章距离 page 顶部的距离
+   * left {Number} 签章距离 page 左侧的距离
+   * img {HTMLElement} 签章图片的DOM元素
+   * $curPageEl {Jquery HTMLElement} 当前页面元素
+   * pageNumber {Number} 当前签章的页数
+   */
+  function selectSignTypeMultiPage(params, options) {
+
   }
 
   /**
