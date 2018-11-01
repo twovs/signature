@@ -213,8 +213,6 @@
                 
               }
               
-              console.log(params);
-              
               selectSignTypeMultiPage(params, defaultOptions);
               break;
 
