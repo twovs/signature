@@ -307,7 +307,7 @@
 
         if('msSaveOrOpenBlob' in window.navigator) {
           // Microsoft Edge and Microsoft Internet Explorer 10-11
-          window.navigator.msSaveOrOpenBlob(blob_Url, '证书');
+          window.navigator.msSaveOrOpenBlob(blob_Url, '证书.cer');
         } else {
           // chrome or firefox
           var a = document.createElement('a');
