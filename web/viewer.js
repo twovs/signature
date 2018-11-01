@@ -311,7 +311,7 @@ function createApi(config) {
           for (let i = nPageStart; i <= nPageEnd; i++) {
             let curPageView = pdfViewer.getPageView(i - 1),
               $curPageEl = $('#viewer').find('[data-page-number="'+ i +'"]'),
-              $div = $('<div class="_addSign"></div>'),
+              $div = $('<div class="addSign"></div>'),
               top = dbXAxisCoordinate,
               left = dbYAxisCoordinate;
 

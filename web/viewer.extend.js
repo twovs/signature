@@ -26,6 +26,7 @@
     signSerial = 0,
     signStatus = null, // 选择签章类型，0：签章(只能签一次，签一次这个按钮就消失了)，1：多页签章(可以签多个)
     signElArray = [],
+    multiSignElArray = [], // 多页签章保存的签章元素
     initSignImgWidth = 0,
     initSignImgHeight = 0,
     siderMenuBarWidth = $('#siderMenuBar').width(),
@@ -118,7 +119,6 @@
         img.height = sign_img.height;
 
         $(div).css({
-          position: 'absolute',
           left: left + 'px',
           top: top + 'px'
         });
@@ -170,7 +170,7 @@
               var params = {};
               // 每一页的签章信息
               var sign = [];
-              
+
               // 全部页面签章
               if(selectMultiPageSignType == 'all') {
                 var pagesCount = epTools.GetPageCounts();
@@ -210,9 +210,9 @@
               }
               // 指定页面签章
               else if(selectMultiPageSignType == 'multiplePages') {
-                
+
               }
-              
+
               selectSignTypeMultiPage(params, defaultOptions);
               break;
 
@@ -538,7 +538,56 @@
    * pageNumber {Number} 当前签章的页数
    */
   function selectSignTypeMultiPage(params, options) {
+    var signEl = options.signDiv,
+      signName = options.signName,
+      top = options.top,
+      left = options.left,
+      img = options.img,
+      imgSrc = img.src,
+      $curPageEl = options.$curPageEl,
+      pageNumber = options.pageNumber;
 
+    // 创建签章二维码，multiSignPage
+    createSignQrCode(params, function(response) {
+      var verify = response.msg.verify;
+
+      for(var i = 0, len = verify.length; i < len; i++) {
+        var multiSignEl = document.createElement('div'),
+          multiSignImgEl = document.createElement('img'),
+          item = verify[i],
+          signid = item.signid;
+
+        multiSignEl.className = '_addSign';
+        multiSignEl.dataset.signid = signid;
+        $(multiSignEl).css({
+          left: left,
+          top: top
+        });
+
+        multiSignImgEl.className = '_signimg';
+        multiSignImgEl.src = imgSrc;
+        $(multiSignImgEl).css({
+          width: img.width,
+          height: img.height
+        });
+
+        multiSignEl.append(multiSignImgEl);
+
+        var $curPage = $viewerContainer.find('.page[data-page-number=' + item.page + ']')
+
+        if($curPage.get(0) && $curPage.get(0).nodeType == 1) {
+          $curPage.get(0).appendChild(multiSignEl);
+
+          if(!!item.isIntegrity) {
+            // TODO: 创建签章状态标识 isIntegrity 为 true
+            createSignStatusImg('success', signid, epTools.AfterSignPDF);
+          } else {
+            // 创建签章状态标识 isIntegrity 为 false
+            createSignStatusImg('error', signid, epTools.AfterSignPDF);
+          }
+        }
+      }
+    });
   }
 
   /**
@@ -614,6 +663,8 @@
           qrcode.makeCode(JSON.stringify(response.msg));
           // 挂起验证
           verifyQrCodeHasUse(qrcodeid, successCallback);
+          // TODO: 模拟接口扫描
+          mockScan(qrcodeid);
         } else {
           console.error('生成二维码失败');
         }
@@ -659,13 +710,11 @@
               }, 1000);
               break;
 
-            case 'Error':
+            default:
               clearTimeout(time);
               $('#qrcode').addClass('hidden');
               $('#mask').addClass('hidden');
-              alert('二维码过期，请重签');
-              break;
-            default:
+              alert(response.msg);
               break;
           }
         },
@@ -805,7 +854,7 @@
    * @param {Function} callback 执行回调函数
    */
   function createSignStatusImg(status, signName, callback) {
-    var $signDiv = $viewerContainer.find('div[data-signname="' + signName +
+    var $signDiv = $viewerContainer.find('div[data-signid="' + signName +
       '"]');
     var img = document.createElement('img');
     var pageScale = PDFViewerApplication.toolbar.pageScale;
@@ -965,6 +1014,14 @@
       }
     });
   };
+
+  /**
+   * TODO: 模拟签章
+   * @param {String} qrcodeid 二维码标识
+   */
+  function mockScan(qrcodeid) {
+    $.get('http://192.168.108.217:98/H5PDF/qrsign/mockScan?codeid=' + qrcodeid);
+  }
 
   // 每次打开文件触发该回调函数
   var openFileCallback = function() {

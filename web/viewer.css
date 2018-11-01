@@ -2320,9 +2320,14 @@ section[data-annotation-id]:hover {
   0% { width: 0%; }
 }
 
+._addSign {
+  position: absolute;
+  z-index: 77;
+  cursor: pointer;
+}
+
 ._addSign:hover {
   border: 2px dashed rgb(173, 173, 173);
-  cursor: pointer;
   margin: -2px;
 }
 
