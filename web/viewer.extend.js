@@ -555,7 +555,8 @@
         var multiSignEl = document.createElement('div'),
           multiSignImgEl = document.createElement('img'),
           item = verify[i],
-          signid = item.signid;
+          signid = item.signid,
+          pageNumber = item.page;
 
         multiSignEl.className = '_addSign';
         multiSignEl.dataset.signid = signid;
@@ -573,7 +574,7 @@
 
         multiSignEl.append(multiSignImgEl);
 
-        var $curPage = $viewerContainer.find('.page[data-page-number=' + item.page + ']')
+        var $curPage = $viewerContainer.find('.page[data-page-number=' + pageNumber + ']')
 
         if($curPage.get(0) && $curPage.get(0).nodeType == 1) {
           $curPage.get(0).appendChild(multiSignEl);
@@ -586,6 +587,18 @@
             createSignStatusImg('error', signid, epTools.AfterSignPDF);
           }
         }
+
+        multiSignElArray.push({
+          pageNumber: pageNumber,
+          signid: signid,
+          signEl: multiSignEl,
+          scale: PDFViewerApplication.toolbar.pageScale,
+          imgWidth: img.width,
+          imgHeight: img.height,
+          top: top,
+          left: left,
+          pageRotation: PDFViewerApplication.pageRotation
+        });
       }
     });
   }
@@ -935,6 +948,11 @@
   var pageDrawCallback = function() {
     var scale = PDFViewerApplication.toolbar.pageScale,
       rotation = PDFViewerApplication.pageRotation;
+    
+    // 改变页面的时候重新渲染
+    $.each(multiSignElArray, function(i, e) {
+      
+    });
 
     $.each(signElArray, function(i, e) {
       if(e) {
@@ -1012,7 +1030,7 @@
 
         $el.append(e.signEl);
       }
-    });
+    }); 
   };
 
   /**
@@ -1026,6 +1044,7 @@
   // 每次打开文件触发该回调函数
   var openFileCallback = function() {
     signElArray = [];
+    multiSignElArray = [];
   };
 
   init();

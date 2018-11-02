@@ -2247,6 +2247,7 @@ section[data-annotation-id]:hover {
   display: none;
   box-shadow: 2px 2px 7px #888888;
   border-radius: 5px;
+  z-index: 78;
 }
 
 #delsigndiv ul {
@@ -2660,7 +2661,7 @@ section[data-annotation-id]:hover {
 }
 
 .signContainer .signContainer-con {
-  min-height: 428px;
+  min-height: 346px;
   padding: 13px 25px;
   background-color: #fff;
   box-shadow: inset 0 0 1px 1px hsla(0,0%,0%,.25);
@@ -2715,13 +2716,6 @@ section[data-annotation-id]:hover {
   margin-bottom: 10px; 
 }
 
-.signContainer-con--item .password {
-  width: 72.8%;
-  border: 1px solid #bdbec1;
-  margin: 0;
-  padding: 4px 7px;
-}
-
 .sigtype-group .sigsearch {
   position: relative;
 }
@@ -2746,17 +2740,6 @@ section[data-annotation-id]:hover {
   background: url(./images/icon/search.png) no-repeat;
 }
 
-.sigpwd-menu {
-  padding-left: 75px;
-  margin-top: 8px;
-  font-size: 13px;
-}
-
-.save-pwd {
-  margin-right: 9px;
-}
-
-.refresh-hardware,
 .signContainer .signature-inf .confirm-btn {
   width: 70px;
   height: 24px;
