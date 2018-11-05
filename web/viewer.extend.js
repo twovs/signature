@@ -550,14 +550,19 @@
     // 创建签章二维码，multiSignPage
     createSignQrCode(params, function(response) {
       var verify = response.msg.verify;
+      
+      epTools.downloadUrl = response.msg.url;
 
       for(var i = 0, len = verify.length; i < len; i++) {
         var multiSignEl = document.createElement('div'),
           multiSignImgEl = document.createElement('img'),
           item = verify[i],
           signid = item.signid,
-          pageNumber = item.page;
-
+          pageNumber = item.page,
+          tmp = {};
+          
+        tmp[signid] = item;
+        signInformation.push(tmp);
         multiSignEl.className = '_addSign';
         multiSignEl.dataset.signid = signid;
         $(multiSignEl).css({
@@ -574,10 +579,11 @@
 
         multiSignEl.append(multiSignImgEl);
 
-        var $curPage = $viewerContainer.find('.page[data-page-number=' + pageNumber + ']')
+        var $curPage = $viewerContainer.find('.page[data-page-number=' + pageNumber + ']'),
+          curPageEl = $curPage.get(0);
 
-        if($curPage.get(0) && $curPage.get(0).nodeType == 1) {
-          $curPage.get(0).appendChild(multiSignEl);
+        if(curPageEl && curPageEl.nodeType == 1) {
+          curPageEl.appendChild(multiSignEl);
 
           if(!!item.isIntegrity) {
             // TODO: 创建签章状态标识 isIntegrity 为 true
@@ -947,10 +953,81 @@
   var pageDrawCallback = function() {
     var scale = PDFViewerApplication.toolbar.pageScale,
       rotation = PDFViewerApplication.pageRotation;
-    
+
     // 改变页面的时候重新渲染
     $.each(multiSignElArray, function(i, e) {
-      
+      if(e) {
+        var $el = $viewerContainer.find('[data-page-number="' + e.pageNumber +
+            '"]'),
+          el = $el.get(0);
+
+        if(el && el.nodeType == 1) {
+          var signEl = e.signEl,
+            $signEl = $(signEl),
+            $img = $signEl.find('._signimg'),
+            $signimgStatus = $signEl.find('._signstatus'),
+            top, left, width, height;
+
+          top = e.top / e.scale * scale;
+          left = e.left / e.scale * scale;
+          width = e.imgWidth / e.scale * scale;
+          height = e.imgHeight / e.scale * scale;
+
+          $img.css({
+            width: width,
+            height: height
+          });
+
+          $signimgStatus.css({
+            width: initSignImgWidth / e.scale * scale,
+            height: initSignImgHeight / e.scale * scale
+          });
+
+          switch(rotation) {
+            case 0:
+              $signEl.css({
+                top: top,
+                left: left,
+                bottom: 'auto',
+                right: 'auto'
+              });
+              break;
+
+            case 90:
+              $signEl.css({
+                top: left,
+                left: 'auto',
+                right: top,
+                bottom: 'auto'
+              });
+              break;
+
+            case 180:
+              $signEl.css({
+                top: 'auto',
+                left: 'auto',
+                bottom: top,
+                right: left
+              });
+              break;
+
+            case 270:
+              $signEl.css({
+                top: 'auto',
+                left: top,
+                bottom: left,
+                right: 'auto'
+              });
+              break;
+          }
+
+          $signEl.css({
+            transform: 'rotate(' + rotation + 'deg)'
+          });
+
+          $el.append(e.signEl);
+        }
+      }
     });
 
     $.each(signElArray, function(i, e) {
@@ -958,22 +1035,15 @@
         var $el = $viewerContainer.find('[data-page-number="' + e.pageNumber +
             '"]'),
           signEl = e.signEl,
-          initTop = e.top,
-          initLeft = e.left,
-          initImgWidth = e.imgWidth,
-          initImgHeight = e.imgHeight,
           $signEl = $(signEl),
           $img = $signEl.find('._signimg'),
           $signimgStatus = $signEl.find('._signstatus'),
-          width = initImgWidth,
-          height = initImgHeight,
-          top = initTop,
-          left = initLeft;
+          width, height, top, left;
 
-        top = initTop / e.scale * scale;
-        left = initLeft / e.scale * scale;
-        width = initImgWidth / e.scale * scale;
-        height = initImgHeight / e.scale * scale;
+        top = e.top / e.scale * scale;
+        left = e.left / e.scale * scale;
+        width = e.imgWidth / e.scale * scale;
+        height = e.imgHeight / e.scale * scale;
 
         $img.css({
           width: width,
@@ -1029,7 +1099,7 @@
 
         $el.append(e.signEl);
       }
-    }); 
+    });
   };
 
   /**
