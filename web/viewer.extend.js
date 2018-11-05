@@ -199,19 +199,54 @@
                     });
                   }
                 }
-
-                params = {
-                  "user": {
-                    "id": userId,
-                    "signimg": imgBase64
-                  },
-                  "sign": sign
-                };
               }
               // 指定页面签章
               else if(selectMultiPageSignType == 'multiplePages') {
+                var spreadPageVal = $('#spreadPage').val();
 
+                if(!spreadPageVal) {
+                  alert('请输入要进行签章的页码数');
+                  return;
+                }
+
+                if(spreadPageVal && typeof spreadPageVal == 'string') {
+                  var spreadPageArray = spreadPageVal.split('、');
+
+                  $.each(spreadPageArray, function(i, e) {
+                    e = parseInt(e);
+                    // 如果是当前页面
+                    if(e == pageNumber) {
+                      sign.push({
+                        "name": signName,
+                        "page": pageNumber,
+                        "llx": left / scale * 0.75,
+                        "lly": (canvasWrapperHeight - top - imgHeight) /
+                          scale * 0.75,
+                        "urx": (left + imgWidth) / scale * 0.75,
+                        "ury": (canvasWrapperHeight - top) / scale * 0.75
+                      });
+                    } else {
+                      sign.push({
+                        "name": 'Sign-' + generateUUID(),
+                        "page": e,
+                        "llx": left / scale * 0.75,
+                        "lly": (canvasWrapperHeight - top - imgHeight) /
+                          scale * 0.75,
+                        "urx": (left + imgWidth) / scale * 0.75,
+                        "ury": (canvasWrapperHeight - top) / scale * 0.75
+                      });
+                    }
+                  });
+                }
               }
+
+              params = {
+                "user": {
+                  "id": userId,
+                  "signimg": imgBase64
+                },
+                "sign": sign
+              };
 
               selectSignTypeMultiPage(params, defaultOptions);
               break;
@@ -550,7 +585,7 @@
     // 创建签章二维码，multiSignPage
     createSignQrCode(params, function(response) {
       var verify = response.msg.verify;
-      
+
       epTools.downloadUrl = response.msg.url;
 
       for(var i = 0, len = verify.length; i < len; i++) {
@@ -560,7 +595,7 @@
           signid = item.signid,
           pageNumber = item.page,
           tmp = {};
-          
+
         tmp[signid] = item;
         signInformation.push(tmp);
         multiSignEl.className = '_addSign';
@@ -804,7 +839,7 @@
     // 书签展示
     document.getElementById('viewOutline').addEventListener('click',
       function() {
-        PDFViewerApplication.pdfOutlineViewer.toggleOutlineTree();
+        PDFViewerApplication.pdfSidebar.switchView(SidebarView.OUTLINE);
       });
 
     // 验证展示
