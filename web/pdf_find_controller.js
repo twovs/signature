@@ -220,7 +220,6 @@ class PDFFindController {
       this.resumePageIdx = null;
       this.nextPageMatch();
     }
-
     // Update the match count.
     if (this.pageMatches[pageIndex].length > 0) {
       this.matchCount += this.pageMatches[pageIndex].length;

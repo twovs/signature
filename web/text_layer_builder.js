@@ -247,6 +247,8 @@ class TextLayerBuilder {
         this.findController.updateMatchPosition(pageIdx, i, textDivs,
                                                 begin.divIdx);
       }
+      
+      // TODO:
 
       // Match inside new div.
       if (!prevEnd || begin.divIdx !== prevEnd.divIdx) {

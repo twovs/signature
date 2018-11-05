@@ -756,7 +756,6 @@
     }
 
     blob_Url = base64ToBlob(cert.base64Cert);
-    e.signdate = getDate(e.signdate);
 
     $uiPopupContent.html(Mustache.render($tplPopup, e));
     $uiPopup.addClass('zoomIn animated faster');

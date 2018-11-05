@@ -148,10 +148,10 @@ class PDFFindBar {
     if (!matchCount) {
       // If there are no matches, hide and reset the counter.
       this.findResultsCount.classList.add('hidden');
-      this.findResultsCount.textContent = '';
+      this.findResultsCount.innerHTML = '';
     } else {
       // Update and show the match counter.
-      this.findResultsCount.textContent = '共有['+ matchCount.toLocaleString() +']个结果';
+      this.findResultsCount.innerHTML = '共有[<em>'+ matchCount.toLocaleString() +'</em>]个结果';
       this.findResultsCount.classList.remove('hidden');
     }
     // Since `updateResultsCount` may be called from `PDFFindController`,

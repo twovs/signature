@@ -497,10 +497,14 @@ html[dir='ltr'] .doorHangerRight:before {
 }
 
 #findResultsCount {
-  background-color: hsl(0, 0%, 85%);
   color: hsl(0, 0%, 32%);
   text-align: center;
   padding: 3px 4px;
+  font-style: normal;
+}
+
+#findResultsCount em {
+  color: #f00;
 }
 
 #findMsg {

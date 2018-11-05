@@ -120,6 +120,7 @@ var renderTextLayer = (function renderTextLayerClosure() {
           
       geom.str = geom.str.replaceAll(str, newDarkMark);
     }
+    
     textDiv.textContent = geom.str;
     
     // |fontName| is only used by the Font Inspector. This test will succeed
