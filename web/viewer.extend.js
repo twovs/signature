@@ -453,7 +453,7 @@
     $('#mask').on('click', function() {
       clearTimeout(time);
       $(this).addClass('hidden');
-      $('#qrcode').addClass('hidden');
+      $('#qrcodeContainer').addClass('hidden');
     });
   }
 
@@ -671,7 +671,7 @@
 
         if(response.status == 'ok' && qrcodeid && typeof qrcodeid == 'string') {
           qrcode.clear();
-          $('#qrcode').removeClass('hidden');
+          $('#qrcodeContainer').removeClass('hidden');
           $('#mask').removeClass('hidden');
           qrcode.makeCode(JSON.stringify(response.msg));
           // 挂起验证
@@ -712,7 +712,7 @@
           switch(response.status) {
             case 'ok':
               clearTimeout(time);
-              $('#qrcode').addClass('hidden');
+              $('#qrcodeContainer').addClass('hidden');
               $('#mask').addClass('hidden');
               successCallback && typeof successCallback == 'function' && successCallback(response);
               break;
@@ -725,7 +725,7 @@
 
             default:
               clearTimeout(time);
-              $('#qrcode').addClass('hidden');
+              $('#qrcodeContainer').addClass('hidden');
               $('#mask').addClass('hidden');
               alert(response.msg);
               break;

@@ -504,7 +504,12 @@ html[dir='ltr'] .doorHangerRight:before {
 }
 
 #findResultsCount em {
-  color: #f00;
+  display: inline-block;
+  background-color: hsl(0, 0%, 85%);
+  color: hsl(0, 0%, 32%);
+  text-align: center;
+  padding: 3px 4px;
+  font-style: normal;
 }
 
 #findMsg {
@@ -2818,16 +2823,23 @@ div[tabindex] {
   max-width: 100%;
 }
 
-#qrcode {
+#qrcodeContainer {
   position: absolute;
   top: 50%;
   left: 50%;
   width: 300px;
-  height: 300px;
   margin-top: -150px;
   margin-left: -150px;
   z-index: 99999;
-  background-color: #fff;
+  background-color: transparent;
+}
+
+#qrcodeContainer .qrcode-title {
+  font-size: 20px;
+  color: #fff;
+  text-align: center;
+  padding-bottom: 12px;
+  font-weight: bold;
 }
 
 #mask {
