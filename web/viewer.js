@@ -317,7 +317,19 @@ function createApi(config) {
         return;
       }
       
-      console.log(keyword);
+      var $dataLoadedPage = $('#viewer').find('.page[data-loaded=true]');
+      
+      $.each($dataLoadedPage, function(i, e) {
+        var $e = $(e);
+        
+        if ($e.text().indexOf(keyword) !== -1) {          
+          var $curTextEle = $e.find('.textLayer div:contains('+ keyword +')'),
+            top = parseInt($curTextEle.css('top'), 10),
+            left = parseInt($curTextEle.css('left'), 10);
+            
+          
+        }
+      });
     }
   };
 

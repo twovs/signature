@@ -377,7 +377,7 @@
         }
       })
       .on('click', '.signContainer-close', function() {
-        // 点击关闭X
+        // 点击关闭 X
         closeSignPad();
       });
 
