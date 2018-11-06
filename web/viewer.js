@@ -318,6 +318,9 @@ function createApi(config) {
       }
       
       var $dataLoadedPage = $('#viewer').find('.page[data-loaded=true]');
+      var that = this;
+      
+      console.log(that);
       
       $.each($dataLoadedPage, function(i, e) {
         var $e = $(e);
@@ -327,10 +330,44 @@ function createApi(config) {
             top = parseInt($curTextEle.css('top'), 10),
             left = parseInt($curTextEle.css('left'), 10);
             
+          var signEl = document.createElement('div'),
+            imgEl = document.createElement('img');
+            
+          imgEl.src = $('#signature-preview img').prop('src');
+          signEl.className = '_addSign';
           
+          imgEl.onload = function() {
+            var imgWidth = this.width,
+              imgHeight = this.height,
+              signElTop = top - imgHeight / 2,
+              signElLeft = left - imgWidth / 2 + $curTextEle.outerWidth() / 2;
+              
+            $(signEl).css({
+              width: imgWidth,
+              height: imgHeight,
+              top: signElTop,
+              left: signElLeft
+            });
+            
+            signEl.appendChild(imgEl);
+            e.appendChild(signEl);
+            
+            that.keyWordSignElArray.push({
+              pageNumber: parseInt($e.attr('data-page-number'), 10),
+              signEl: signEl,
+              scale: PDFViewerApplication.toolbar.pageScale,
+              imgWidth: imgWidth,
+              imgHeight: imgHeight,
+              pageRotation: PDFViewerApplication.pageRotation,
+              top: signElTop,
+              left: signElLeft
+            });
+          };
         }
       });
-    }
+    },
+    
+    keyWordSignElArray: []
   };
 
   extend(window.epTools, defaultSettings);

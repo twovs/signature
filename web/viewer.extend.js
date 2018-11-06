@@ -998,7 +998,7 @@
     var scale = PDFViewerApplication.toolbar.pageScale,
       rotation = PDFViewerApplication.pageRotation;
 
-    // 改变页面的时候重新渲染
+    // 改变页面的时候重新渲染 -> 多页签章
     $.each(multiSignElArray, function(i, e) {
       if(e) {
         var $el = $viewerContainer.find('[data-page-number="' + e.pageNumber +
@@ -1074,6 +1074,7 @@
       }
     });
 
+    // 改变页面的时候重新渲染 -> 单个签章
     $.each(signElArray, function(i, e) {
       if(e) {
         var $el = $viewerContainer.find('[data-page-number="' + e.pageNumber +
@@ -1143,6 +1144,11 @@
 
         $el.append(e.signEl);
       }
+    });
+    
+    // 改变页面的时候重新渲染 -> 关键字签章
+    $.each(epTools.keyWordSignElArray, function(i, e) {
+      console.log(e);
     });
   };
 
