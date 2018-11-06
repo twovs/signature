@@ -271,83 +271,6 @@ function createApi(config) {
     AfterSignPDF: function() {},
     AfterDelSignature: function() {},
     /**
-     * 可支持指定位置盖章
-     * @param {Object} params 参数
-     * nPageStart 签章起始页
-     * nPageEnd 签章末页
-     * nSignatureIndex 签章索引
-     * dbXAxisCoordinate X轴坐标
-     * dbYAxisCoordinate Y轴坐标
-     * strUsbkeyPassword 硬件介质Key密码
-     */
-    AddSignatureFromMouseType: function(params) {
-      let nPageStart = parseInt(params.nPageStart) || 1,
-        nPageEnd = params.nPageEnd || 5,
-        nSignatureIndex = params.nSignatureIndex || 1,
-        dbXAxisCoordinate = params.dbXAxisCoordinate || 200,
-        dbYAxisCoordinate = params.dbYAxisCoordinate || 200;
-
-      let pdfViewer = PDFViewerApplication.pdfViewer,
-        pageScale = PDFViewerApplication.toolbar.pageScale;
-
-       if(!dbXAxisCoordinate && typeof dbXAxisCoordinate != 'number') {
-        console.error('请传入X轴坐标');
-        return;
-      }
-        
-      if(!dbYAxisCoordinate && typeof dbYAxisCoordinate != 'number') {
-        console.error('请传入Y轴坐标');
-        return;
-      } 
-
-      if (nPageEnd > 0 && nPageEnd > nPageStart) {
-        let signImage = document.createElement('img');
-
-        signImage.src = './images/company.png';
-        signImage.onload = function() {
-          const imgWidth = this.width,
-            imgHeight = this.height;
-
-          for (let i = nPageStart; i <= nPageEnd; i++) {
-            let curPageView = pdfViewer.getPageView(i - 1),
-              $curPageEl = $('#viewer').find('[data-page-number="'+ i +'"]'),
-              $div = $('<div class="addSign"></div>'),
-              top = dbXAxisCoordinate,
-              left = dbYAxisCoordinate;
-
-            $div.css({
-              width: imgWidth + 'px',
-              height: imgHeight + 'px',
-              position: 'absolute',
-              left: left + 'px',
-              top: top + 'px'
-            });
-
-            $div.append('<img src="./images/company.png" />');
-            $curPageEl.append($div);
-
-            if (curPageView.signArray && Array.isArray(curPageView.signArray)) {
-              curPageView.signArray.push($div.get(0));
-            }
-            else {
-              curPageView.signArray = [$div.get(0)];
-            }
-            
-            // 自动签章的相关参数
-            curPageView.autoSignParams = {
-              initPageScale: pageScale,
-              initTop: top,
-              initLeft: left,
-              initWidth: imgWidth,
-              initHeight: imgHeight
-            };
-            pdfViewer.renderingQueue.renderView(curPageView);
-          }
-        };
-      }
-    },
-    
-    /**
      * 设置暗标
      * @param {Object} str 当前字符串
      * @param {Object} darkMarkStr 暗标字符
@@ -382,6 +305,19 @@ function createApi(config) {
       else {
         console.error('iWebOA 只能在 ie 浏览器环境下使用');
       }
+    },
+    
+    /**
+     * 关键字盖章
+     * @param {String} keyword 要盖章的关键字
+     */
+    keyWordStamp: function(keyword) {
+      if (!keyword) {
+        alert('请输入要盖章的关键字');
+        return;
+      }
+      
+      console.log(keyword);
     }
   };
 

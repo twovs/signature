@@ -361,8 +361,17 @@
           alert('请先打开需要签章的pdf文件');
           closeSignPad();
         } else {
-          // 创建 sign_div
-          createSignElement();
+          // 如果选择的签章类型是关键字签章，则不生成signElement
+          if (selectSignType == 'keyWordSign') {
+            var epTools = window.epTools,
+              signSearchVal = $('.sigsearch-input').val();
+              
+            epTools && typeof epTools.keyWordStamp == 'function' && epTools.keyWordStamp(signSearchVal); 
+          }
+          else {
+            // 创建 sign_div
+            createSignElement();
+          }
           // 关闭签章面板
           closeSignPad();
         }
