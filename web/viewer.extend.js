@@ -602,7 +602,8 @@
           item = verify[i],
           signid = item.signid,
           pageNumber = item.page,
-          tmp = {};
+          tmp = {},
+          isIntegrity = item.isIntegrity;
 
         tmp[signid] = item;
         signInformation.push(tmp);
@@ -628,7 +629,7 @@
         if(curPageEl && curPageEl.nodeType == 1) {
           curPageEl.appendChild(multiSignEl);
 
-          if(!!item.isIntegrity) {
+          if(!!isIntegrity) {
             // TODO: 创建签章状态标识 isIntegrity 为 true
             createSignStatusImg('success', signid, epTools.AfterSignPDF);
           } else {
@@ -641,6 +642,7 @@
           pageNumber: pageNumber,
           signid: signid,
           signEl: multiSignEl,
+          isIntegrity: isIntegrity,
           scale: PDFViewerApplication.toolbar.pageScale,
           imgWidth: img.width,
           imgHeight: img.height,
@@ -997,8 +999,11 @@
   var pageDrawCallback = function() {
     var scale = PDFViewerApplication.toolbar.pageScale,
       rotation = PDFViewerApplication.pageRotation;
-    
-    // 渲染页面发生改变的时候，对签章改变做重绘处理
+
+    /**
+     * 渲染页面发生改变的时候，对签章改变做重绘处理
+     * @param {Object} e 遍历的参数
+     */
     var signReDrawCallback = function(e) {
       if(e) {
         var $el = $viewerContainer.find('[data-page-number="' + e.pageNumber +
@@ -1006,7 +1011,6 @@
           signEl = e.signEl,
           $signEl = $(signEl),
           $img = $signEl.find('._signimg'),
-          $signimgStatus = $signEl.find('._signstatus'),
           width, height, top, left;
 
         top = e.top / e.scale * scale;
@@ -1014,12 +1018,23 @@
         width = e.imgWidth / e.scale * scale;
         height = e.imgHeight / e.scale * scale;
 
+        // 如果是多页签章得话要考虑到懒加载未插入的签章 status
+        if(selectSignType == 'multiSign' && !$signEl.find('._signstatus').get(0)) {
+          if(!!e.isIntegrity) {
+            // TODO: 创建签章状态标识 isIntegrity 为 true
+            createSignStatusImg('success', e.signid, epTools.AfterSignPDF);
+          } else {
+            // 创建签章状态标识 isIntegrity 为 false
+            createSignStatusImg('error', e.signid, epTools.AfterSignPDF);
+          }
+        }
+
         $img.css({
           width: width,
           height: height
         });
 
-        $signimgStatus.css({
+        $signEl.find('._signstatus').css({
           width: initSignImgWidth / e.scale * scale,
           height: initSignImgHeight / e.scale * scale
         });
