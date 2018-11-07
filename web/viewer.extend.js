@@ -362,13 +362,12 @@
           closeSignPad();
         } else {
           // 如果选择的签章类型是关键字签章，则不生成signElement
-          if (selectSignType == 'keyWordSign') {
+          if(selectSignType == 'keyWordSign') {
             var epTools = window.epTools,
               signSearchVal = $('.sigsearch-input').val();
-              
-            epTools && typeof epTools.keyWordStamp == 'function' && epTools.keyWordStamp(signSearchVal); 
-          }
-          else {
+
+            epTools && typeof epTools.keyWordStamp == 'function' && epTools.keyWordStamp(signSearchVal);
+          } else {
             // 创建 sign_div
             createSignElement();
           }
@@ -920,6 +919,7 @@
       '"]');
     var img = document.createElement('img');
     var pageScale = PDFViewerApplication.toolbar.pageScale;
+    var pageRotation = PDFViewerApplication.pageRotation;
 
     img.src = status === 'success' ? './images/sign-check-48.png' :
       './images/sign-error-48.png';
@@ -931,13 +931,13 @@
 
       $(this).css({
         width: initSignImgWidth,
-        height: initSignImgHeight
+        height: initSignImgHeight,
+        transform: 'rotate(' + pageRotation + 'deg)'
       });
     };
 
     typeof callback === 'function' && callback.call(epTools);
     $signDiv.append(img);
-    img = null;
   }
 
   /**
@@ -997,85 +997,9 @@
   var pageDrawCallback = function() {
     var scale = PDFViewerApplication.toolbar.pageScale,
       rotation = PDFViewerApplication.pageRotation;
-
-    // 改变页面的时候重新渲染 -> 多页签章
-    $.each(multiSignElArray, function(i, e) {
-      if(e) {
-        var $el = $viewerContainer.find('[data-page-number="' + e.pageNumber +
-            '"]'),
-          el = $el.get(0);
-
-        if(el && el.nodeType == 1) {
-          var signEl = e.signEl,
-            $signEl = $(signEl),
-            $img = $signEl.find('._signimg'),
-            $signimgStatus = $signEl.find('._signstatus'),
-            top, left, width, height;
-
-          top = e.top / e.scale * scale;
-          left = e.left / e.scale * scale;
-          width = e.imgWidth / e.scale * scale;
-          height = e.imgHeight / e.scale * scale;
-
-          $img.css({
-            width: width,
-            height: height
-          });
-
-          $signimgStatus.css({
-            width: initSignImgWidth / e.scale * scale,
-            height: initSignImgHeight / e.scale * scale
-          });
-
-          switch(rotation) {
-            case 0:
-              $signEl.css({
-                top: top,
-                left: left,
-                bottom: 'auto',
-                right: 'auto'
-              });
-              break;
-
-            case 90:
-              $signEl.css({
-                top: left,
-                left: 'auto',
-                right: top,
-                bottom: 'auto'
-              });
-              break;
-
-            case 180:
-              $signEl.css({
-                top: 'auto',
-                left: 'auto',
-                bottom: top,
-                right: left
-              });
-              break;
-
-            case 270:
-              $signEl.css({
-                top: 'auto',
-                left: top,
-                bottom: left,
-                right: 'auto'
-              });
-              break;
-          }
-
-          $signEl.css({
-            transform: 'rotate(' + rotation + 'deg)'
-          });
-
-          $el.append(e.signEl);
-        }
-      }
-    });
-
-    // 改变页面的时候重新渲染 -> 单个签章
-    $.each(signElArray, function(i, e) {
+    
+    // 渲染页面发生改变的时候，对签章改变做重绘处理
+    var signReDrawCallback = function(e) {
       if(e) {
         var $el = $viewerContainer.find('[data-page-number="' + e.pageNumber +
             '"]'),
@@ -1144,11 +1068,21 @@
 
         $el.append(e.signEl);
       }
+    };
+
+    // 改变页面的时候重新渲染 -> 多页签章
+    $.each(multiSignElArray, function(i, e) {
+      signReDrawCallback(e);
     });
-    
+
+    // 改变页面的时候重新渲染 -> 单个签章
+    $.each(signElArray, function(i, e) {
+      signReDrawCallback(e);
+    });
+
     // 改变页面的时候重新渲染 -> 关键字签章
     $.each(epTools.keyWordSignElArray, function(i, e) {
-      console.log(e);
+      signReDrawCallback(e);
     });
   };
 
@@ -1164,6 +1098,10 @@
   var openFileCallback = function() {
     signElArray = [];
     multiSignElArray = [];
+
+    if(epTools.keyWordSignElArray && Array.isArray(epTools.keyWordSignElArray)) {
+      epTools.keyWordSignElArray = [];
+    }
   };
 
   init();

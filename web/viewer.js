@@ -317,10 +317,10 @@ function createApi(config) {
         return;
       }
       
+      this.keyWordSignElArray = [];
+      
       var $dataLoadedPage = $('#viewer').find('.page[data-loaded=true]');
       var that = this;
-      
-      console.log(that);
       
       $.each($dataLoadedPage, function(i, e) {
         var $e = $(e);
@@ -335,6 +335,7 @@ function createApi(config) {
             
           imgEl.src = $('#signature-preview img').prop('src');
           signEl.className = '_addSign';
+          imgEl.className = '_signimg';
           
           imgEl.onload = function() {
             var imgWidth = this.width,
@@ -371,18 +372,6 @@ function createApi(config) {
   };
 
   extend(window.epTools, defaultSettings);
-
-  Object.defineProperties(window.epTools, function() {
-    var result = {};
-
-    for (var k in window.epTools) {
-      result[k] = {
-        writable: false
-      }
-    }
-
-    return result;
-  }());
 
   let _readyCallback = window.epTools._readyCallback;
 
