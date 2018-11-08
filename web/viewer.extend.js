@@ -172,7 +172,6 @@
                   // 如果遍历到当前点击的这一页
                   if(i == pageNumber) {
                     sign.push({
-                      "name": signName,
                       "page": pageNumber,
                       "llx": left / scale * 0.75,
                       "lly": (canvasWrapperHeight - top - imgHeight) /
@@ -182,7 +181,6 @@
                     });
                   } else {
                     sign.push({
-                      "name": 'Sign-' + generateUUID(),
                       "page": i,
                       "llx": left / scale * 0.75,
                       "lly": (canvasWrapperHeight - top - imgHeight) /
@@ -210,7 +208,6 @@
                     // 如果是当前页面
                     if(e == pageNumber) {
                       sign.push({
-                        "name": signName,
                         "page": pageNumber,
                         "llx": left / scale * 0.75,
                         "lly": (canvasWrapperHeight - top - imgHeight) /
@@ -220,7 +217,6 @@
                       });
                     } else {
                       sign.push({
-                        "name": 'Sign-' + generateUUID(),
                         "page": e,
                         "llx": left / scale * 0.75,
                         "lly": (canvasWrapperHeight - top - imgHeight) /
@@ -878,20 +874,6 @@
     $('#verifyContainer .verifyContainer-close').on('click', function() {
       $('#verifyContainer').addClass('hidden');
     });
-  }
-
-  /**
-   * 生成唯一标识
-   * @returns {String} uuid 唯一标识
-   */
-  function generateUUID() {
-    var d = new Date().getTime();
-    var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-      var r = (d + Math.random() * 16) % 16 | 0;
-      d = Math.floor(d / 16);
-      return(c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
-    });
-    return uuid;
   }
 
   /**
