@@ -98,8 +98,8 @@
 
       // 如果开启了签章，并且已有pdf展示
       if(isOpenSig) {
-        var left = parseInt($(sign_div).css('left')),
-          top = parseInt($(sign_div).css('top'));
+        var left = parseInt($(sign_div).css('left'), 10),
+          top = parseInt($(sign_div).css('top'), 10);
 
         var $curPageEl = $viewerContainer.find('[data-page-number="' +
             pageNumber + '"]'),
@@ -110,7 +110,7 @@
 
         div.id = '_signSerial' + signSerial;
         div.className = '_addSign';
-        div.setAttribute('data-index', signSerial);
+        div.dataset.index = signSerial;
         img.src = sign_img.src;
         img.className = '_signimg';
         img.width = sign_img.width;
@@ -142,6 +142,9 @@
           var imgWidth = img.width,
             imgHeight = img.height;
 
+          var x = (left + imgWidth / 2) / scale * 0.75,
+            y = (top + imgHeight / 2) / scale * 0.75;
+
           // TODO: 根据类型走不同的函数处理
           switch(selectSignType) {
             case 'normal':
@@ -151,8 +154,8 @@
                   "signimg": imgBase64,
                   "positions": [{
                     "page": pageNumber,
-                    "x": (left + imgWidth / 2) / scale * 0.75,
-                    "y": (top + imgHeight / 2) / scale * 0.75
+                    "x": x,
+                    "y": y
                   }]
                 }
               }, defaultOptions);
@@ -161,34 +164,15 @@
             case 'multiSign':
               var selectMultiPageSignType = $('#choicePage input[type=radio]:checked').prop('value');
               var params = {};
-              // 每一页的签章信息
-              var sign = [];
+              // 签章的页面数, pageNumber
+              var pages = [];
 
               // 全部页面签章
               if(selectMultiPageSignType == 'all') {
                 var pagesCount = epTools.GetPageCounts();
 
                 for(var i = 1; i <= pagesCount; i++) {
-                  // 如果遍历到当前点击的这一页
-                  if(i == pageNumber) {
-                    sign.push({
-                      "page": pageNumber,
-                      "llx": left / scale * 0.75,
-                      "lly": (canvasWrapperHeight - top - imgHeight) /
-                        scale * 0.75,
-                      "urx": (left + imgWidth) / scale * 0.75,
-                      "ury": (canvasWrapperHeight - top) / scale * 0.75
-                    });
-                  } else {
-                    sign.push({
-                      "page": i,
-                      "llx": left / scale * 0.75,
-                      "lly": (canvasWrapperHeight - top - imgHeight) /
-                        scale * 0.75,
-                      "urx": (left + imgWidth) / scale * 0.75,
-                      "ury": (canvasWrapperHeight - top) / scale * 0.75
-                    });
-                  }
+                  pages.push(i);
                 }
               }
               // 指定页面签章
@@ -204,37 +188,23 @@
                   var spreadPageArray = spreadPageVal.split('、');
 
                   $.each(spreadPageArray, function(i, e) {
-                    e = parseInt(e);
+                    e = parseInt(e, 10);
                     // 如果是当前页面
-                    if(e == pageNumber) {
-                      sign.push({
-                        "page": pageNumber,
-                        "llx": left / scale * 0.75,
-                        "lly": (canvasWrapperHeight - top - imgHeight) /
-                          scale * 0.75,
-                        "urx": (left + imgWidth) / scale * 0.75,
-                        "ury": (canvasWrapperHeight - top) / scale * 0.75
-                      });
-                    } else {
-                      sign.push({
-                        "page": e,
-                        "llx": left / scale * 0.75,
-                        "lly": (canvasWrapperHeight - top - imgHeight) /
-                          scale * 0.75,
-                        "urx": (left + imgWidth) / scale * 0.75,
-                        "ury": (canvasWrapperHeight - top) / scale * 0.75
-                      });
-                    }
+                    pages.push(e);
                   });
                 }
               }
 
               params = {
-                "user": {
-                  "id": userId,
-                  "signimg": imgBase64
-                },
-                "sign": sign
+                "userid": userId,
+                "sign": {
+                  "signimg": imgBase64,
+                  "position": {
+                    "pages": pages,
+                    "x": x,
+                    "y": y
+                  }
+                }
               };
 
               selectSignTypeMultiPage(params, defaultOptions);
@@ -410,8 +380,13 @@
       if(signId) {
         // 删除对应的签章信息
         $.each(signInformation, function(i, e) {
-          if(e[signId]) {
+          if(e && e[signId]) {
             signInformation.splice(i, 1, undefined);
+            signInformation = signInformation.filter(function(e, i) {
+              if (Boolean(e)) {
+                return e;
+              }
+            });
           }
         });
       }
@@ -494,7 +469,6 @@
    * @param {Object} params 接口需要的请求参数
    * @param {Object} options 一些逻辑处理上需要的参数
    * signDiv {HTMLElement} 签章插入DOM的元素
-   * signName {String} 签章唯一标识
    * top {Number} 签章距离 page 顶部的距离
    * left {Number} 签章距离 page 左侧的距离
    * img {HTMLElement} 签章图片的DOM元素
@@ -503,7 +477,6 @@
    */
   function selectSignTypeNormal(params, options) {
     var signEl = options.signDiv,
-      signName = options.signName,
       top = options.top,
       left = options.left,
       img = options.img,
@@ -511,32 +484,31 @@
       pageNumber = options.pageNumber;
 
     // 验证二维码, 一定要扫码后方可进行签章
-    createSignQrCode(params, comSignUrl, function(res) {
-      console.log(res);
-      $curPageEl.append(signEl);
+    createSignQrCode(params, comSignUrl, function(response) {
       // 进行签章合并
       if(signStatus == 0) {
         $sign.hide();
       }
 
       var tmp = {},
-        verify = res.msg.verify,
-        curVerify = verify[verify.length - 1],
+        curVerify = response.msg.verify[0],
         signId = curVerify.signid,
         isIntegrity = curVerify.isIntegrity;
 
-      epTools.downloadUrl = res.msg.url;
+      epTools.downloadUrl = response.msg.url;
       tmp[signId] = curVerify;
       // 设置 signId
       signEl.dataset.signid = signId;
+      
+      $curPageEl.append(signEl);
       signInformation.push(tmp);
 
       if(!!isIntegrity) {
         // TODO: 创建签章状态标识 isIntegrity 为 true
-        createSignStatusImg('success', signName, epTools.AfterSignPDF);
+        createSignStatusImg('success', signId, epTools.AfterSignPDF);
       } else {
         // 创建签章状态标识 isIntegrity 为 false
-        createSignStatusImg('error', signName, epTools.AfterSignPDF);
+        createSignStatusImg('error', signId, epTools.AfterSignPDF);
       }
 
       // 添加到数字签名区域
@@ -544,7 +516,7 @@
 
       signElArray.push({
         pageNumber: pageNumber,
-        signName: signName,
+        signId: signId,
         signEl: signEl,
         scale: PDFViewerApplication.toolbar.pageScale,
         imgWidth: img.width,
@@ -563,7 +535,6 @@
    * @param {Object} params 接口需要的请求参数
    * @param {Object} options 一些逻辑处理上需要的参数
    * signDiv {HTMLElement} 签章插入DOM的元素
-   * signName {String} 签章唯一标识
    * top {Number} 签章距离 page 顶部的距离
    * left {Number} 签章距离 page 左侧的距离
    * img {HTMLElement} 签章图片的DOM元素
@@ -572,7 +543,6 @@
    */
   function selectSignTypeMultiPage(params, options) {
     var signEl = options.signDiv,
-      signName = options.signName,
       top = options.top,
       left = options.left,
       img = options.img,
@@ -890,11 +860,11 @@
   /**
    * 创建签章状态标识
    * @param {String} status 签章是否成功 success or error
-   * @param {String} signName 签章标识
+   * @param {String} signId 签章标识
    * @param {Function} callback 执行回调函数
    */
-  function createSignStatusImg(status, signName, callback) {
-    var $signDiv = $viewerContainer.find('div[data-signid="' + signName +
+  function createSignStatusImg(status, signId, callback) {
+    var $signDiv = $viewerContainer.find('div[data-signid="' + signId +
       '"]');
     var img = document.createElement('img');
     var pageScale = PDFViewerApplication.toolbar.pageScale;
@@ -917,23 +887,6 @@
 
     typeof callback === 'function' && callback.call(epTools);
     $signDiv.append(img);
-  }
-
-  /**
-   * 签章请求接口超时失败的时候删除签章
-   * @param {String} signName 签章标识名字
-   * @param {Function} callback  签章失败删除签章回调函数
-   */
-  function delSignStatus(signName, callback) {
-    $viewerContainer.find('div[data-signname="' + signName + '"]').remove();
-
-    $.each(signElArray, function(i, e) {
-      if(e && e.signName == signName) {
-        signElArray.splice(i, 1);
-      }
-    });
-
-    typeof callback == 'function' && callback.call(epTools);
   }
 
   function getDate(millisecond) {
