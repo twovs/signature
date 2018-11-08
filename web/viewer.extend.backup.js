@@ -106,11 +106,13 @@
           div = document.createElement('div'),
           img = document.createElement('img'),
           canvasWrapperHeight = $(this).find('.canvasWrapper').height(),
-          scale = PDFViewerApplication.toolbar.pageScale;
+          scale = PDFViewerApplication.toolbar.pageScale,
+          signName = 'Sign-' + generateUUID();
 
         div.id = '_signSerial' + signSerial;
         div.className = '_addSign';
         div.setAttribute('data-index', signSerial);
+        div.setAttribute('data-signname', signName);
         img.src = sign_img.src;
         img.className = '_signimg';
         img.width = sign_img.width;
@@ -133,6 +135,7 @@
           var defaultOptions = {
             signDiv: div,
             pageNumber: pageNumber,
+            signName: signName,
             img: img,
             top: top,
             left: left,
@@ -146,15 +149,19 @@
           switch(selectSignType) {
             case 'normal':
               selectSignTypeNormal({
-                "userid": userId,
-                "sign": {
-                  "signimg": imgBase64,
-                  "positions": [{
-                    "page": pageNumber,
-                    "x": (left + imgWidth / 2) / scale * 0.75,
-                    "y": (top + imgHeight / 2) / scale * 0.75
-                  }]
-                }
+                "user": {
+                  "id": userId,
+                  "signimg": imgBase64
+                },
+                "sign": [{
+                  "name": signName,
+                  "page": pageNumber,
+                  "llx": left / scale * 0.75,
+                  "lly": (canvasWrapperHeight - top - imgHeight) /
+                    scale * 0.75,
+                  "urx": (left + imgWidth) / scale * 0.75,
+                  "ury": (canvasWrapperHeight - top) / scale * 0.75
+                }]
               }, defaultOptions);
               break;
 
@@ -515,8 +522,7 @@
       pageNumber = options.pageNumber;
 
     // 验证二维码, 一定要扫码后方可进行签章
-    createSignQrCode(params, comSignUrl, function(res) {
-      console.log(res);
+    createSignQrCode(params, function(res) {
       $curPageEl.append(signEl);
       // 进行签章合并
       if(signStatus == 0) {
@@ -678,10 +684,9 @@
   /**
    * TODO: 创建签章二维码
    * @param {Object} params 参数
-   * @param {String} url 接口地址
    * @param {Function} successCallback 成功回调函数
    */
-  function createSignQrCode(params, url, successCallback) {
+  function createSignQrCode(params, successCallback) {
     var type = epTools.type,
       msg = epTools.msg;
 
@@ -693,20 +698,20 @@
         msg: msg
       };
 
-      formData.append('params', JSON.stringify(params));
+      formData.append('signReq', JSON.stringify(params));
     } else if(type == 'file') {
       params.pdf = {
         type: type,
         msg: ''
       };
 
-      formData.append('params', JSON.stringify(params));
+      formData.append('signReq', JSON.stringify(params));
       formData.append('file', msg);
     }
 
     $.ajax({
       type: "post",
-      url: url,
+      url: createQrCodeUrl,
       data: formData,
       processData: false,
       contentType: false,

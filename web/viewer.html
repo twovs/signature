@@ -602,11 +602,15 @@
   
   <script>
       // 获取签章信息接口
-      var verifyUrl = 'http://192.168.108.217:98/H5PDF/sign/verify';
-      // 生成二维码
-      var createQrCodeUrl = 'http://192.168.108.217:98/H5PDF/qrsign/signStep1';
+      var verifyUrl = 'http://192.168.108.81:8099/H5PDF/sign/verify';
+      // 普通签章接口地址
+      var comSignUrl = 'http://192.168.108.81:8099/H5PDF/qrsign/comSign';
+      // 多页签章接口地址
+      var multiPageSignUrl = 'http://192.168.108.81:8099/H5PDF/qrsign/multiPageSign';
+      // 关键字签章接口地址
+      var keySignUrl = 'http://192.168.108.81:8099/H5PDF/qrsign/keySign';
       // 验证二维码是否被扫描了
-      var verifyQrCodeHasUseUrl = 'http://192.168.108.217:98/H5PDF/qrsign/signStep2';
+      var verifyQrCodeHasUseUrl = 'http://192.168.108.81:8099/H5PDF/qrsign/signDown';
   </script>
   <script src="./viewer.extend.js?t=20181090"></script>
   <script>
