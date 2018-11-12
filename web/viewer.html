@@ -497,11 +497,7 @@
   <!-- 验章区域 -->
   <div id="verifyContainer" class="hidden">
     <div class="verifyContainer-title">批量验证</div>
-    <div class="verifyContainer-con">
-      <img src="./images/sign-check-48.png" alt="" class="verifyContainer-icon" />
-      <p class="verifyContainer-result">文档未被修改，文档验证有效</p>
-      <p class="verifyContainer-count">文档验证完毕，共有签章3个</p>
-    </div>
+    <div class="verifyContainer-con"></div>
     
     <button class="verifyContainer-close">关闭</button>
   </div>
@@ -513,6 +509,12 @@
     <param name="_ExtentX" value="26" />
     <param name="_ExtentY" value="26" />
     <param name="_StockProps" value="0" />
+    
+  <script type="text/template" id="tpl-verifyContainer-con">
+    <img src="{{icon}}" alt="" class="verifyContainer-icon" />
+    <p class="verifyContainer-result">{{result}}</p>
+    <p class="verifyContainer-count">文档验证完毕，共有签章{{count}}个</p>
+  </script>
 
   <!-- template -->
   <script type="text/template" id="tpl-uipopup">

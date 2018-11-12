@@ -17,10 +17,12 @@
     $mainContainer = $('#mainContainer'),
     $contextmenu = $('#delsigndiv'),
     $selectSignType = $('#selectSignType'),
-    $choicePage = $('#choicePage');
+    $choicePage = $('#choicePage'),
+    $verifyContainerCon = $('#verifyContainer .verifyContainer-con');
 
   var $tplPopup = $('#tpl-uipopup').html(),
-    tplAnnotationView = document.getElementById('tpl-annotationView').innerHTML;
+    tplAnnotationView = document.getElementById('tpl-annotationView').innerHTML,
+    tplVerify = $('#tpl-verifyContainer-con').html();
 
   var isOpenSig = false, // 是否满足签章条件，并且点击了开始签章
     signSerial = 0,
@@ -383,7 +385,7 @@
           if(e && e[signId]) {
             signInformation.splice(i, 1, undefined);
             signInformation = signInformation.filter(function(e, i) {
-              if (Boolean(e)) {
+              if(Boolean(e)) {
                 return e;
               }
             });
@@ -499,7 +501,8 @@
       tmp[signId] = curVerify;
       // 设置 signId
       signEl.dataset.signid = signId;
-      
+      window.signCount += 1;
+
       $curPageEl.append(signEl);
       signInformation.push(tmp);
 
@@ -508,6 +511,7 @@
         createSignStatusImg('success', signId, epTools.AfterSignPDF);
       } else {
         // 创建签章状态标识 isIntegrity 为 false
+        window.isSignIntegrity = false;
         createSignStatusImg('error', signId, epTools.AfterSignPDF);
       }
 
@@ -582,18 +586,20 @@
         });
 
         multiSignEl.append(multiSignImgEl);
+        window.signCount += 1;
 
         var $curPage = $viewerContainer.find('.page[data-page-number=' + pageNumber + ']'),
           curPageEl = $curPage.get(0);
 
         if(curPageEl && curPageEl.nodeType == 1) {
           curPageEl.appendChild(multiSignEl);
-
+          
           if(!!isIntegrity) {
             // TODO: 创建签章状态标识 isIntegrity 为 true
             createSignStatusImg('success', signid, epTools.AfterSignPDF);
           } else {
             // 创建签章状态标识 isIntegrity 为 false
+            window.isSignIntegrity = false;
             createSignStatusImg('error', signid, epTools.AfterSignPDF);
           }
         }
@@ -815,26 +821,23 @@
 
     // 验证展示
     document.getElementById('verification').addEventListener('click', function() {
-      var responseSignData = window.responseSignData,
-        $verifyContainerIcon = $('#verifyContainer .verifyContainer-icon'),
-        $verifyContainerResult = $('#verifyContainer .verifyContainer-result'),
-        $verifyContainerCount = $('#verifyContainer .verifyContainer-count');
-
-      if(Array.isArray(responseSignData)) {
-        var result = responseSignData.every(function(e) {
-          return e.isIntegrity == true;
-        });
-
-        // 验证完毕
-        if(result) {
-          $verifyContainerIcon.prop('src', './images/sign-check-48.png');
-          $verifyContainerResult.html('文档未被修改，文档验证有效');
+      // 验证完毕
+      if(typeof window.signCount == 'number' && typeof window.isSignIntegrity == 'boolean') {
+        if(window.isSignIntegrity) {
+          $verifyContainerCon.html(Mustache.render(tplVerify, {
+            result: '文档未被修改，文档验证有效',
+            icon: './images/sign-check-48.png',
+            count: window.signCount
+          }));
         } else {
-          $verifyContainerIcon.prop('src', './images/sign-error-48.png');
-          $verifyContainerResult.html('文档已经被修改，文档验证失效');
+          $verifyContainerCon.html(Mustache.render(tplVerify, {
+            result: '文档已经被修改，文档验证失效',
+            icon: './images/sign-error-48.png',
+            count: window.signCount
+          }));
         }
-
-        $verifyContainerCount.html('文档验证完毕，共有签章' + responseSignData.length + '个');
+      } else {
+        $verifyContainerCon.html('请先打开相关 pdf 文件');
       }
 
       $('#verifyContainer').toggleClass('hidden');
@@ -1043,6 +1046,20 @@
   var openFileCallback = function() {
     signElArray = [];
     multiSignElArray = [];
+    window.signCount = 0;
+    window.isSignIntegrity = undefined;
+
+    if(epTools.keyWordSignElArray && Array.isArray(epTools.keyWordSignElArray)) {
+      epTools.keyWordSignElArray = [];
+    }
+  };
+  
+  // 每次关闭文件触发该回调函数
+  var closeFileCallback = function() {
+    signElArray = [];
+    multiSignElArray = [];
+    window.signCount = 0;
+    window.isSignIntegrity = undefined;
 
     if(epTools.keyWordSignElArray && Array.isArray(epTools.keyWordSignElArray)) {
       epTools.keyWordSignElArray = [];
@@ -1053,6 +1070,7 @@
 
   return {
     openFileCallback: openFileCallback,
-    pageDrawCallback: pageDrawCallback
+    pageDrawCallback: pageDrawCallback,
+    closeFileCallback: closeFileCallback
   };
 }));

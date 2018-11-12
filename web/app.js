@@ -2052,14 +2052,20 @@ verify = function verify(file) {
       var tpl = document.getElementById('tpl-annotationView').innerHTML,
         item = '',
         M = Mustache;
-        
+          
       window.responseSignData = res;
+      window.signCount = res.length || 0;
+      window.isSignIntegrity = true;
       
       $.each(res, function(i, e) {
         e.signdate = getDate(e.signdate);
         e.signImg = 'data:image/png;base64,' + e.signImg;
         e.integrityText = e.isIntegrity ? '签名后文档未修改' : '签名后文档已修改';
         item += M.render(tpl, e);
+        
+        if (!e.isIntegrity) {
+          window.isSignIntegrity = false;
+        }
       });
       
       PDFViewerApplication.appConfig.sidebar.annotationView.innerHTML = item;
@@ -2133,6 +2139,8 @@ function webViewerCloseFile(){
     default:
       break;
   }
+  
+  window.closeFileCallback && typeof window.closeFileCallback == 'function' && window.closeFileCallback();
 }
 
 function webViewerAbout() {
