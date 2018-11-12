@@ -1781,7 +1781,10 @@ if (typeof PDFJSDev === 'undefined' || PDFJSDev.test('GENERIC')) {
       PDFViewerApplication.open(file);
       
       var openFileCallback = window.openFileCallback;
+      var toggleFileCallback = window.toggleFileCallback;
+      
       openFileCallback && typeof openFileCallback == 'function' && openFileCallback.call(this);
+      toggleFileCallback && typeof toggleFileCallback == 'function' && toggleFileCallback();
     }
   };
 } else if (PDFJSDev.test('FIREFOX || MOZCENTRAL || CHROME')) {
@@ -2141,6 +2144,7 @@ function webViewerCloseFile(){
   }
   
   window.closeFileCallback && typeof window.closeFileCallback == 'function' && window.closeFileCallback();
+  window.toggleFileCallback && typeof window.toggleFileCallback == 'function' && window.toggleFileCallback();
 }
 
 function webViewerAbout() {

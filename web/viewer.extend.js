@@ -25,8 +25,6 @@
     tplVerify = $('#tpl-verifyContainer-con').html();
 
   var isOpenSig = false, // 是否满足签章条件，并且点击了开始签章
-    signSerial = 0,
-    signStatus = null, // 选择签章类型，0：签章(只能签一次，签一次这个按钮就消失了)，1：多页签章(可以签多个)
     signElArray = [],
     multiSignElArray = [], // 多页签章保存的签章元素
     initSignImgWidth = 0,
@@ -110,9 +108,7 @@
           canvasWrapperHeight = $(this).find('.canvasWrapper').height(),
           scale = PDFViewerApplication.toolbar.pageScale;
 
-        div.id = '_signSerial' + signSerial;
         div.className = '_addSign';
-        div.dataset.index = signSerial;
         img.src = sign_img.src;
         img.className = '_signimg';
         img.width = sign_img.width;
@@ -279,16 +275,6 @@
       sign_div = null;
       sign_img = null;
       isOpenSig = false;
-    }).on('contextmenu', '._addSign', function(e) {
-      e.preventDefault();
-
-      delSerial = $(this).data('index');
-
-      $contextmenu.show();
-      $contextmenu.css({
-        top: e.pageY,
-        left: e.pageX
-      });
     });
 
     // 点击查找按钮
@@ -343,9 +329,6 @@
 
     // 单个签章
     $sign.on('click', function() {
-      // TODO: 单个签章的我先注释掉了。
-      //    signStatus = 0;
-
       $signaturePreview.html("<img src='./images/company.png' />");
       $signContainer.removeClass('hidden');
     });
@@ -478,59 +461,72 @@
    * pageNumber {Number} 当前签章的页数
    */
   function selectSignTypeNormal(params, options) {
-    var signEl = options.signDiv,
-      top = options.top,
+    var top = options.top,
       left = options.left,
       img = options.img,
-      $curPageEl = options.$curPageEl,
-      pageNumber = options.pageNumber;
+      $curPageEl = options.$curPageEl;
 
     // 验证二维码, 一定要扫码后方可进行签章
     createSignQrCode(params, comSignUrl, function(response) {
-      // 进行签章合并
-      if(signStatus == 0) {
-        $sign.hide();
-      }
+      var verify = response.msg.verify;
 
-      var tmp = {},
-        curVerify = response.msg.verify[0],
-        signId = curVerify.signid,
-        isIntegrity = curVerify.isIntegrity;
+      for(var i = 0, len = verify.length; i < len; i++) {
+        var item = verify[i],
+          signEl = document.createElement('div'),
+          signImg = document.createElement('img'),
+          signId = item.signid,
+          pageNumber = item.page,
+          isIntegrity = item.isIntegrity,
+          tmp = {},
+          $curPage = $viewerContainer.find('.page[data-page-number=' + pageNumber + ']');
+
+        tmp[signId] = item;
+        signEl.className = '_addSign';
+        signEl.dataset.signid = signId;
+        window.signCount += 1;
+
+        $(signEl).css({
+          left: left,
+          top: top
+        });
+
+        signImg.className = '_signimg';
+        signImg.src = img.src;
+        $(signImg).css({
+          width: img.width,
+          height: img.height
+        });
+        
+        $curPage.append(signEl);
+
+        if(!!isIntegrity) {
+          // TODO: 创建签章状态标识 isIntegrity 为 true
+          createSignStatusImg('success', signId, epTools.AfterSignPDF);
+        } else {
+          // 创建签章状态标识 isIntegrity 为 false
+          window.isSignIntegrity = false;
+          createSignStatusImg('error', signId, epTools.AfterSignPDF);
+        }
+
+        // 添加到数字签名区域
+        addToAnnotationView(item);
+        signEl.append(signImg);
+        signInformation.push(tmp);
+
+        signElArray.push({
+          pageNumber: pageNumber,
+          signId: signId,
+          signEl: signEl,
+          scale: PDFViewerApplication.toolbar.pageScale,
+          imgWidth: img.width,
+          imgHeight: img.height,
+          top: top,
+          left: left,
+          pageRotation: PDFViewerApplication.pageRotation
+        });
+      }
 
       epTools.downloadUrl = response.msg.url;
-      tmp[signId] = curVerify;
-      // 设置 signId
-      signEl.dataset.signid = signId;
-      window.signCount += 1;
-
-      $curPageEl.append(signEl);
-      signInformation.push(tmp);
-
-      if(!!isIntegrity) {
-        // TODO: 创建签章状态标识 isIntegrity 为 true
-        createSignStatusImg('success', signId, epTools.AfterSignPDF);
-      } else {
-        // 创建签章状态标识 isIntegrity 为 false
-        window.isSignIntegrity = false;
-        createSignStatusImg('error', signId, epTools.AfterSignPDF);
-      }
-
-      // 添加到数字签名区域
-      addToAnnotationView(curVerify);
-
-      signElArray.push({
-        pageNumber: pageNumber,
-        signId: signId,
-        signEl: signEl,
-        scale: PDFViewerApplication.toolbar.pageScale,
-        imgWidth: img.width,
-        imgHeight: img.height,
-        top: top,
-        left: left,
-        pageRotation: PDFViewerApplication.pageRotation
-      });
-
-      signSerial++;
     });
   }
 
@@ -546,12 +542,10 @@
    * pageNumber {Number} 当前签章的页数
    */
   function selectSignTypeMultiPage(params, options) {
-    var signEl = options.signDiv,
-      top = options.top,
+    var top = options.top,
       left = options.left,
       img = options.img,
       imgSrc = img.src,
-      $curPageEl = options.$curPageEl,
       pageNumber = options.pageNumber;
 
     // 创建签章二维码，multiSignPage
@@ -593,7 +587,7 @@
 
         if(curPageEl && curPageEl.nodeType == 1) {
           curPageEl.appendChild(multiSignEl);
-          
+
           if(!!isIntegrity) {
             // TODO: 创建签章状态标识 isIntegrity 为 true
             createSignStatusImg('success', signid, epTools.AfterSignPDF);
@@ -603,7 +597,9 @@
             createSignStatusImg('error', signid, epTools.AfterSignPDF);
           }
         }
-
+        
+        // 添加到数字签名区域
+        addToAnnotationView(item);
         multiSignElArray.push({
           pageNumber: pageNumber,
           signid: signid,
@@ -619,6 +615,12 @@
       }
     });
   }
+
+  $.extend(window.epTools, {
+    createSignCallback: function(response) {
+
+    }
+  });
 
   /**
    * 选择签章类型为普通签章方法
@@ -1043,19 +1045,13 @@
   }
 
   // 每次打开文件触发该回调函数
-  var openFileCallback = function() {
-    signElArray = [];
-    multiSignElArray = [];
-    window.signCount = 0;
-    window.isSignIntegrity = undefined;
+  var openFileCallback = function() {};
 
-    if(epTools.keyWordSignElArray && Array.isArray(epTools.keyWordSignElArray)) {
-      epTools.keyWordSignElArray = [];
-    }
-  };
-  
   // 每次关闭文件触发该回调函数
-  var closeFileCallback = function() {
+  var closeFileCallback = function() {};
+
+  // 每次打开和关闭文件触发该回调函数
+  var toggleFileCallback = function() {
     signElArray = [];
     multiSignElArray = [];
     window.signCount = 0;
@@ -1071,6 +1067,7 @@
   return {
     openFileCallback: openFileCallback,
     pageDrawCallback: pageDrawCallback,
-    closeFileCallback: closeFileCallback
+    closeFileCallback: closeFileCallback,
+    toggleFileCallback: toggleFileCallback
   };
 }));
