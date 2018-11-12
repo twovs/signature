@@ -551,7 +551,7 @@
       pageNumber = options.pageNumber;
 
     // 创建签章二维码，multiSignPage
-    createSignQrCode(params, function(response) {
+    createSignQrCode(params, multiPageSignUrl, function(response) {
       var verify = response.msg.verify;
 
       epTools.downloadUrl = response.msg.url;
@@ -1036,7 +1036,7 @@
    * @param {String} qrcodeid 二维码标识
    */
   function mockScan(qrcodeid) {
-    $.get('http://192.168.108.217:98/H5PDF/qrsign/mockScan?codeid=' + qrcodeid);
+    $.get('http://192.168.108.217:8099/H5PDF/qrsign/mockScan?codeid=' + qrcodeid);
   }
 
   // 每次打开文件触发该回调函数
