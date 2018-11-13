@@ -26,7 +26,6 @@
 
   var isOpenSig = false, // 是否满足签章条件，并且点击了开始签章
     signElArray = [],
-    multiSignElArray = [], // 多页签章保存的签章元素
     initSignImgWidth = 0,
     initSignImgHeight = 0,
     siderMenuBarWidth = $('#siderMenuBar').width(),
@@ -457,76 +456,16 @@
    * top {Number} 签章距离 page 顶部的距离
    * left {Number} 签章距离 page 左侧的距离
    * img {HTMLElement} 签章图片的DOM元素
-   * $curPageEl {Jquery HTMLElement} 当前页面元素
    * pageNumber {Number} 当前签章的页数
    */
   function selectSignTypeNormal(params, options) {
     var top = options.top,
       left = options.left,
-      img = options.img,
-      $curPageEl = options.$curPageEl;
+      img = options.img;
 
     // 验证二维码, 一定要扫码后方可进行签章
     createSignQrCode(params, comSignUrl, function(response) {
-      var verify = response.msg.verify;
-
-      for(var i = 0, len = verify.length; i < len; i++) {
-        var item = verify[i],
-          signEl = document.createElement('div'),
-          signImg = document.createElement('img'),
-          signId = item.signid,
-          pageNumber = item.page,
-          isIntegrity = item.isIntegrity,
-          tmp = {},
-          $curPage = $viewerContainer.find('.page[data-page-number=' + pageNumber + ']');
-
-        tmp[signId] = item;
-        signEl.className = '_addSign';
-        signEl.dataset.signid = signId;
-        window.signCount += 1;
-
-        $(signEl).css({
-          left: left,
-          top: top
-        });
-
-        signImg.className = '_signimg';
-        signImg.src = img.src;
-        $(signImg).css({
-          width: img.width,
-          height: img.height
-        });
-        
-        $curPage.append(signEl);
-
-        if(!!isIntegrity) {
-          // TODO: 创建签章状态标识 isIntegrity 为 true
-          createSignStatusImg('success', signId, epTools.AfterSignPDF);
-        } else {
-          // 创建签章状态标识 isIntegrity 为 false
-          window.isSignIntegrity = false;
-          createSignStatusImg('error', signId, epTools.AfterSignPDF);
-        }
-
-        // 添加到数字签名区域
-        addToAnnotationView(item);
-        signEl.append(signImg);
-        signInformation.push(tmp);
-
-        signElArray.push({
-          pageNumber: pageNumber,
-          signId: signId,
-          signEl: signEl,
-          scale: PDFViewerApplication.toolbar.pageScale,
-          imgWidth: img.width,
-          imgHeight: img.height,
-          top: top,
-          left: left,
-          pageRotation: PDFViewerApplication.pageRotation
-        });
-      }
-
-      epTools.downloadUrl = response.msg.url;
+      epTools.createSignCallback(response, img, top, left);
     });
   }
 
@@ -538,25 +477,26 @@
    * top {Number} 签章距离 page 顶部的距离
    * left {Number} 签章距离 page 左侧的距离
    * img {HTMLElement} 签章图片的DOM元素
-   * $curPageEl {Jquery HTMLElement} 当前页面元素
    * pageNumber {Number} 当前签章的页数
    */
   function selectSignTypeMultiPage(params, options) {
     var top = options.top,
       left = options.left,
-      img = options.img,
-      imgSrc = img.src,
-      pageNumber = options.pageNumber;
+      img = options.img;
 
     // 创建签章二维码，multiSignPage
     createSignQrCode(params, multiPageSignUrl, function(response) {
+      epTools.createSignCallback(response, img, top, left);
+    });
+  }
+
+  $.extend(window.epTools, {
+    createSignCallback: function(response, img, top, left) {
       var verify = response.msg.verify;
 
-      epTools.downloadUrl = response.msg.url;
-
       for(var i = 0, len = verify.length; i < len; i++) {
-        var multiSignEl = document.createElement('div'),
-          multiSignImgEl = document.createElement('img'),
+        var signEl = document.createElement('div'),
+          signImg = document.createElement('img'),
           item = verify[i],
           signid = item.signid,
           pageNumber = item.page,
@@ -565,28 +505,28 @@
 
         tmp[signid] = item;
         signInformation.push(tmp);
-        multiSignEl.className = '_addSign';
-        multiSignEl.dataset.signid = signid;
-        $(multiSignEl).css({
+        signEl.className = '_addSign';
+        signEl.dataset.signid = signid;
+        $(signEl).css({
           left: left,
           top: top
         });
 
-        multiSignImgEl.className = '_signimg';
-        multiSignImgEl.src = imgSrc;
-        $(multiSignImgEl).css({
+        signImg.className = '_signimg';
+        signImg.src = img.src;
+        $(signImg).css({
           width: img.width,
           height: img.height
         });
 
-        multiSignEl.append(multiSignImgEl);
+        signEl.append(signImg);
         window.signCount += 1;
 
         var $curPage = $viewerContainer.find('.page[data-page-number=' + pageNumber + ']'),
           curPageEl = $curPage.get(0);
 
         if(curPageEl && curPageEl.nodeType == 1) {
-          curPageEl.appendChild(multiSignEl);
+          curPageEl.appendChild(signEl);
 
           if(!!isIntegrity) {
             // TODO: 创建签章状态标识 isIntegrity 为 true
@@ -597,13 +537,13 @@
             createSignStatusImg('error', signid, epTools.AfterSignPDF);
           }
         }
-        
+
         // 添加到数字签名区域
         addToAnnotationView(item);
-        multiSignElArray.push({
+        signElArray.push({
           pageNumber: pageNumber,
           signid: signid,
-          signEl: multiSignEl,
+          signEl: signEl,
           isIntegrity: isIntegrity,
           scale: PDFViewerApplication.toolbar.pageScale,
           imgWidth: img.width,
@@ -613,12 +553,8 @@
           pageRotation: PDFViewerApplication.pageRotation
         });
       }
-    });
-  }
-
-  $.extend(window.epTools, {
-    createSignCallback: function(response) {
-
+      
+      epTools.downloadUrl = response.msg.url;
     }
   });
 
@@ -1020,12 +956,7 @@
       }
     };
 
-    // 改变页面的时候重新渲染 -> 多页签章
-    $.each(multiSignElArray, function(i, e) {
-      signReDrawCallback(e);
-    });
-
-    // 改变页面的时候重新渲染 -> 单个签章
+    // 改变页面的时候重新渲染 -> 单页签章、多页签章
     $.each(signElArray, function(i, e) {
       signReDrawCallback(e);
     });
@@ -1053,7 +984,6 @@
   // 每次打开和关闭文件触发该回调函数
   var toggleFileCallback = function() {
     signElArray = [];
-    multiSignElArray = [];
     window.signCount = 0;
     window.isSignIntegrity = undefined;
 
