@@ -32,6 +32,11 @@
 <!--#endif-->
 
   <script src="./libs/jquery.min.js"></script>
+  <script>
+    if (typeof module == 'object') {
+      window.jQuery = window.$ = module.exports;
+    }
+  </script>
   <script src="./libs/mustache.min.js"></script>
   <script src="./libs/qrcode.min.js"></script>
   

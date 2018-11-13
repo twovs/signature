@@ -367,7 +367,29 @@ function createApi(config) {
         }
       });
     },
-    
+    /**
+     * 设置 userId
+     * @param {String} userId 接口需要的 userId
+     */
+    setUserId: function(userId) {
+      this.userId = userId ? userId : this.getLocationUserId();
+    },
+    /**
+     * 获取 userId
+     * @returns {String} userId 
+     */
+    getUserId: function() {
+      return this.userId ? this.userId : this.getLocationUserId();
+    },
+    getLocationUserId: function() {
+      var result = window.location.search.match(/user=([^&]*)/);
+
+      if (result && Array.isArray(result)) {
+        return result[1];
+      }
+  
+      return '';
+    },
     keyWordSignElArray: []
   };
 
