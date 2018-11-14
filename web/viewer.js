@@ -306,67 +306,6 @@ function createApi(config) {
         console.error('iWebOA 只能在 ie 浏览器环境下使用');
       }
     },
-    
-    /**
-     * 关键字盖章
-     * @param {String} keyword 要盖章的关键字
-     */
-    keyWordStamp: function(keyword) {
-      if (!keyword) {
-        alert('请输入要盖章的关键字');
-        return;
-      }
-      
-      this.keyWordSignElArray = [];
-      
-      var $dataLoadedPage = $('#viewer').find('.page[data-loaded=true]');
-      var that = this;
-      
-      $.each($dataLoadedPage, function(i, e) {
-        var $e = $(e);
-        
-        if ($e.text().indexOf(keyword) !== -1) {          
-          var $curTextEle = $e.find('.textLayer div:contains('+ keyword +')'),
-            top = parseInt($curTextEle.css('top'), 10),
-            left = parseInt($curTextEle.css('left'), 10);
-            
-          var signEl = document.createElement('div'),
-            imgEl = document.createElement('img');
-            
-          imgEl.src = $('#signature-preview img').prop('src');
-          signEl.className = '_addSign';
-          imgEl.className = '_signimg';
-          
-          imgEl.onload = function() {
-            var imgWidth = this.width,
-              imgHeight = this.height,
-              signElTop = top - imgHeight / 2,
-              signElLeft = left - imgWidth / 2 + $curTextEle.outerWidth() / 2;
-              
-            $(signEl).css({
-              width: imgWidth,
-              height: imgHeight,
-              top: signElTop,
-              left: signElLeft
-            });
-            
-            signEl.appendChild(imgEl);
-            e.appendChild(signEl);
-            
-            that.keyWordSignElArray.push({
-              pageNumber: parseInt($e.attr('data-page-number'), 10),
-              signEl: signEl,
-              scale: PDFViewerApplication.toolbar.pageScale,
-              imgWidth: imgWidth,
-              imgHeight: imgHeight,
-              pageRotation: PDFViewerApplication.pageRotation,
-              top: signElTop,
-              left: signElLeft
-            });
-          };
-        }
-      });
-    },
     /**
      * 设置 userId
      * @param {String} userId 接口需要的 userId
