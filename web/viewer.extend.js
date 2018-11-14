@@ -309,7 +309,7 @@
 
     // 单个签章
     $sign.on('click', function() {
-      $signaturePreview.html("<img src='./images/company.png' />");
+//    $signaturePreview.html("<img src='./images/company.png' />");
       $signContainer.removeClass('hidden');
     });
 
@@ -511,7 +511,7 @@
             height: imgHeight
           });
 
-          signEl.append(signImgEl);
+          signEl.appendChild(signImgEl);
           window.signCount += 1;
 
           var $curPage = $viewerContainer.find(
@@ -956,7 +956,6 @@
 
     // 改变页面的时候重新渲染 -> 单页签章、多页签章
     $.each(signElArray, function(i, e) {
-      console.log(e);
       signReDrawCallback(e);
     });
 
@@ -986,6 +985,7 @@
     signElArray = [];
     window.signCount = 0;
     window.isSignIntegrity = undefined;
+    epTools.downloadUrl = null;
 
     if(epTools.keyWordSignElArray && Array.isArray(epTools.keyWordSignElArray)) {
       epTools.keyWordSignElArray = [];

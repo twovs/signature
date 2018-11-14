@@ -390,6 +390,15 @@ function createApi(config) {
   
       return '';
     },
+    /**
+     * 是否显示签章按钮
+     * @param {Boolean} isShow 是否显示签章菜单
+     */
+    isShowSignMenu: function(isShow) {
+      var signContainerEl = document.getElementById('signContainer');
+      
+      isShow ? signContainerEl.classList.remove('hidden') : signContainerEl.classList.add('hidden');
+    },
     keyWordSignElArray: []
   };
 

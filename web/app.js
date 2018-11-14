@@ -2158,15 +2158,32 @@ function webViewerPrint() {
 function webViewerDownload() {
   // 有签章成功后的pdf，先下载签章成功后的pdf，没有就下载当前的
   if (epTools && epTools.downloadUrl && typeof epTools.downloadUrl == 'string') {
-    let a = document.createElement('a'),
-      downloadUrl = epTools.downloadUrl;
-    
-    a.href = downloadUrl;
-    a.target = '_blank';
-    a.download = downloadUrl.substring(downloadUrl.lastIndexOf('/') + 1)
-    
-    a.click();
-    a = null;
+      var downloadUrl = epTools.downloadUrl;
+      var xhr = new XMLHttpRequest();
+      
+      xhr.open('GET', downloadUrl);
+      xhr.responseType = 'blob';
+      xhr.onload = function() {
+        if (xhr.status == 200) {
+          var fileBlob = new Blob([xhr.response]);
+          var filename = downloadUrl.substring(downloadUrl.lastIndexOf('/') + 1);
+          
+          if ('msSaveOrOpenBlob' in window.navigator) {
+            // Microsoft Edge and Microsoft Internet Explorer 10-11
+            window.navigator.msSaveOrOpenBlob(fileBlob, filename);
+          }
+          else {
+            // chrome or firefox
+            var a = document.createElement('a');
+            
+            a.download = filename;
+            a.href = window.URL.createObjectURL(fileBlob);
+            a.click();
+          }
+        }
+      };
+      
+      xhr.send();
   }
   else {
     PDFViewerApplication.download();
