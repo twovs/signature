@@ -565,15 +565,26 @@
         "userid": epTools.getUserId(),
         "sign": {
           "keyword": keyword,
-          "signimg": imgToBase64($img.get(0))
+          "signimg": imgToBase64($img.get(0)).split(',')[1]
         }
       };
       
-      console.log(params);
-      
       // 生成二维码
-      createSignQrCode(params, keySignUrl, function() {
+      createSignQrCode(params, keySignUrl, function(response) {
+        var $dataLoadedPage = $('#viewer').find('.page[data-loaded=true]');
         
+        console.log(response);
+        
+        $.each($dataLoadedPage, function(i, e) {
+          var $e = $(e);
+          
+          if ($e.text().indexOf(keyword) !== -1) {
+            var $curTextEle = $e.find('.textLayer div:contains(' + keyword + ')'),
+              top = parseInt($curTextEle.css('top'), 10),
+              left = parseInt($curTextEle.css('left'), 10);
+              
+          }
+        });
       });
 
 //    var $dataLoadedPage = $('#viewer').find('.page[data-loaded=true]');
