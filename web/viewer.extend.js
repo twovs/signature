@@ -472,7 +472,14 @@
   }
 
   $.extend(window.epTools, {
-    createSignCallback: function(response, top, left) {
+    /**
+     * @param  {[Object]} response 返回参数
+     * @param  {[Number]} top 签章距离顶部的距离
+     * @param  {[Number]} left 签章距离左侧的距离
+     * @param  {[String]} signType 签章类型，应该只有关键字签章 keyWordSign
+     * @param  {[jQuery HTMLElement]} $curTextEle 当前文本元素
+     */
+    createSignCallback: function(response, top, left, signType, $curTextEle) {
       var verify = response.msg.verify,
         imgEl = document.createElement('img'),
         imgSrc = 'data:image/png;base64,' + verify[0].signImg;
@@ -500,6 +507,12 @@
           signEl.dataset.signid = signid;
           signImgEl.src = imgSrc;
           signImgEl.className = '_signimg';
+
+          // 如果当前签章类型是关键词签章
+          if (signType && signType == 'keyWordSign') {
+            top = top - imgHeight / 2;
+            left = left - imgWidth / 2 + $curTextEle.outerWidth() / 2;
+          }
 
           $(signEl).css({
             left: left,
@@ -569,11 +582,9 @@
         }
       };
       
-      // 生成二维码
+      // 创建二维码 -> 关键字签章
       createSignQrCode(params, keySignUrl, function(response) {
         var $dataLoadedPage = $('#viewer').find('.page[data-loaded=true]');
-        
-        console.log(response);
         
         $.each($dataLoadedPage, function(i, e) {
           var $e = $(e);
@@ -582,57 +593,11 @@
             var $curTextEle = $e.find('.textLayer div:contains(' + keyword + ')'),
               top = parseInt($curTextEle.css('top'), 10),
               left = parseInt($curTextEle.css('left'), 10);
-              
+            
+            epTools.createSignCallback(response, top, left, 'keyWordSign', $curTextEle);
           }
         });
       });
-
-//    var $dataLoadedPage = $('#viewer').find('.page[data-loaded=true]');
-//
-//    $.each($dataLoadedPage, function(i, e) {
-//      var $e = $(e);
-//
-//      if($e.text().indexOf(keyword) !== -1) {
-//        var $curTextEle = $e.find('.textLayer div:contains(' + keyword + ')'),
-//          top = parseInt($curTextEle.css('top'), 10),
-//          left = parseInt($curTextEle.css('left'), 10);
-//
-//        var signEl = document.createElement('div'),
-//          imgEl = document.createElement('img');
-//
-//        imgEl.src = imgSrc;
-//        signEl.className = '_addSign';
-//        imgEl.className = '_signimg';
-//
-//        imgEl.onload = function() {
-//          var imgWidth = this.width,
-//            imgHeight = this.height,
-//            signElTop = top - imgHeight / 2,
-//            signElLeft = left - imgWidth / 2 + $curTextEle.outerWidth() / 2;
-//
-//          $(signEl).css({
-//            width: imgWidth,
-//            height: imgHeight,
-//            top: signElTop,
-//            left: signElLeft
-//          });
-//
-//          signEl.appendChild(imgEl);
-//          e.appendChild(signEl);
-//
-//          signElArray.push({
-//            pageNumber: parseInt($e.attr('data-page-number'), 10),
-//            signEl: signEl,
-//            scale: PDFViewerApplication.toolbar.pageScale,
-//            imgWidth: imgWidth,
-//            imgHeight: imgHeight,
-//            pageRotation: PDFViewerApplication.pageRotation,
-//            top: signElTop,
-//            left: signElLeft
-//          });
-//        };
-//      }
-//    });
     }
   });
 
