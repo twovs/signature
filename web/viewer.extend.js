@@ -476,10 +476,8 @@
      * @param  {[Object]} response 返回参数
      * @param  {[Number]} top 签章距离顶部的距离
      * @param  {[Number]} left 签章距离左侧的距离
-     * @param  {[String]} signType 签章类型，应该只有关键字签章 keyWordSign
-     * @param  {[jQuery HTMLElement]} $curTextEle 当前文本元素
      */
-    createSignCallback: function(response, top, left, signType, $curTextEle) {
+    createSignCallback: function(response, top, left) {
       var verify = response.msg.verify,
         imgEl = document.createElement('img'),
         imgSrc = 'data:image/png;base64,' + verify[0].signImg;
@@ -507,12 +505,6 @@
           signEl.dataset.signid = signid;
           signImgEl.src = imgSrc;
           signImgEl.className = '_signimg';
-
-          // 如果当前签章类型是关键词签章
-          if (signType && signType == 'keyWordSign') {
-            top = top - imgHeight / 2;
-            left = left - imgWidth / 2 + $curTextEle.outerWidth() / 2;
-          }
 
           $(signEl).css({
             left: left,
@@ -584,19 +576,99 @@
       
       // 创建二维码 -> 关键字签章
       createSignQrCode(params, keySignUrl, function(response) {
-        var $dataLoadedPage = $('#viewer').find('.page[data-loaded=true]');
-        
-        $.each($dataLoadedPage, function(i, e) {
-          var $e = $(e);
-          
-          if ($e.text().indexOf(keyword) !== -1) {
-            var $curTextEle = $e.find('.textLayer div:contains(' + keyword + ')'),
-              top = parseInt($curTextEle.css('top'), 10),
-              left = parseInt($curTextEle.css('left'), 10);
-            
-            epTools.createSignCallback(response, top, left, 'keyWordSign', $curTextEle);
-          }
-        });
+        var verify = response.msg.verify;
+
+        epTools.downloadUrl = response.msg.url;
+
+        if (Array.isArray(verify) && verify.length >= 1) {
+          var imgEl = document.createElement('img'),
+            imgSrc = 'data:image/png;base64,' + verify[0].signImg;
+
+          imgEl.src = imgSrc;
+          imgEl.onload = function() {
+            var imgWidth = this.width,
+              imgHeight = this.height;
+
+            $.each(verify, function(i, e) {
+              var pageNumber = e.page,
+                isIntegrity = e.isIntegrity,
+                $pageEl = $viewerContainer.find('.page[data-page-number='+ pageNumber +']'),
+                pageEl = $pageEl.get(0);
+
+              if (pageEl && pageEl.nodeType == 1) {
+                // 有关键字的页面已经加载的话
+                if ($pageEl.attr('data-loaded')) {
+                  var $curTextEle = $pageEl.find('.textLayer div:contains(' + keyword + ')'),
+                    top = parseInt($curTextEle.css('top'), 10),
+                    left = parseInt($curTextEle.css('left'), 10);
+
+                  var signEl = document.createElement('div'),
+                    signImgEl = document.createElement('img'),
+                    signElTop = top - imgHeight / 2,
+                    signElLeft = left - imgWidth / 2 + $curTextEle.outerWidth() / 2,
+                    tmp = {},
+                    signid = e.signid;
+
+                  signImgEl.src = imgSrc;
+                  signEl.className = '_addSign';
+                  signEl.dataset.signid = signid;
+                  signImgEl.className = '_signimg';
+                  tmp[signid] = e;
+                  signInformation.push(tmp);
+
+                  $(signEl).css({
+                    left: signElLeft,
+                    top: signElTop
+                  });
+
+                  $(signImgEl).css({
+                    width: imgWidth,
+                    height: imgHeight
+                  });
+
+                  signEl.appendChild(signImgEl);
+                  pageEl.appendChild(signEl);
+
+                  if(!!isIntegrity) {
+                    // TODO: 创建签章状态标识 isIntegrity 为 true
+                    createSignStatusImg('success', signid, epTools.AfterSignPDF);
+                  } else {
+                    // 创建签章状态标识 isIntegrity 为 false
+                    window.isSignIntegrity = false;
+                    createSignStatusImg('error', signid, epTools.AfterSignPDF);
+                  }
+
+                  window.signCount += 1;
+
+                  // 添加到数字签名区域
+                  addToAnnotationView(e);
+                  signElArray.push({
+                    pageNumber: pageNumber,
+                    signid: signid,
+                    signEl: signEl,
+                    isIntegrity: isIntegrity,
+                    scale: PDFViewerApplication.toolbar.pageScale,
+                    imgWidth: imgWidth,
+                    imgHeight: imgHeight,
+                    top: signElTop,
+                    left: signElLeft,
+                    pageRotation: PDFViewerApplication.pageRotation
+                  });
+                }
+                else {
+                  return;
+                }
+              }
+              else {
+                return;
+              }
+            });
+          };
+        }
+        else {
+          alert('此pdf无 keyword 关键字');
+          return;
+        }
       });
     }
   });
