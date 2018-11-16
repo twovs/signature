@@ -28,9 +28,11 @@
     signElArray = [],
     initSignImgWidth = 0,
     initSignImgHeight = 0,
+    signSearchVal = '', // 关键字签章的时候的签章关键字
     siderMenuBarWidth = $('#siderMenuBar').width(),
     selectSignType = 'normal', // 添加签章 ——> 签章类型，默认为 普通签章(normal)
-    signInformation = []; // 签章完毕后，保存的签章信息，key 是对应的 signId
+    signInformation = [], // 签章完毕后，保存的签章信息，key 是对应的 signId
+    keyWordSignNotLoadedData = []; // 关键字签章的时候，当前关键字所在页面未签页面的合集数据
 
   var sign_div,
     sign_img;
@@ -289,9 +291,9 @@
         } else {
           // 如果选择的签章类型是关键字签章，则不生成signElement
           if(selectSignType == 'keyWordSign') {
-            var epTools = window.epTools,
-              signSearchVal = $('.sigsearch-input').val();
-              
+            var epTools = window.epTools;
+
+            signSearchVal = $('.sigsearch-input').val();  
             epTools && typeof epTools.keyWordStamp == 'function' &&
               epTools.keyWordStamp(signSearchVal);
           } else {
@@ -656,11 +658,11 @@
                   });
                 }
                 else {
-                  return;
+                  keyWordSignNotLoadedData.push(e);
                 }
               }
               else {
-                return;
+                keyWordSignNotLoadedData.push(e);
               }
             });
           };
@@ -1081,6 +1083,91 @@
     $.each(signElArray, function(i, e) {
       signReDrawCallback(e);
     });
+
+    // 如果是关键字签章的话，可能会存在未 loaded 的页面
+    if (selectSignType == 'keyWordSign') {
+      if (
+        keyWordSignNotLoadedData
+        && Array.isArray(keyWordSignNotLoadedData)
+        && keyWordSignNotLoadedData.length >= 1
+      ) {
+        var imgEl = document.createElement('img'),
+          imgSrc = 'data:image/png;base64,' + keyWordSignNotLoadedData[0].signImg;
+
+        imgEl.src = imgSrc;
+        imgEl.onload = function() {
+          var imgWidth = this.width,
+            imgHeight = this.height;
+
+          $.each(keyWordSignNotLoadedData, function(i, e) {
+            var pageNumber = e.page,
+              $pageEl = $viewerContainer.find('.page[data-page-number=' + pageNumber + ']'),
+              pageEl = $pageEl.get(0);
+
+            if (pageEl && pageEl.nodeType == 1 && $pageEl.attr('data-loaded')) {
+              var $curTextEle = $pageEl.find('.textLayer div:contains(' + signSearchVal + ')'),
+                top = parseInt($curTextEle.css('top'), 10),
+                left = parseInt($curTextEle.css('left'), 10);
+
+              var signEl = document.createElement('div'),
+                signImgEl = document.createElement('img'),
+                signElTop = top - imgHeight / 2,
+                signElLeft = left - imgWidth / 2 + $curTextEle.outerWidth() / 2,
+                tmp = {},
+                signid = e.signid,
+                isIntegrity = e.isIntegrity;
+
+              signImgEl.src = imgSrc;
+              signEl.className = '_addSign';
+              signEl.dataset.signid = signid;
+              signImgEl.className = '_signimg';
+              tmp[signid] = e;
+              signInformation.push(tmp);
+
+              $(signEl).css({
+                left: signElLeft,
+                top: signElTop
+              });
+
+              $(signImgEl).css({
+                width: imgWidth,
+                height: imgHeight
+              });
+
+              signEl.appendChild(signImgEl);
+              pageEl.appendChild(signEl);
+
+              if (!!isIntegrity) {
+                // 创建签章状态标识 isIntegrity 为 true
+                createSignStatusImg('success', signid, epTools.AfterSignPDF);
+              }
+              else {
+                // 创建签章状态标识 isIntegrity 为 false
+                window.isSignIntegrity = false;
+                createSignStatusImg('error', signid, epTools.AfterSignPDF);
+              }
+
+              window.signCount += 1;
+
+              // 添加到数字签名区域
+              addToAnnotationView(e);
+              signElArray.push({
+                pageNumber: pageNumber,
+                signid: signid,
+                signEl: signEl,
+                isIntegrity: isIntegrity,
+                scale: PDFViewerApplication.toolbar.pageScale,
+                imgWidth: imgWidth,
+                imgHeight: imgHeight,
+                top: signElTop,
+                left: signElLeft,
+                pageRotation: PDFViewerApplication.pageRotation
+              });
+            }
+          });
+        }
+      }
+    }
   };
 
   /**
